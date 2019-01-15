@@ -20,28 +20,18 @@ The "on-disk" ansible directory should then look like this :
 ├── ansible.cfg
 ├── files -> playbooks/files
 ├── handlers -> playbooks/handlers
+├── filestore
 ├── inventory
+├── pkistore
 ├── playbooks
 │   ├── files
 │   ├── handlers
 │   ├── requirements.yml
 │   └── vars
+│   └── templates
 ├── roles
-│   ├── baseline
-│   ├── centos-backup
-│   ├── certbot
-│   ├── haproxy
-│   ├── httpd
-│   ├── iptables
-│   ├── kojid
-│   ├── mantisbt
-│   ├── mysql
-│   ├── pagure
-│   ├── postfix
-│   ├── repospanner
-│   ├── sshd
-│   ├── zabbix-agent
-│   └── zabbix-server
+│   ├── <role-name>
+└── templates -> playbooks/templates
 └── vars -> playbooks/vars
 
 ```
@@ -49,3 +39,9 @@ The "on-disk" ansible directory should then look like this :
 ## Ansible roles setup
 All roles will be deployed for a list of individual git repositories, each one being its own role.
 A requirements.yml file will be used to declare which roles (and from where to get them) and so downloaded on the ansible host through ansible-galaxy
+
+## Inventory and encrypted files
+Inventory is itself a different git repository, git-crypted and that will be checked-out on the ansible host
+Same for the two following git (crypted) repositories:
+ * pkistore (holding some PKI key/certs)
+ * filestore (holding some other files/secrets that aren't templates but that should be crypted/non public, so not in roles either)
