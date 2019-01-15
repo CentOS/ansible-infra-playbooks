@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-mysql
+  become: True
+  roles:
+    - mysql

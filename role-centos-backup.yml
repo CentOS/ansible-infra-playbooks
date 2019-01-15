@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-centos-backup
+  become: True
+  roles:
+    - centos-backup

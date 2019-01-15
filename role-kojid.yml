@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-kojid
+  become: True
+  roles:
+    - kojid

@@ -9,6 +9,8 @@ Mainly divided into :
 ##  Naming convention
 The playbooks that will be played for roles will start with `role-<role_name>`
 A all-in-one infra.yml will just include all the role-<role_name>.yml when we want to just ensure the whole infra is configured the way it should.
+Each playbook for a role target a group called `hostgroup-role-<role_name>`. 
+
 
 All other ad-hoc playbooks can just be named/start with `adhoc-<function>`.
 Those specific playbooks can need some tasks/vars/handlers, so for those special ones (as each role has it own set) we'll include those in the same repository, but it's up to the process deploying those for the ansible-host role to setup correctly the needed symlinks for the normal hierarchy.

@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-httpd
+  become: True
+  roles:
+    - httpd

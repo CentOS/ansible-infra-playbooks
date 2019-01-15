@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-haproxy
+  become: True
+  roles:
+    - haproxy

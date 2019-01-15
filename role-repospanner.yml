@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-repospanner
+  become: True
+  roles:
+    - repospanner

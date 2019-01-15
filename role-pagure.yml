@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-pagure
+  become: True
+  roles:
+    - pagure

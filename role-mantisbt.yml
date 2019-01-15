@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-mantisbt
+  become: True
+  roles:
+    - mantisbt

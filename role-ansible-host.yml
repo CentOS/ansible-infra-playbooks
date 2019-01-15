@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-ansible-host
+  become: True
+  roles:
+    - ansible-host
