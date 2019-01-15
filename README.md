@@ -7,14 +7,20 @@ Mainly divided into :
  * ad-hoc tasks playbooks, called on demand when needed
 
 ##  Naming convention
+### Roles (regular playbooks used at regular interval)
 The playbooks that will be played for roles will start with `role-<role_name>`
-A all-in-one infra.yml will just include all the role-<role_name>.yml when we want to just ensure the whole infra is configured the way it should.
+A all-in-one roles-all.yml will just include all the role-<role_name>.yml when we want to just ensure the whole infra is configured the way it should.
 Each playbook for a role target a group called `hostgroup-role-<role_name>`. 
 
+### Deploy (on demand/triggered)
+Deploy playbooks (can combine also other playbooks) can be named `deploy-<function>`
 
-All other ad-hoc playbooks can just be named/start with `adhoc-<function>`.
+
+### Ad-Hoc tasks (on demand/triggered)
+Simple ad-hoc playbooks can just be named/start with `adhoc-<function>`.
 Those specific playbooks can need some tasks/vars/handlers, so for those special ones (as each role has it own set) we'll include those in the same repository, but it's up to the process deploying those for the ansible-host role to setup correctly the needed symlinks for the normal hierarchy.
 
+## Complete needed structure (needed on ansible mgmt node)
 The "on-disk" ansible directory should then look like this :
 
 ```
