@@ -1,0 +1,3 @@
+---
+- import_playbook: role-repospanner.yml
+- import_playbook: role-pagure.yml
