@@ -5,6 +5,7 @@
 # Once done, it will put back in place the signed files
 # Standard baseline role can then really configure sshd_config, using the /etc/ssh/ssh_host_rsa_key-cert.pub
 # From that point, any host using the deployed known_hosts file will be able to connect without any warning 
+# Purposes: being able to use ssh certificats (see https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/sec-signing_ssh_certificates)
 
 # Needed variables (in your inventory)
 #   ssh_ca_host: which host (from your inventory) is the signing host
@@ -12,83 +13,87 @@
 #   ssh_ca_host_key: the ssh private key that will be used to sign all the .pub files
   
 - hosts: all
-   become: True
+  become: True
 
-   tasks:
-     - name: Ensuring we have directory to store nodes .pub files on CA host
-       file:
-         path: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}"
-         state: directory
-         owner: root
-         group: root
-         mode: 0700
-       delegate_to: "{{ ssh_ca_host }}" 
+  tasks:
+    - name: Ensuring we have directory to store nodes .pub files on CA host
+      file:
+        path: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0700
+      delegate_to: "{{ ssh_ca_host }}" 
 
-     - name: Finding generated host ssh key on node
-       find: 
-         paths: /etc/ssh
-         file_type: file
-         patterns: "ssh_host_*_key.pub"
-       register: ssh_host_pubkeys
+    - name: Finding generated host ssh key on node
+      find: 
+        paths: /etc/ssh
+        file_type: file
+        patterns: "ssh_host_*_key.pub"
+      register: ssh_host_pubkeys
    
-     - name: Copy ssh pub keys from node locally
-       fetch:
-         src: "{{ item.path }}"
-         dest: /var/tmp/ssh-pub-keys-{{ inventory_hostname }}/
-         flat: yes 
-       with_items: "{{ ssh_host_pubkeys.files }}" 
-       loop_control:
-         label: '{{ item.path }}'
+    - name: Copy ssh pub keys from node locally
+      fetch:
+        src: "{{ item.path }}"
+        dest: /var/tmp/ssh-pub-keys-{{ inventory_hostname }}/
+        flat: yes 
+      with_items: "{{ ssh_host_pubkeys.files }}" 
+      loop_control:
+        label: '{{ item.path }}'
 
-     - name: Ensuring we have needed .pub files on CA host
-       copy:
-         src: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
-         dest: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
-       delegate_to: "{{ ssh_ca_host }}"
-       register: files_to_sign
+    - name: Ensuring we have needed .pub files on CA host
+      copy:
+        src: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
+        dest: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
+      delegate_to: "{{ ssh_ca_host }}"
+      register: files_to_sign
 
-     - name: Signing host pub keys with CA key
-       shell: "ssh-keygen -s {{ ssh_ca_host_key }} -I {{ inventory_hostname }} -h -Z {{ inventory_hostname }} ssh_host*_key.pub"
-       args:
-         chdir: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
-       when: files_to_sign is changed
-       register: ssh_signing
-       delegate_to: "{{ ssh_ca_host }}"
+    - name: Signing host pub keys with CA key
+      shell: "ssh-keygen -s {{ ssh_ca_host_key }} -I {{ inventory_hostname }} -h -Z {{ inventory_hostname }} ssh_host*_key.pub"
+      args:
+        chdir: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
+      when: files_to_sign is changed
+      register: ssh_signing
+      delegate_to: "{{ ssh_ca_host }}"
         
-     - name: Find new -cert.pub files on CA host
-       find: 
-         paths: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
-         file_type: file
-         patterns: "ssh_host*-cert.pub"
-       register: ssh_signed_certs
-       delegate_to: "{{ ssh_ca_host }}"
-       when: ssh_signing is changed
+    - name: Find new -cert.pub files on CA host
+      find: 
+        paths: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
+        file_type: file
+        patterns: "ssh_host*-cert.pub"
+      register: ssh_signed_certs
+      delegate_to: "{{ ssh_ca_host }}"
+      when: ssh_signing is changed
 
-     - name: Copy -cert.pub files back from CA host
-       fetch:
-         src: "{{ item.path }}"
-         dest: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
-         flat: yes
-       with_items: "{{ ssh_signed_certs.files }}" 
-       delegate_to: "{{ ssh_ca_host }}" 
-       loop_control:
-         label: "{{ item.path }}"
-       when: ssh_signing is changed
+    - name: Copy -cert.pub files back from CA host
+      fetch:
+        src: "{{ item.path }}"
+        dest: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
+        flat: yes
+      with_items: "{{ ssh_signed_certs.files }}" 
+      delegate_to: "{{ ssh_ca_host }}" 
+      loop_control:
+        label: "{{ item.path }}"
+      when: ssh_signing is changed
 
-     - name: Find new -cert.pub files locally
-       find: 
-         paths: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
-         file_type: file
-         patterns: "ssh_host*-cert.pub"
-       register: ssh_signed_certs
-       delegate_to: localhost
-       when: ssh_signing is changed
+    - name: Find new -cert.pub files locally
+      find: 
+        paths: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
+        file_type: file
+        patterns: "ssh_host*-cert.pub"
+      register: ssh_signed_certs
+      delegate_to: localhost
+      when: ssh_signing is changed
 
-     - name: Pushing back signed -cert.pub files back on the node
-       copy:
-         src: "{{ item.path }}"
-         dest: /etc/ssh/
-       with_items: "{{ ssh_signed_certs.files }}" 
-       when: ssh_signing is changed
-       loop_control:
-         label: "{{ item.path }}"
+    - name: Pushing back signed -cert.pub files back on the node
+      copy:
+        src: "{{ item.path }}"
+        dest: /etc/ssh/
+      with_items: "{{ ssh_signed_certs.files }}" 
+      when: ssh_signing is changed
+      loop_control:
+        label: "{{ item.path }}"
+      notify: restart_sshd  
+
+  handlers:
+    - import_tasks: handlers/main.yml
