@@ -15,6 +15,8 @@
   name: iptables
 - src: https://github.com/CentOS/ansible-role-kojid
   name: kojid
+- src: https://github.com/CentOS/ansible-role-kvm-host
+  name: kvm-host
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
 - src: https://github.com/CentOS/ansible-role-mysql
@@ -25,6 +27,8 @@
   name: postfix
 - src: https://github.com/CentOS/ansible-role-repospanner
   name: repospanner
+- src: https://github.com/CentOS/ansible-role-rsyncd
+  name: rsyncd
 - src: https://github.com/CentOS/ansible-role-sshd
   name: sshd
 - src: https://github.com/CentOS/ansible-role-zabbix-agent

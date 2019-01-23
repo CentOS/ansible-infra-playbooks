@@ -6,11 +6,13 @@
 - import_playbook: role-httpd.yml
 - import_playbook: role-iptables.yml
 - import_playbook: role-kojid.yml
+- import_playbook: role-kvm-host.yml
 - import_playbook: role-mantisbt.yml
 - import_playbook: role-mysql.yml
 - import_playbook: role-pagure.yml
 - import_playbook: role-postfix.yml
 - import_playbook: role-repospanner.yml
+- import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
 - import_playbook: role-zabbix-agent.yml
 - import_playbook: role-zabbix-server.yml
