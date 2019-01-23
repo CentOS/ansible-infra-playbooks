@@ -1,0 +1,51 @@
+---
+- hosts: kvm-guests
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Checking Virtual Guest exists
+      virt: 
+        name: "{{ inventory_hostname }}" 
+        state: running
+      ignore_errors: yes
+      no_log: True
+      delegate_to: "{{ kvm_host }}"
+      register: vm_exists
+
+    - name: Creating kickstart to provision VM[s]
+      template: 
+        src: "../templates/kickstarts/kvm-guest-c{{ kvm_guest_distro_release }}-ks.j2" 
+        dest: "/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg"
+      delegate_to: "{{ kvm_host }}"
+      tags:
+        - ks
+
+    - name: Creating temporary virt-install command
+      template: 
+        src: ../templates/ansible-virt-install.j2 
+        dest: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}" 
+        mode: 0750 
+        owner: root 
+        group: root
+      delegate_to: "{{ kvm_host }}"
+      tags:
+        - ks
+
+    - name: Provisining the Virtual Guest[s]
+      command: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}"
+      when: vm_exists is failed
+      delegate_to: "{{ kvm_host }}"
+
+    - name: Waiting for sshd to be available on the deployed node
+      wait_for: 
+        port: 22 
+        host: "{{ kvm_guest_ip }}"
+        timeout: 1200 
+      delegate_to: "{{ kvm_host }}"
+      when: vm_exists is failed
+
+    - name: Ensuring we remove the templatized virt-install script
+      file:
+        path: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}"
+        state: absent
+      delegate_to: "{{ kvm_host }}"

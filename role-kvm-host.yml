@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-kvm-host
+  become: True
+  roles:
+    - kvm-host

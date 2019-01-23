@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-rsyncd
+  become: True
+  roles:
+    - rsyncd
