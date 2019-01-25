@@ -1,0 +1,5 @@
+---
+- import_playbook: role-reimzul-controller.yml
+- import_playbook: role-reimzul-bstore.yml
+- import_playbook: role-reimzul-builder.yml
+

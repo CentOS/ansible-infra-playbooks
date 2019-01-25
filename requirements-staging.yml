@@ -38,6 +38,15 @@
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
   version: staging
+- src: https://github.com/CentOS/ansible-role-reimzul-bstore
+  name: reimzul-bstore
+  version: staging
+- src: https://github.com/CentOS/ansible-role-reimzul-builder
+  name: reimzul-builder
+  version: staging
+- src: https://github.com/CentOS/ansible-role-reimzul-controller
+  name: reimzul-controller
+  version: staging
 - src: https://github.com/CentOS/ansible-role-repospanner
   name: repospanner
   version: staging

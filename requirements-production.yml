@@ -25,6 +25,12 @@
   name: pagure
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
+- src: https://github.com/CentOS/ansible-role-reimzul-bstore
+  name: reimzul-bstore
+- src: https://github.com/CentOS/ansible-role-reimzul-builder
+  name: reimzul-builder
+- src: https://github.com/CentOS/ansible-role-reimzul-controller
+  name: reimzul-controller
 - src: https://github.com/CentOS/ansible-role-repospanner
   name: repospanner
 - src: https://github.com/CentOS/ansible-role-rsyncd
