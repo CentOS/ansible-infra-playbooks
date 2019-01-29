@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-reimzul-bstore
+  become: True
+  roles:
+    - reimzul-bstore

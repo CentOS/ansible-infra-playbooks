@@ -19,6 +19,8 @@
   name: kvm-host
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
+- src: https://github.com/CentOS/ansible-role-mirror
+  name: mirror
 - src: https://github.com/CentOS/ansible-role-mysql
   name: mysql
 - src: https://github.com/CentOS/ansible-role-pagure

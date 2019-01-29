@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-reimzul-controller
+  become: True
+  roles:
+    - reimzul-controller

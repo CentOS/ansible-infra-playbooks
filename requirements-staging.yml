@@ -29,6 +29,9 @@
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirror
+  name: mirror
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mysql
   name: mysql
   version: staging

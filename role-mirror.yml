@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-mirror
+  become: True
+  roles:
+    - mirror
