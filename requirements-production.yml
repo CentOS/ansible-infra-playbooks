@@ -21,6 +21,10 @@
   name: mantisbt
 - src: https://github.com/CentOS/ansible-role-mirror
   name: mirror
+- src: https://github.com/CentOS/ansible-role-mirror-debuginfo
+  name: mirror-debuginfo
+- src: https://github.com/CentOS/ansible-role-mirror-vault
+  name: mirror-vault
 - src: https://github.com/CentOS/ansible-role-mysql
   name: mysql
 - src: https://github.com/CentOS/ansible-role-pagure

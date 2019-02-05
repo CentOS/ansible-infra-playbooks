@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-mirror-debuginfo
+  become: True
+  roles:
+    - mirror-debuginfo

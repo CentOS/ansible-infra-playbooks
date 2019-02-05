@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-mirror-vault
+  become: True
+  roles:
+    - mirror-vault

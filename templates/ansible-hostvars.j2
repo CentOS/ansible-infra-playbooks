@@ -1,0 +1,15 @@
+hostname: {{ inventory_hostname }}
+ip: {{ ansible_default_ipv4.address }}
+netmask: {{ ansible_default_ipv4.netmask }}
+gateway: {{ ansible_default_ipv4.gateway }}
+{% if ansible_default_ipv6.address is defined %}
+ipv6: {{ ansible_default_ipv6.address }}
+prefix6: {{ ansible_default_ipv6.prefix }}
+gateway6: {{ ansible_default_ipv6.gateway }}
+{% endif %}
+macaddress: {{ ansible_default_ipv4.macaddress }}
+dns: {% for ns in ansible_dns.nameservers %}{{ ns }} {% endfor %}
+
+hardware_vendor: {{ ansible_system_vendor }}
+product_name: {{ ansible_product_name }}
+serial_number: {{ ansible_product_serial }}

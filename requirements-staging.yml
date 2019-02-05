@@ -32,6 +32,12 @@
 - src: https://github.com/CentOS/ansible-role-mirror
   name: mirror
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirror-debuginfo
+  name: mirror-debuginfo
+  version: staging
+- src: https://github.com/CentOS/ansible-role-mirror-vault
+  name: mirror-vault
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mysql
   name: mysql
   version: staging

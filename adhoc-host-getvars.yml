@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: True
+
+  tasks:
+    - name: Generate initial host_vars/{{ inventory_hostname }} in ../out
+      template:
+        src: ansible-hostvars.j2
+        dest: "{{ out_dir }}/{{ inventory_hostname }}"
+      delegate_to: localhost  
