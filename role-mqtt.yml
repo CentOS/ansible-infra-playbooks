@@ -1,0 +1,5 @@
+---
+- hosts: hostgroup-role-mqtt
+  become: True
+  roles:
+    - mqtt

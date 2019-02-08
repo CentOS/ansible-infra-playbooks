@@ -11,6 +11,7 @@
 - import_playbook: role-mirror.yml
 - import_playbook: role-mirror-debuginfo.yml
 - import_playbook: role-mirror-vault.yml
+- import_playbook: role-mqtt.yml
 - import_playbook: role-mysql.yml
 - import_playbook: role-pagure.yml
 - import_playbook: role-postfix.yml
