@@ -14,7 +14,6 @@
   
 - hosts: all
   become: True
-
   tasks:
     - name: Ensuring we have directory to store nodes .pub files on CA host
       file:

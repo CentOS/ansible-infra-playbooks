@@ -1,5 +1,22 @@
 ---
 - hosts: hostgroup-role-mqtt
   become: True
+  pre_tasks:
+    - name: Checking if no-ansible file is there
+      stat:
+        path: /etc/no-ansible
+      register: no_ansible
+
+    - name: Exiting ansible play if needed
+      meta: end_play
+      when: no_ansible.stat.exists
+
   roles:
     - mqtt
+
+  post_tasks:
+    - name: Touching ansible-run (monitored by Zabbix)
+      file:
+        path: /var/log/ansible.run
+        state: touch
+

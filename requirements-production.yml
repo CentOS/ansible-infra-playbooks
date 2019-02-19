@@ -13,8 +13,12 @@
   name: httpd
 - src: https://github.com/CentOS/ansible-role-iptables
   name: iptables
+- src: https://github.com/CentOS/ansible-role-keepalived
+  name: keepalived
 - src: https://github.com/CentOS/ansible-role-kojid
   name: kojid
+- src: https://github.com/CentOS/ansible-role-kojihub
+  name: kojihub
 - src: https://github.com/CentOS/ansible-role-kvm-host
   name: kvm-host
 - src: https://github.com/CentOS/ansible-role-mantisbt
@@ -33,6 +37,8 @@
   name: pagure
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
+- src: https://github.com/CentOS/ansible-role-postgresql
+  name: postgresql
 - src: https://github.com/CentOS/ansible-role-reimzul-bstore
   name: reimzul-bstore
 - src: https://github.com/CentOS/ansible-role-reimzul-builder

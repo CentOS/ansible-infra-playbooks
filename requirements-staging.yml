@@ -20,8 +20,14 @@
 - src: https://github.com/CentOS/ansible-role-iptables
   name: iptables
   version: staging
+- src: https://github.com/CentOS/ansible-role-keepalived
+  name: keepalived
+  version: staging
 - src: https://github.com/CentOS/ansible-role-kojid
   name: kojid
+  version: staging
+- src: https://github.com/CentOS/ansible-role-kojihub
+  name: kojihub
   version: staging
 - src: https://github.com/CentOS/ansible-role-kvm-host
   name: kvm-host
@@ -49,6 +55,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
+  version: staging
+- src: https://github.com/CentOS/ansible-role-postgresql
+  name: postgresql
   version: staging
 - src: https://github.com/CentOS/ansible-role-reimzul-bstore
   name: reimzul-bstore

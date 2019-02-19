@@ -1,5 +1,5 @@
 ---
-- hosts: hostgroup-role-mirror
+- hosts: hostgroup-role-postgresql
   become: True
   pre_tasks:
     - name: Checking if no-ansible file is there
@@ -12,7 +12,7 @@
       when: no_ansible.stat.exists
 
   roles:
-    - mirror
+    - postgresql
 
   post_tasks:
     - name: Touching ansible-run (monitored by Zabbix)
