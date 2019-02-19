@@ -7,9 +7,11 @@
         path: /etc/no-ansible
       register: no_ansible
 
-    - name: Exiting ansible play if needed
-      meta: end_play
-      when: no_ansible.stat.exists
+    - name: Verifying if we can run ansible or not
+      assert:
+        that:
+          - "not no_ansible.stat.exists" 
+        msg: "/etc/no-ansible file exists so skipping ansible run on this node"
 
   roles:
     - kvm-host
