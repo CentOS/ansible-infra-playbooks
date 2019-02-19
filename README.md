@@ -12,6 +12,11 @@ The playbooks that will be played for roles will start with `role-<role_name>`
 A all-in-one roles-all.yml will just include all the role-<role_name>.yml when we want to just ensure the whole infra is configured the way it should.
 Each playbook for a role target a group called `hostgroup-role-<role_name>`. 
 
+#### "pre-flight" check
+For each playbook configuring a role, there is an option (in case of) to end the play if we have to.
+Basically touching /etc/no-ansible on a managed node would ensure that the playbook is ended. That permits to have (in emergency for example) someone having a look at a node and ensuring that ansible doesn't modify the node at the same time. After each role configuration, a file is also created (monitored by Zabbix) to ensure that nodes are always configured as they have to
+
+
 ### Deploy (on demand/triggered)
 Deploy playbooks (can combine also other playbooks) can be named `deploy-<function>`
 
@@ -53,3 +58,7 @@ Inventory is itself a different git repository, git-crypted and that will be che
 Same for the two following git (crypted) repositories:
  * pkistore (holding some PKI key/certs)
  * filestore (holding some other files/secrets that aren't templates but that should be crypted/non public, so not in roles either)
+
+## License
+MIT (see [LICENSE file](LICENSE) )
+
