@@ -12,6 +12,8 @@ The playbooks that will be played for roles will start with `role-<role_name>`
 A all-in-one roles-all.yml will just include all the role-<role_name>.yml when we want to just ensure the whole infra is configured the way it should.
 Each playbook for a role target a group called `hostgroup-role-<role_name>`. 
 
+There a small exceptions where some role-<role_name> playbooks will be small variants of a role, so also with other tasks to call specific tasks for an existing role (so when for example a vhost for httpd is a variant of the httpd role)
+
 #### "pre-flight" check
 For each playbook configuring a role, there is an option (in case of) to end the play if we have to.
 Basically touching /etc/no-ansible on a managed node would ensure that the playbook is ended. That permits to have (in emergency for example) someone having a look at a node and ensuring that ansible doesn't modify the node at the same time. After each role configuration, a file is also created (monitored by Zabbix) to ensure that nodes are always configured as they have to

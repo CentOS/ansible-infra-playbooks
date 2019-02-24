@@ -1,0 +1,31 @@
+---
+- hosts: httpd-people-nodes
+  become: True
+  vars:
+    - httpd_tls: True
+
+  pre_tasks:
+    - name: Checking if no-ansible file is there
+      stat:
+        path: /etc/no-ansible
+      register: no_ansible
+
+    - name: Verifying if we can run ansible or not
+      assert:
+        that:
+          - "not no_ansible.stat.exists" 
+        msg: "/etc/no-ansible file exists so skipping ansible run on this node"
+
+  roles:
+    - httpd
+  tasks:
+    - import_role:
+        name: httpd
+        tasks_from: vhost-people
+
+  post_tasks:
+    - name: Touching ansible-run (monitored by Zabbix)
+      file:
+        path: /var/log/ansible.run
+        state: touch
+
