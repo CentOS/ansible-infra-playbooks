@@ -58,7 +58,7 @@ part pv.14 --fstype="lvmpv" --ondisk=vda --size=10000 --grow
 
 volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.14
 logvol /  --fstype="ext4" --size=10000 --grow --name=root --vgname=vg_{{ inventory_hostname_short }}
-logvol /home  --fstype="ext4" --size=2048 --name=home --vgname=vg_{{ inventory_hostname_short }}
+logvol /home  --fstype="ext4" --size={{ kvm_guest_disk_home_size | default(2048) }} --name=home --vgname=vg_{{ inventory_hostname_short }}
 logvol swap  --fstype="swap" --size=2048 --name=swap --vgname=vg_{{ inventory_hostname_short }}
 
 # Enabling both os and updates repositories at install time to avoid updating after install

@@ -41,6 +41,9 @@
 - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
   name: mirror-debuginfo
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirror-qa
+  name: mirror-qa
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mirror-vault
   name: mirror-vault
   version: staging

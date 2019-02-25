@@ -27,6 +27,8 @@
   name: mirror
 - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
   name: mirror-debuginfo
+- src: https://github.com/CentOS/ansible-role-mirror-qa
+  name: mirror-qa
 - src: https://github.com/CentOS/ansible-role-mirror-vault
   name: mirror-vault
 - src: https://github.com/CentOS/ansible-role-mqtt
