@@ -1,0 +1,48 @@
+---
+- import_playbook: adhoc-sshd_sign_host_key.yml  
+- import_playbook: adhoc-host-getvars.yml 
+
+- hosts: all
+  become: True
+  tasks:
+    - name: Stopping puppet
+      service:
+        name: puppet
+        state: stopped
+        enabled: no
+
+    - name: Deleting old wrapper scripts used by puppet
+      file:
+        path: "/usr/local/bin/{{ item }}"
+        state: absent
+      with_items:
+        - areca-cli        
+        - centos-updates  
+        - build_firewall
+        - build_firewall6  
+        - zabbix-check-cloud-status.sh
+        - zabbix-check-debuginfo-status.sh
+        - zabbix-check-eth-settings.sh
+        - zabbix-check-iptables.sh
+        - zabbix-check-msync-status.sh
+        - zabbix-check-ro.sh
+        - zabbix-check-vault-status.sh
+        - zabbix-hw-raid-check.sh
+        - zabbix-mdstat-check.sh
+        - zabbix-mirmon-check.sh
+        - zabbix-os-stats.sh
+        - zabbix-pdns-stats.sh
+        - zabbix-raid-areca-check.sh
+ 
+    - name: Deleting old iptables setup from puppet
+      file:
+        path: "/etc/sysconfig/{{ item }}"
+        state: absent
+      with_items:
+        - iptables.d
+        - ip6tables.d
+
+# Just the new baseline everywhere
+- import_playbook: role-baseline.yml
+# And now the roles based on inventory match / group membership
+- import_playbook: role-all.yml
