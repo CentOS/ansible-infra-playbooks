@@ -1,0 +1,9 @@
+---
+- import_playbook: adhoc-sshd_sign_host_key.yml  
+- import_playbook: adhoc-host-getvars.yml 
+
+# Just the new baseline everywhere
+- import_playbook: role-baseline.yml
+# And now the roles based on inventory match / group membership
+- import_playbook: role-all.yml
+
