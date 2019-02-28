@@ -4,12 +4,18 @@
 
 - hosts: all
   become: True
+
   tasks:
     - name: Stopping puppet
       service:
         name: puppet
         state: stopped
         enabled: no
+
+    - name: Clearing puppet classes.txt (was checked by Zabbix in default template)
+      file:
+        path: /var/lib/puppet/classes.txt
+        state: absent
 
     - name: Deleting old wrapper scripts used by puppet
       file:
@@ -42,7 +48,53 @@
         - iptables.d
         - ip6tables.d
 
+    - name: Distributing cron compare script
+      template:
+        src: puppet-cron-compare.j2
+        dest: /var/tmp/puppet-cron-compare
+        mode: 0750
+        owner: root
+
+    - name: Merging cron users list if needed
+      set_fact: 
+        puppet_cron_users: "{{ puppet_cron_users + [ 'centos' ] }}"
+      when: "'msync-nodes' in group_names or 'cloud-nodes' in group_names or 'vault-nodes' in group_names or 'debuginfo-nodes' in group_names or 'buildlogs-nodes' in group_names"
+
+    - name: Saving previous users crontab
+      shell: "egrep -v '^#' /var/spool/cron/{{ item }} > /root/backup-crontab-{{ item }}"
+      args:
+        creates: "/root/backup-crontab-{{ item }}"
+      with_items: "{{ puppet_cron_users }}"
+
+    - name: Clearing now puppet cron jobs
+      shell: "test -e /var/spool/cron/{{ item }} && su -c 'crontab -r' - {{ item }} || /bin/true"
+      with_items: "{{ puppet_cron_users }}"
+
 # Just the new baseline everywhere
 - import_playbook: role-baseline.yml
 # And now the roles based on inventory match / group membership
 - import_playbook: role-all.yml
+
+# Now that Ansible ran, let's verify if we have a diff in cron jobs removed/applied back (in case of manual undocumented jobs)
+- hosts: all
+  become: True
+
+  tasks:
+    - name: Verifying if we have same number of cron jobs
+      shell: "/var/tmp/puppet-cron-compare {{ item }}"
+      with_items:
+        - root
+        - centos
+      register: "cron_output"
+
+    - name: Sending mail report if issues
+      mail:
+        from: "{{ ansible_mail_from }}"
+        to: "{{ ansible_mail_to }}"
+        subject: "[CentOS Ansible] Issues found when converting {{ inventory_hostname }}"
+        body: "Cron jobs number is different for user {{ item.item }}. Please check backup files (/root/backup-crontab-{{ item.item }})"
+      delegate_to: "{{ ansible_mail_srv }}"  
+      with_items: "{{ cron_output.results }}"
+      when: "'Difference' in item.stdout"
+      loop_control:
+        label: "{{ item.item }}"

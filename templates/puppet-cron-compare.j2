@@ -1,0 +1,11 @@
+#!/bin/bash
+cron_user="$1"
+
+if [ $(wc -l /root/backup-crontab-${cron_user} |awk '{print $1}') -ne $(egrep -v '^#' /var/spool/cron/${cron_user} |wc -l) ] ; then 
+  echo Difference
+  exit 0
+else 
+  echo Equal
+  exit 0
+fi 
+
