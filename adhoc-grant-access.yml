@@ -1,0 +1,52 @@
+# This playbook can be used just to grant access to the node for ssh
+# Useful for newly provisioned node/donated node on which we just have root with pass auth (before reinstall)
+# So it can be used before init-node and so with also -u $user -k (if needed)
+
+- hosts: all
+  become: True
+  tasks:
+
+    - name: Adding admin group
+      group:
+        name: admins
+        state: present
+
+    - name: Adding admin user[s]
+      user: 
+        name: "{{ item.login_name }}" 
+        state: present 
+        comment: "{{ item.full_name }}" 
+        shell: /bin/bash
+        append: yes
+        groups: admins
+      with_items: "{{ admins_list }}"
+      when: admins_list is defined
+      loop_control:
+        label: "{{ item.login_name }}"
+    - name: Importing admin user[s] ssh pub keys
+      authorized_key: 
+        user: "{{ item.0.login_name }}" 
+        key: "{{ item.1 }}"
+      with_subelements:
+       - "{{ admins_list }}"
+       - ssh_pub_key
+      when: admins_list is defined
+      loop_control:
+        label: "{{ item.0.login_name }}"
+      tags:
+        - users
+
+    - name: Giving sudo access for admin users when needed
+      template: 
+        src: templates/sudofile.j2 
+        dest: /etc/sudoers.d/{{ item.login_name }} 
+        mode: 0440 
+        owner: root 
+        group: root
+      with_items: "{{ admins_list }}"
+      loop_control:
+        label: "{{ item.login_name }}"
+      when: admins_list is defined and item.sudo_right
+      tags:
+        - users
+

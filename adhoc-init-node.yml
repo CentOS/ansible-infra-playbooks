@@ -1,4 +1,12 @@
 ---
+- hosts: all
+  become: True
+  tasks:
+    - name: Granting IP access in firewall for the new nodes to infra nodes
+      shell: "/usr/local/bin/authorize_ip_host {{ ansible_default_ipv4.address }}"
+      delegate_to: "{{ item }}"
+      with_items: "{{ infra_admin_hosts }}"
+
 - import_playbook: adhoc-sshd_sign_host_key.yml  
 - import_playbook: adhoc-host-getvars.yml 
 
