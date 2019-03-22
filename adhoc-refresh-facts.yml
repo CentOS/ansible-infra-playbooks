@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: True
+  tasks:
+    - name: Forcing a facts refresh to have those locally available in cache
+      setup:
+        gather_timeout: 20
+
+
