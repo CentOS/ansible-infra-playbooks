@@ -3,6 +3,7 @@
 - import_playbook: role-bind.yml
 - import_playbook: role-centos-backup.yml
 - import_playbook: role-certbot.yml
+- import_playbook: role-geoip2.yml
 - import_playbook: role-haproxy.yml
 - import_playbook: role-httpd.yml
 - import_playbook: role-iptables.yml
@@ -13,11 +14,13 @@
 - import_playbook: role-mantisbt.yml
 - import_playbook: role-mirror.yml
 - import_playbook: role-mirror-debuginfo.yml
+- import_playbook: role-mirrorlist.yml
 - import_playbook: role-mirror-qa.yml
 - import_playbook: role-mirror-vault.yml
 - import_playbook: role-mqtt.yml
 - import_playbook: role-mysql.yml
 - import_playbook: role-pagure.yml
+- import_playbook: role-pdns-pipe.yml
 - import_playbook: role-postfix.yml
 - import_playbook: role-postgresql.yml
 - import_playbook: role-reimzul-bstore.yml

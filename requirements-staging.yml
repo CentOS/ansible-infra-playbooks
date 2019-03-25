@@ -14,6 +14,9 @@
 - src: https://github.com/CentOS/ansible-role-certbot
   name: certbot
   version: staging
+- src: https://github.com/CentOS/ansible-role-geoip2
+  name: geoip2
+  version: staging
 - src: https://github.com/CentOS/ansible-role-haproxy
   name: haproxy
   version: staging
@@ -44,6 +47,9 @@
 - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
   name: mirror-debuginfo
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirrorlist
+  name: mirrorlist
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mirror-qa
   name: mirror-qa
   version: staging
@@ -58,6 +64,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-pagure
   name: pagure
+  version: staging
+- src: https://github.com/CentOS/ansible-role-pdns-pipe
+  name: pdns-pipe
   version: staging
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix

@@ -9,6 +9,8 @@
   name: centos-backup
 - src: https://github.com/CentOS/ansible-role-certbot
   name: certbot
+- src: https://github.com/CentOS/ansible-role-geoip2
+  name: geoip2
 - src: https://github.com/CentOS/ansible-role-haproxy
   name: haproxy
 - src: https://github.com/CentOS/ansible-role-httpd
@@ -29,6 +31,8 @@
   name: mirror
 - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
   name: mirror-debuginfo
+- src: https://github.com/CentOS/ansible-role-mirrorlist
+  name: mirrorlist
 - src: https://github.com/CentOS/ansible-role-mirror-qa
   name: mirror-qa
 - src: https://github.com/CentOS/ansible-role-mirror-vault
@@ -39,6 +43,8 @@
   name: mysql
 - src: https://github.com/CentOS/ansible-role-pagure
   name: pagure
+- src: https://github.com/CentOS/ansible-role-pdns-pipe
+  name: pdns-pipe
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
 - src: https://github.com/CentOS/ansible-role-postgresql
