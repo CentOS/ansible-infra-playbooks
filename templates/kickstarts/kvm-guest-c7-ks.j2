@@ -35,7 +35,7 @@ rootpw --iscrypted {{ kvm_guest_root_pass | password_hash('sha512') }}
 # System services
 services --enabled="chronyd"
 # System timezone
-timezone Europe/London --isUtc
+timezone Etc/UTC --isUtc
 # System bootloader configuration
 bootloader --location=mbr --boot-drive=vda
 # Partition clearing information
