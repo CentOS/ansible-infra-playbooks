@@ -25,6 +25,8 @@
   name: kojihub
 - src: https://github.com/CentOS/ansible-role-kvm-host
   name: kvm-host
+- src: https://github.com/CentOS/ansible-role-lsyncd
+  name: lsyncd
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
 - src: https://github.com/CentOS/ansible-role-mirror

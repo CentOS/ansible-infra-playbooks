@@ -11,6 +11,7 @@
 - import_playbook: role-kojid.yml
 - import_playbook: role-kojihub.yml
 - import_playbook: role-kvm-host.yml
+- import_playbook: role-lsyncd.yml
 - import_playbook: role-mantisbt.yml
 - import_playbook: role-mirror.yml
 - import_playbook: role-mirror-debuginfo.yml
