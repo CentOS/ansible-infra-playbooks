@@ -5,7 +5,7 @@
 auth --enableshadow --passalgo=sha512
 
 # Use network installation
-{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'aarch64' %}
+{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' or kvm_guest_arch == 'aarch64' %}
 url --url="http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/"
 {% else %}
 url --url="http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/"
@@ -41,7 +41,7 @@ bootloader --location=mbr --boot-drive=vda
 # Partition clearing information
 clearpart --all --initlabel 
 # Disk partitioning information
-{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' %}
+{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' %}
 part prepboot --asprimary --fstype=prepboot --size=10
 {% endif %}
 {% if kvm_guest_arch == 'aarch64' %}
@@ -62,7 +62,7 @@ logvol /home  --fstype="ext4" --size={{ kvm_guest_disk_home_size | default(2048)
 logvol swap  --fstype="swap" --size=2048 --name=swap --vgname=vg_{{ inventory_hostname_short }}
 
 # Enabling both os and updates repositories at install time to avoid updating after install
-{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'aarch64' %}
+{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' or kvm_guest_arch == 'aarch64' %}
 repo --name="base" --baseurl=http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/ --cost=100
 repo --name="updates" --baseurl=http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/updates/{{ kvm_guest_arch}}/ --cost=100
 {% else %}

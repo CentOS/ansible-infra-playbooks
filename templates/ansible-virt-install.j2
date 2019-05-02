@@ -26,8 +26,12 @@ virt-install \
   --autostart --wait=-1 \
   --noautoconsole \
   --initrd-inject=/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg \
+{% if kvm_guest_arch == 'power9' %}
+  --extra-args "console=hvc0 console=hvc1 ks=file:/{{ inventory_hostname }}.cfg" \
+{% else %}
   --extra-args "console=ttyS0 ks=file:/{{ inventory_hostname }}.cfg" \
-{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'aarch64' %}
+{% endif %}
+{% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' or kvm_guest_arch == 'aarch64' %}
   --location  http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch }}/ 
 {% else %}
   --location  http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch }}/ 
