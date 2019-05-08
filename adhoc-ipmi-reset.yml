@@ -1,0 +1,13 @@
+---
+- hosts: "{{ ipmi_host }}"
+  vars_prompt:
+    - name: "ipmi_host"
+      prompt: "Host to reset through ipmi ? "
+      private: no
+  gather_facts: False
+
+  tasks:
+    - name: Resetting node through ipmi
+      shell: ipmitool -H "{{ ipmi_ip }}" -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" chassis power reset
+      delegate_to: "{{ ipmi_admin_host }}"
+    
