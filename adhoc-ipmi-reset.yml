@@ -8,6 +8,6 @@
 
   tasks:
     - name: Resetting node through ipmi
-      shell: ipmitool -H "{{ ipmi_ip }}" -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" chassis power reset
+      shell: ipmitool -H "{{ ipmi_ip }}" -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" -I lanplus chassis power reset
       delegate_to: "{{ ipmi_admin_host }}"
     
