@@ -53,6 +53,9 @@
 - src: https://github.com/CentOS/ansible-role-mirrorlist
   name: mirrorlist
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirror-master
+  name: mirror-master
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mirror-qa
   name: mirror-qa
   version: staging
