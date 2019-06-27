@@ -4,6 +4,6 @@
   tasks:
     - name: Forcing a facts refresh to have those locally available in cache
       setup:
-        gather_timeout: 20
+        gather_timeout: 30
 
 
