@@ -26,6 +26,9 @@
 - src: https://github.com/CentOS/ansible-role-iptables
   name: iptables
   version: staging
+- src: https://github.com/CentOS/ansible-role-iscsid-target
+  name: iscsid-target
+  version: staging
 - src: https://github.com/CentOS/ansible-role-keepalived
   name: keepalived
   version: staging
@@ -67,6 +70,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-mysql
   name: mysql
+  version: staging
+- src: https://github.com/CentOS/ansible-role-nfs-server
+  name: nfs-server
   version: staging
 - src: https://github.com/CentOS/ansible-role-pagure
   name: pagure

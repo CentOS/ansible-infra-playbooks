@@ -7,6 +7,7 @@
 - import_playbook: role-haproxy.yml
 - import_playbook: role-httpd.yml
 - import_playbook: role-iptables.yml
+- import_playbook: role-iscsid-target.yml
 - import_playbook: role-keepalived.yml
 - import_playbook: role-kojid.yml
 - import_playbook: role-kojihub.yml
@@ -21,6 +22,7 @@
 - import_playbook: role-mirror-vault.yml
 - import_playbook: role-mqtt.yml
 - import_playbook: role-mysql.yml
+- import_playbook: role-nfs-server.yml
 - import_playbook: role-pagure.yml
 - import_playbook: role-pdns-pipe.yml
 - import_playbook: role-postfix.yml

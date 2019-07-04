@@ -17,6 +17,8 @@
   name: httpd
 - src: https://github.com/CentOS/ansible-role-iptables
   name: iptables
+- src: https://github.com/CentOS/ansible-role-iscsid-target
+  name: iscsid-target
 - src: https://github.com/CentOS/ansible-role-keepalived
   name: keepalived
 - src: https://github.com/CentOS/ansible-role-kojid
@@ -45,6 +47,8 @@
   name: mqtt
 - src: https://github.com/CentOS/ansible-role-mysql
   name: mysql
+- src: https://github.com/CentOS/ansible-role-nfs-server
+  name: nfs-server
 - src: https://github.com/CentOS/ansible-role-pagure
   name: pagure
 - src: https://github.com/CentOS/ansible-role-pdns-pipe
