@@ -15,6 +15,8 @@
 - import_playbook: role-lsyncd.yml
 - import_playbook: role-mantisbt.yml
 - import_playbook: role-mirror.yml
+- import_playbook: role-mirror-buildlogs.yml
+- import_playbook: role-mirror-cloud.yml
 - import_playbook: role-mirror-debuginfo.yml
 - import_playbook: role-mirrorlist.yml
 - import_playbook: role-mirror-master.yml
@@ -33,5 +35,6 @@
 - import_playbook: role-repospanner.yml
 - import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
+- import_playbook: role-unbound.yml
 - import_playbook: role-zabbix-agent.yml
 - import_playbook: role-zabbix-server.yml

@@ -50,6 +50,12 @@
 - src: https://github.com/CentOS/ansible-role-mirror
   name: mirror
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirror-buildlogs
+  name: mirror-buildlogs
+  version: staging
+- src: https://github.com/CentOS/ansible-role-mirror-cloud
+  name: mirror-cloud
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
   name: mirror-debuginfo
   version: staging
@@ -103,6 +109,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-sshd
   name: sshd
+  version: staging
+- src: https://github.com/CentOS/ansible-role-unbound
+  name: unbound
   version: staging
 - src: https://github.com/CentOS/ansible-role-zabbix-agent
   name: zabbix-agent

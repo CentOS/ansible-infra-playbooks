@@ -33,6 +33,10 @@
   name: mantisbt
 - src: https://github.com/CentOS/ansible-role-mirror
   name: mirror
+- src: https://github.com/CentOS/ansible-role-mirror-buildlogs
+  name: mirror-buildlogs
+- src: https://github.com/CentOS/ansible-role-mirror-cloud
+  name: mirror-cloud
 - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
   name: mirror-debuginfo
 - src: https://github.com/CentOS/ansible-role-mirrorlist
@@ -69,6 +73,8 @@
   name: rsyncd
 - src: https://github.com/CentOS/ansible-role-sshd
   name: sshd
+- src: https://github.com/CentOS/ansible-role-unbound
+  name: unbound
 - src: https://github.com/CentOS/ansible-role-zabbix-agent
   name: zabbix-agent
 - src: https://github.com/CentOS/ansible-role-zabbix-server
