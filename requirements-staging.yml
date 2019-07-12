@@ -104,6 +104,9 @@
 - src: https://github.com/CentOS/ansible-role-repospanner
   name: repospanner
   version: staging
+- src: https://github.com/CentOS/ansible-role-rsnapshot
+  name: rsnapshot
+  version: staging
 - src: https://github.com/CentOS/ansible-role-rsyncd
   name: rsyncd
   version: staging
