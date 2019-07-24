@@ -8,6 +8,9 @@
 - src: https://github.com/CentOS/ansible-role-bind
   name: bind
   version: staging
+- src: https://github.com/CentOS/ansible-role-boot-server
+  name: boot-server
+  version: staging
 - src: https://github.com/CentOS/ansible-role-centos-backup
   name: centos-backup
   version: staging
@@ -115,6 +118,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-unbound
   name: unbound
+  version: staging
+- src: https://github.com/CentOS/ansible-role-vbox-host
+  name: vbox-host
   version: staging
 - src: https://github.com/CentOS/ansible-role-zabbix-agent
   name: zabbix-agent

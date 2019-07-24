@@ -1,6 +1,7 @@
 ---
 - import_playbook: role-ansible-host.yml
 - import_playbook: role-bind.yml
+- import_playbook: role-boot-server.yml
 - import_playbook: role-centos-backup.yml
 - import_playbook: role-certbot.yml
 - import_playbook: role-geoip2.yml
@@ -37,5 +38,6 @@
 - import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
 - import_playbook: role-unbound.yml
+- import_playbook: role-vbox-host.yml
 - import_playbook: role-zabbix-agent.yml
 - import_playbook: role-zabbix-server.yml
