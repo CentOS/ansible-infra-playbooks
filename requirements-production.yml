@@ -33,6 +33,8 @@
   name: lsyncd
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
+- src: https://github.com/CentOS/ansible-role-mirmon
+  name: mirmon
 - src: https://github.com/CentOS/ansible-role-mirror
   name: mirror
 - src: https://github.com/CentOS/ansible-role-mirror-buildlogs

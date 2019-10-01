@@ -50,6 +50,9 @@
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
   version: staging
+- src: https://github.com/CentOS/ansible-role-mirmon
+  name: mirmon
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mirror
   name: mirror
   version: staging

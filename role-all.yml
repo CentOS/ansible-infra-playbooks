@@ -15,6 +15,7 @@
 - import_playbook: role-kvm-host.yml
 - import_playbook: role-lsyncd.yml
 - import_playbook: role-mantisbt.yml
+- import_playbook: role-mirmon.yml
 - import_playbook: role-mirror.yml
 - import_playbook: role-mirror-buildlogs.yml
 - import_playbook: role-mirror-cloud.yml
