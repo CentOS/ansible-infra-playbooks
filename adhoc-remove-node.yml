@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: True
+  gather_facts: False
+
+  tasks:
+    - name: Removing IP from zabbix firewall
+      shell: "/usr/local/bin/remove_ip_host {{ ip }}"
+      delegate_to: "{{ zabbix_api_srv }}"
+      when: zabbix_api_srv is defined 
+
+    - name: Removing node from zabbix
+      shell: "/bin/zabbix-cli -C \"remove_host {{ inventory_hostname }}\" ; /bin/true "
+      delegate_to: "{{ zabbix_api_srv }}"
+      when: zabbix_api_srv is defined 
+
+
+

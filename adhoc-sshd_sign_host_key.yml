@@ -15,6 +15,12 @@
 - hosts: all
   become: True
   tasks:
+    - name: Ad-hoc task, ensuring we delete first
+      file:
+        path: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}"
+        state: absent
+      delegate_to: "{{ ssh_ca_host }}" 
+
     - name: Ensuring we have directory to store nodes .pub files on CA host
       file:
         path: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}"
