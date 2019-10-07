@@ -20,6 +20,9 @@
 - src: https://github.com/CentOS/ansible-role-geoip2
   name: geoip2
   version: staging
+- src: https://github.com/CentOS/ansible-role-gitea
+  name: gitea
+  version: staging
 - src: https://github.com/CentOS/ansible-role-haproxy
   name: haproxy
   version: staging
@@ -118,6 +121,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-sshd
   name: sshd
+  version: staging
+- src: https://github.com/CentOS/ansible-role-stikked
+  name: stikked
   version: staging
 - src: https://github.com/CentOS/ansible-role-unbound
   name: unbound

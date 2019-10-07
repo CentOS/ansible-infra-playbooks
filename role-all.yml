@@ -5,6 +5,7 @@
 - import_playbook: role-centos-backup.yml
 - import_playbook: role-certbot.yml
 - import_playbook: role-geoip2.yml
+- import_playbook: role-gitea.yml
 - import_playbook: role-haproxy.yml
 - import_playbook: role-httpd.yml
 - import_playbook: role-iptables.yml
@@ -38,6 +39,7 @@
 - import_playbook: role-rsnapshot.yml
 - import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
+- import_playbook: role-stikked.yml
 - import_playbook: role-unbound.yml
 - import_playbook: role-vbox-host.yml
 - import_playbook: role-zabbix-agent.yml

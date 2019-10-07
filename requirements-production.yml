@@ -13,6 +13,8 @@
   name: certbot
 - src: https://github.com/CentOS/ansible-role-geoip2
   name: geoip2
+- src: https://github.com/CentOS/ansible-role-gitea
+  name: gitea
 - src: https://github.com/CentOS/ansible-role-haproxy
   name: haproxy
 - src: https://github.com/CentOS/ansible-role-httpd
@@ -79,6 +81,8 @@
   name: rsyncd
 - src: https://github.com/CentOS/ansible-role-sshd
   name: sshd
+- src: https://github.com/CentOS/ansible-role-stikked
+  name: stikked
 - src: https://github.com/CentOS/ansible-role-unbound
   name: unbound
 - src: https://github.com/CentOS/ansible-role-vbox-host
