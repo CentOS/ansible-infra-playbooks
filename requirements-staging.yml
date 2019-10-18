@@ -131,6 +131,9 @@
 - src: https://github.com/CentOS/ansible-role-vbox-host
   name: vbox-host
   version: staging
+- src: https://github.com/CentOS/ansible-role-wp
+  name: wp
+  version: staging
 - src: https://github.com/CentOS/ansible-role-zabbix-agent
   name: zabbix-agent
   version: staging
