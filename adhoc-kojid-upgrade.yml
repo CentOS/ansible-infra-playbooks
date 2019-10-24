@@ -1,0 +1,25 @@
+---
+- hosts: hostgroup-role-kojid
+  become: True
+  gather_facts: False
+
+  pre_tasks:
+    - name: removing versionlock plugin
+      yum:
+        name: yum-plugin-versionlock
+        state: absent
+
+    - name: Ensuring we have no version-lock file
+      file:
+        path: /etc/yum/pluginconf.d/versionlock.list
+        state: absent
+      tags:
+        - yum        
+  roles:
+    - kojid
+
+  post_tasks:
+    - name: Ensuring we have up2date pkgs for everything
+      yum:
+        name: "*"
+        state: latest

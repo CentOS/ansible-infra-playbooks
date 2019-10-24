@@ -95,6 +95,9 @@
 - src: https://github.com/CentOS/ansible-role-pdns-pipe
   name: pdns-pipe
   version: staging
+- src: https://github.com/CentOS/ansible-role-planet
+  name: planet
+  version: staging
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
   version: staging

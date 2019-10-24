@@ -63,6 +63,8 @@
   name: pagure
 - src: https://github.com/CentOS/ansible-role-pdns-pipe
   name: pdns-pipe
+- src: https://github.com/CentOS/ansible-role-planet
+  name: planet
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
 - src: https://github.com/CentOS/ansible-role-postgresql
