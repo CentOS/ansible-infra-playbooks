@@ -1,0 +1,19 @@
+DEFAULT {{ inventory_hostname }}-deploy
+PROMPT 0
+TIMEOUT 50
+TOTALTIMEOUT 6000
+ONTIMEOUT {{ inventory_hostname }}-deploy
+
+LABEL local
+        MENU LABEL (local)
+        MENU DEFAULT
+        LOCALBOOT 0
+
+LABEL {{ inventory_hostname}}-deploy
+        MENU LABEL CentOS {{ centos_version }} {{ arch }}- Kickstart for {{ inventory_hostname }}
+        kernel CentOS//{{ centos_version }}/{{ arch }}/vmlinuz
+         {% if centos_version == 7 or centos_version == 8 or centos_version == '8-stream' -%}
+	append initrd=CentOS/{{ centos_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+         {% else -%}
+        append initrd=CentOS/{{ centos_version }}/{{ arch }}/initrd.img ksdevice=eth0 ip=dhcp ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg
+         {% endif %}
