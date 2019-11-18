@@ -2,8 +2,16 @@
 - hosts: all
   become: True
   tasks:
+    - name: Find our public ip
+      uri:
+        url: http://ipv4.icanhazip.com
+        return_content: yes
+      register: public_ip
+    - set_fact:
+        pub_ip: "{{ public_ip.content | replace('\n', '') }}"
+
     - name: Granting IP access in firewall for the new nodes to infra nodes
-      shell: "/usr/local/bin/authorize_ip_host {{ ansible_default_ipv4.address }}"
+      shell: "/usr/local/bin/authorize_ip_host {{ pub_ip }}"
       delegate_to: "{{ item }}"
       with_items: "{{ infra_admin_hosts }}"
       when: infra_admin_hosts is defined and ansible_default_ipv4.address is defined
