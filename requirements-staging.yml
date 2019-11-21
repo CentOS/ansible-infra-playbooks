@@ -32,6 +32,9 @@
 - src: https://github.com/CentOS/ansible-role-httpd-feeds
   name: httpd-feeds
   version: staging
+- src: https://github.com/CentOS/ansible-role-ipsilon
+  name: ipsilon
+  version: staging
 - src: https://github.com/CentOS/ansible-role-iptables
   name: iptables
   version: staging

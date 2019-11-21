@@ -21,6 +21,8 @@
   name: httpd
 - src: https://github.com/CentOS/ansible-role-httpd-feeds
   name: httpd-feeds
+- src: https://github.com/CentOS/ansible-role-ipsilon
+  name: ipsilon
 - src: https://github.com/CentOS/ansible-role-iptables
   name: iptables
 - src: https://github.com/CentOS/ansible-role-iscsid-target
