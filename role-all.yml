@@ -27,6 +27,7 @@
 - import_playbook: role-mirror-master.yml
 - import_playbook: role-mirror-qa.yml
 - import_playbook: role-mirror-vault.yml
+- import_playbook: role-moin.yml
 - import_playbook: role-mqtt.yml
 - import_playbook: role-mysql.yml
 - import_playbook: role-nfs-server.yml
@@ -48,3 +49,8 @@
 - import_playbook: role-wp.yml
 - import_playbook: role-zabbix-agent.yml
 - import_playbook: role-zabbix-server.yml
+# now the playbooks that are sub-task from existing role
+- import_playbook: role-httpd-console-qa.yml
+- import_playbook: role-httpd-docs.yml
+- import_playbook: role-httpd-people.yml
+- import_playbook: role-httpd-reposnap.yml

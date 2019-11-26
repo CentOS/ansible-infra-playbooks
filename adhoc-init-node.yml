@@ -14,7 +14,7 @@
       shell: "/usr/local/bin/authorize_ip_host {{ pub_ip }}"
       delegate_to: "{{ item }}"
       with_items: "{{ infra_admin_hosts }}"
-      when: infra_admin_hosts is defined and ansible_default_ipv4.address is defined
+      when: infra_admin_hosts is defined 
 
 - import_playbook: adhoc-sshd_sign_host_key.yml  
 - import_playbook: adhoc-host-getvars.yml 

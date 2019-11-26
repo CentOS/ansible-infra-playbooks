@@ -86,6 +86,9 @@
 - src: https://github.com/CentOS/ansible-role-mirror-vault
   name: mirror-vault
   version: staging
+- src: https://github.com/CentOS/ansible-role-moin
+  name: moin
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mqtt
   name: mqtt
   version: staging

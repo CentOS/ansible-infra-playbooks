@@ -3,6 +3,16 @@
   become: True
 
   tasks:
+    - name: Find our public ip
+      uri:
+        url: http://ipv4.icanhazip.com
+        return_content: yes
+      register: public_ip
+      when: "'aws' in inventory_hostname"
+    - set_fact:
+        pub_ip: "{{ public_ip.content | replace('\n', '') }}"
+      when: "'aws' in inventory_hostname"
+
     - name: Generate initial host_vars/{{ inventory_hostname }} in ../out
       template:
         src: ansible-hostvars.j2

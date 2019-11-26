@@ -1,5 +1,7 @@
 hostname: {{ inventory_hostname }}
-{% if ansible_default_ipv4.address is defined %}
+{% if 'aws' in inventory_hostname %}
+ip: {{ pub_ip }}
+{% elif ansible_default_ipv4.address is defined %}
 ip: {{ ansible_default_ipv4.address }}
 {% else %}
 ip: {{ ansible_all_ipv4_addresses[0] }}

@@ -57,6 +57,8 @@
   name: mirror-qa
 - src: https://github.com/CentOS/ansible-role-mirror-vault
   name: mirror-vault
+- src: https://github.com/CentOS/ansible-role-moin
+  name: moin
 - src: https://github.com/CentOS/ansible-role-mqtt
   name: mqtt
 - src: https://github.com/CentOS/ansible-role-mysql
