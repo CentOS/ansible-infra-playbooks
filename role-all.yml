@@ -54,3 +54,4 @@
 - import_playbook: role-httpd-docs.yml
 - import_playbook: role-httpd-people.yml
 - import_playbook: role-httpd-reposnap.yml
+- import_playbook: role-httpd-centosproject.yml
