@@ -7,6 +7,8 @@
   name: bind
 - src: https://github.com/CentOS/ansible-role-boot-server
   name: boot-server
+- src: https://github.com/CentOS/ansible-role-centbot
+  name: centbot
 - src: https://github.com/CentOS/ansible-role-centos-backup
   name: centos-backup
 - src: https://github.com/CentOS/ansible-role-certbot
