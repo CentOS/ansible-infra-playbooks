@@ -51,6 +51,7 @@
 - import_playbook: role-zabbix-server.yml
 # now the playbooks that are sub-task from existing role
 - import_playbook: role-httpd-console-qa.yml
+- import_playbook: role-httpd-armv7.yml
 - import_playbook: role-httpd-docs.yml
 - import_playbook: role-httpd-people.yml
 - import_playbook: role-httpd-reposnap.yml
