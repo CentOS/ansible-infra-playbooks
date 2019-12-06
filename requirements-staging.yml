@@ -59,6 +59,9 @@
 - src: https://github.com/CentOS/ansible-role-lsyncd
   name: lsyncd
   version: staging
+- src: https://github.com/CentOS/ansible-role-mailman
+  name: mailman
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
   version: staging
@@ -100,6 +103,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-nfs-server
   name: nfs-server
+  version: staging
+- src: https://github.com/CentOS/ansible-role-opentracker
+  name: opentracker
   version: staging
 - src: https://github.com/CentOS/ansible-role-pagure
   name: pagure

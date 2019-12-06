@@ -18,6 +18,7 @@
 - import_playbook: role-kojihub.yml
 - import_playbook: role-kvm-host.yml
 - import_playbook: role-lsyncd.yml
+- import_playbook: role-mailman.yml
 - import_playbook: role-mantisbt.yml
 - import_playbook: role-mirmon.yml
 - import_playbook: role-mirror.yml
@@ -32,6 +33,7 @@
 - import_playbook: role-mqtt.yml
 - import_playbook: role-mysql.yml
 - import_playbook: role-nfs-server.yml
+- import_playbook: role-opentracker.yml
 - import_playbook: role-pagure.yml
 - import_playbook: role-pdns-pipe.yml
 - import_playbook: role-planet.yml
@@ -57,3 +59,4 @@
 - import_playbook: role-httpd-people.yml
 - import_playbook: role-httpd-reposnap.yml
 - import_playbook: role-httpd-centosproject.yml
+- import_playbook: role-httpd-shared-dir.yml
