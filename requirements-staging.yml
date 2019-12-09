@@ -113,6 +113,9 @@
 - src: https://github.com/CentOS/ansible-role-pdns-pipe
   name: pdns-pipe
   version: staging
+- src: https://github.com/CentOS/ansible-role-phpbb
+  name: phpbb
+  version: staging
 - src: https://github.com/CentOS/ansible-role-planet
   name: planet
   version: staging

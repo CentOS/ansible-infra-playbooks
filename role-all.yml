@@ -36,6 +36,7 @@
 - import_playbook: role-opentracker.yml
 - import_playbook: role-pagure.yml
 - import_playbook: role-pdns-pipe.yml
+- import_playbook: role-phpbb.yml
 - import_playbook: role-planet.yml
 - import_playbook: role-postfix.yml
 - import_playbook: role-postgresql.yml
