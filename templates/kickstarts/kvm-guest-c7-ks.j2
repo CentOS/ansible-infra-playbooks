@@ -41,6 +41,9 @@ bootloader --location=mbr --boot-drive=vda
 # Partition clearing information
 clearpart --all --initlabel 
 # Disk partitioning information
+# Adding first reqpart to automatically add /boot/efi or prepboot for aarch64, uefi, or IBM Power architectures
+reqpart
+
 {% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' %}
 part prepboot --asprimary --fstype=prepboot --size=10
 {% endif %}
