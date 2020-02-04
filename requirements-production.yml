@@ -29,6 +29,8 @@
   name: iptables
 - src: https://github.com/CentOS/ansible-role-iscsid-target
   name: iscsid-target
+- src: https://github.com/CentOS/ansible-role-kanboard
+  name: kanboard
 - src: https://github.com/CentOS/ansible-role-keepalived
   name: keepalived
 - src: https://github.com/CentOS/ansible-role-kojid
@@ -99,6 +101,8 @@
   name: sshd
 - src: https://github.com/CentOS/ansible-role-stikked
   name: stikked
+- src: https://github.com/CentOS/ansible-role-sync2s3
+  name: sync2s3
 - src: https://github.com/CentOS/ansible-role-unbound
   name: unbound
 - src: https://github.com/CentOS/ansible-role-vbox-host
@@ -107,5 +111,7 @@
   name: wp
 - src: https://github.com/CentOS/ansible-role-zabbix-agent
   name: zabbix-agent
+- src: https://github.com/CentOS/ansible-role-zabbix-proxy
+  name: zabbix-proxy
 - src: https://github.com/CentOS/ansible-role-zabbix-server
   name: zabbix-server

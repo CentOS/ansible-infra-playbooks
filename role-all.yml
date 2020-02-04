@@ -13,6 +13,7 @@
 - import_playbook: role-ipsilon.yml
 - import_playbook: role-iptables.yml
 - import_playbook: role-iscsid-target.yml
+- import_playbook: role-kanboard.yml
 - import_playbook: role-keepalived.yml
 - import_playbook: role-kojid.yml
 - import_playbook: role-kojihub.yml
@@ -48,10 +49,12 @@
 - import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
 - import_playbook: role-stikked.yml
+- import_playbook: role-sync2s3.yml
 - import_playbook: role-unbound.yml
 - import_playbook: role-vbox-host.yml
 - import_playbook: role-wp.yml
 - import_playbook: role-zabbix-agent.yml
+- import_playbook: role-zabbix-proxy.yml
 - import_playbook: role-zabbix-server.yml
 # now the playbooks that are sub-task from existing role
 - import_playbook: role-httpd-internal-mirrorlist.yml
