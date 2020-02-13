@@ -93,6 +93,8 @@
   name: reimzul-controller
 - src: https://github.com/CentOS/ansible-role-repospanner
   name: repospanner
+- src: https://github.com/CentOS/ansible-role-restic
+  name: restic
 - src: https://github.com/CentOS/ansible-role-rsnapshot
   name: rsnapshot
 - src: https://github.com/CentOS/ansible-role-rsyncd

@@ -45,6 +45,7 @@
 - import_playbook: role-reimzul-builder.yml
 - import_playbook: role-reimzul-controller.yml
 - import_playbook: role-repospanner.yml
+- import_playbook: role-restic.yml
 - import_playbook: role-rsnapshot.yml
 - import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
