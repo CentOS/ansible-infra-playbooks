@@ -155,6 +155,12 @@
 - src: https://github.com/CentOS/ansible-role-stikked
   name: stikked
   version: staging
+- src: https://github.com/CentOS/ansible-role-stylo
+  name: stylo
+  version: staging
+- src: https://github.com/CentOS/ansible-role-sync2git
+  name: sync2git
+  version: staging
 - src: https://github.com/CentOS/ansible-role-sync2s3
   name: sync2s3
   version: staging

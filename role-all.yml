@@ -50,6 +50,8 @@
 - import_playbook: role-rsyncd.yml
 - import_playbook: role-sshd.yml
 - import_playbook: role-stikked.yml
+- import_playbook: role-stylo.yml
+- import_playbook: role-sync2git.yml
 - import_playbook: role-sync2s3.yml
 - import_playbook: role-unbound.yml
 - import_playbook: role-vbox-host.yml

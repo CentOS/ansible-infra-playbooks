@@ -103,6 +103,10 @@
   name: sshd
 - src: https://github.com/CentOS/ansible-role-stikked
   name: stikked
+- src: https://github.com/CentOS/ansible-role-stylo
+  name: stylo
+- src: https://github.com/CentOS/ansible-role-sync2git
+  name: sync2git
 - src: https://github.com/CentOS/ansible-role-sync2s3
   name: sync2s3
 - src: https://github.com/CentOS/ansible-role-unbound
