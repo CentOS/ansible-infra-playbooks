@@ -69,3 +69,4 @@
 - import_playbook: role-httpd-centosproject.yml
 - import_playbook: role-httpd-shared-dir.yml
 - import_playbook: role-httpd-www.yml
+- import_playbook: role-httpd-www-staging.yml
