@@ -33,6 +33,8 @@
   name: kanboard
 - src: https://github.com/CentOS/ansible-role-keepalived
   name: keepalived
+- src: https://github.com/CentOS/ansible-role-kojibot
+  name: kojibot
 - src: https://github.com/CentOS/ansible-role-kojid
   name: kojid
 - src: https://github.com/CentOS/ansible-role-kojihub
