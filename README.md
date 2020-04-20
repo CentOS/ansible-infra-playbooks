@@ -6,6 +6,13 @@ Mainly divided into :
  * playbooks only including role (and so applied based on group membership)
  * ad-hoc tasks playbooks, called on demand when needed
 
+## Contributing to Ansible infra (playbooks or roles)
+When you want to contribute to playbooks or roles, you should always open a merge request (PR) against `staging` branch and not `master` branch.
+One reviewer from the correct org will then get notification and will discuss/review your PR and eventually guide you.
+Ideally just look at the common way roles are organised, to reuse other roles and convention.
+Always have default variables for *Everything*, with safe default values (of course never the ones deployed for staging/prod)
+When proposing a change in the behaviour, always make that change a opt-in, that defaults to "no" (safest) so that only that change would be applied on other nodes *if* variable used to include that task would be turned on. Of course we can have on real needs a default to `True` if we know that such change would need to be replicated by default on all nodes controlled by Ansible and using that role.
+
 ##  Naming convention
 ### Roles (regular playbooks used at regular interval)
 The playbooks that will be played for roles will start with `role-<role_name>`
