@@ -37,7 +37,7 @@ network  --bootproto=static --device={{ pxe_bootdev }} --gateway={{ gateway }} -
 rootpw --iscrypted {{ root_pass | password_hash('sha512') }}
 
 # System timezone
-timezone Europe/London --isUtc
+timezone Etc/UTC --isUtc
 # System bootloader configuration
 bootloader --location=mbr --boot-drive=sda
 # Partition clearing information
@@ -57,6 +57,17 @@ part raid.475 --fstype="mdmember" --ondisk=sdb --size=1024
 raid pv.609 --device=pv00 --fstype="lvmpv" --level=RAID1 raid.597 raid.603
 raid /boot --device=boot --fstype="ext4" --level=RAID1 raid.469 raid.475
 volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.609
+
+{% elif use_md_raid and md_raid_level == 0 %}
+# Using software raid 0
+part raid.603 --fstype="mdmember" --ondisk=sdb --size=20000 --grow
+part raid.469 --fstype="mdmember" --ondisk=sda --size=1024
+part raid.597 --fstype="mdmember" --ondisk=sda --size=20000 --grow
+part raid.475 --fstype="mdmember" --ondisk=sdb --size=1024
+raid pv.609 --device=pv00 --fstype="lvmpv" --level=RAID0 raid.597 raid.603
+raid /boot --device=boot --fstype="ext4" --level=RAID0 raid.469 raid.475
+volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.609
+
 {% else %}
 # Not using software raid
 part /boot --fstype="ext4" --ondisk=sda --size=1024
