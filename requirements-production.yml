@@ -73,6 +73,10 @@
   name: mysql
 - src: https://github.com/CentOS/ansible-role-nfs-server
   name: nfs-server
+- src: https://github.com/CentOS/ansible-role-opennebula-frontend
+  name: opennebula-frontend
+- src: https://github.com/CentOS/ansible-role-opennebula-kvm-host
+  name: opennebula-kvm-host
 - src: https://github.com/CentOS/ansible-role-opentracker
   name: opentracker
 - src: https://github.com/CentOS/ansible-role-pagure

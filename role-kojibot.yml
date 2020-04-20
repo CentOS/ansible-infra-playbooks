@@ -1,0 +1,24 @@
+---
+- hosts: hostgroup-role-kojibot
+  become: True
+  pre_tasks:
+    - name: Checking if no-ansible file is there
+      stat:
+        path: /etc/no-ansible
+      register: no_ansible
+
+    - name: Verifying if we can run ansible or not
+      assert:
+        that:
+          - "not no_ansible.stat.exists" 
+        msg: "/etc/no-ansible file exists so skipping ansible run on this node"
+
+  roles:
+    - kojibot
+
+  post_tasks:
+    - name: Touching ansible-run (monitored by Zabbix)
+      file:
+        path: /var/log/ansible.run
+        state: touch
+
