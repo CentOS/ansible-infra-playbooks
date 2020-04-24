@@ -1,8 +1,9 @@
 ---
 # This playbook is an ad-hoc task used to deploy bare-metal nodes for OCP4
 # It used the following variables, declared through inventory (group/host vars):
-#  rhcos_version: 4.3.8  # default centos version deployed
+#  rhcos_version: 4.3.8  # default rhcos version deployed
 #  arch: x86_64          # default architecture
+#  md-raid-dev:          # mdadm device eg: /dev/md126
 #  root_pass:            # default root_password on provisioned nodes
 #  deploy_host:          # node hosting pxelinux.cfg configurations
 #  ipmitool_host:        # node with ipmitool and mgmt vlan access
@@ -19,15 +20,6 @@
   become: true
   gather_facts: false
   tasks:
-
-# Dont think this parts needed, we're not creating VM's we're installing directly on the node   
-#    - name: == Hardware provisioning == Creating kickstart to provision VM[s]
-#      template: 
-#        src: "../templates/kickstarts/centos-{{ centos_version }}-ks.cfg.j2" 
-#        dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
-#      delegate_to: "{{ deploy_host }}"
-#      tags:
-#        - ks
 
     - name: == Hardware provisioning == Generating the tftp configuration boot file
       template: 

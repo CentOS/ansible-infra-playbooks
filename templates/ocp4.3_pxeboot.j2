@@ -11,6 +11,6 @@ LABEL local
 
 LABEL {{ inventory_hostname}}-deploy
         MENU LABEL RHCOS {{ rhcos_version }} {{ arch }}- Kickstart for {{ inventory_hostname }}
-        KERNEL http://{{ http_server_ip }}/rhcos-{{ rhcos_version }}-{{ arch }}-installer-kernel-{{ arch }}
-        APPEND ip={{ host_ip }}:dhcp rd.neednet=1 initrd=http://{{ http_server_ip }}/rhcos-{{ rhcos_version }}-{{ arch }}-installer-initramfs.{{ arch }}.img console=tty0 console=ttyS0 coreos.inst=yes rd.md=1 rd.auto coreos.inst.install_dev={{ md-raid-dev }} coreos.inst.image_url=http://{{ http_server_ip }}/rhcos-{{ rhcos_version }}-{{ arch }}-metal.{{ arch }}.raw.gz coreos.inst.ignition_url=http://{{ http_server_ip }}/bootstrap.ign
+        KERNEL rhcos-{{ rhcos_version }}-{{ arch }}-installer-kernel-{{ arch }}
+        APPEND ip={{ ip }}::{{ gateway }}:{{ netmask }}:{{ inventory_hostname }}:{{ pxe_bootdev }}:none nameserver={{ nameserver }} rd.neednet=1 initrd=rhcos-{{ rhcos_version }}-{{ arch }}-installer-initramfs.{{ arch }}.img console=tty0 console=ttyS0 coreos.inst=yes rd.md=1 rd.auto coreos.inst.install_dev={{ md-raid-dev }} coreos.inst.image_url=rhcos-{{ rhcos_version }}-{{ arch }}-metal.{{ arch }}.raw.gz coreos.inst.ignition_url=http://{{ http_server_ip }}/{{ ignition_file_path }}
 
