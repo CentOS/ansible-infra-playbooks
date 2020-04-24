@@ -1,0 +1,81 @@
+---
+# This playbook is an ad-hoc task used to deploy bare-metal nodes for OCP4
+# It used the following variables, declared through inventory (group/host vars):
+#  rhcos_version: 4.3.8  # default centos version deployed
+#  arch: x86_64          # default architecture
+#  root_pass:            # default root_password on provisioned nodes
+#  deploy_host:          # node hosting pxelinux.cfg configurations
+#  ipmitool_host:        # node with ipmitool and mgmt vlan access
+#  use_md_raid: True     # Default to use md_raid for /dev/sda and /dev/sdb
+#  md_raid_level: 1      # RAID 1?
+#  lv_root_size: 10000   # in GB
+#  lv_root_expand: False # do we want to have / to max capacity of the VG ?
+#  lv_home_size: 2048    # in GB
+#  pxe_bootdev: eth0     # device used as bootdev and first interface configured
+#
+# Call this adhoc playbook with --limit to deploy host[s]/group
+#
+- hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+
+# Dont think this parts needed, we're not creating VM's we're installing directly on the node   
+#    - name: == Hardware provisioning == Creating kickstart to provision VM[s]
+#      template: 
+#        src: "../templates/kickstarts/centos-{{ centos_version }}-ks.cfg.j2" 
+#        dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
+#      delegate_to: "{{ deploy_host }}"
+#      tags:
+#        - ks
+
+    - name: == Hardware provisioning == Generating the tftp configuration boot file
+      template: 
+        src: ../templates/ocp4.3_pxeboot.j2
+        dest: /var/lib/tftpboot/pxelinux.cfg/01-{{ macaddress | lower | replace(":","-") }}
+        mode: 0755
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - pxe
+
+    - name: == Hardware provisioning == Ensuring node is powered off
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis power off
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == Pausing ...
+      pause:
+        seconds: 8
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == configuring pxe boot
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis bootdev pxe
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == Pausing ...
+      pause:
+        seconds: 2
+      
+    - name: == Hardware provisioning == Ensuring node is powered on
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis power on
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == Waiting for host to be reachable
+      wait_for: 
+        host: "{{ ip }}" 
+        port: 22 
+        timeout: 1200
+      delegate_to: "{{ deploy_host }}"
+
+    - name: Updating/Adding IP in local CI dns resolver if needed
+      shell: "/usr/local/bin/update_dns -n {{ inventory_hostname }} -i {{ ip }}"
+      delegate_to: "{{ deploy_host }}"
+      when: centos_ci_node is defined and centos_ci_node
+      tags:
+        - dns
