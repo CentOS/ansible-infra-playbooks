@@ -1,0 +1,30 @@
+apiVersion: v1
+baseDomain: centos.org
+#proxy:
+#  httpProxy: http://dkirwan:password@172.30.0.1:8080
+#  httpsProxy: http://dkirwan:password@172.30.0.1:8443
+#  noProxy: "redhat.com,centos.org"
+#additionalTrustBundle: |
+#  {{ x509_cert }}
+compute:
+- hyperthreading: Enabled
+  name: worker
+  replicas: 0
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  replicas: 3
+metadata:
+  name: '{{ subdomain_name }}'
+networking:
+  clusterNetwork:
+  - cidr: '{{ networking_cluster_network }}' # 10.128.0.0/14
+    hostPrefix: '{{ networking_cluster_network_host_prefix }}' # 23
+  networkType: OpenShiftSDN
+  serviceNetwork:
+  - '{{ networking_service_network }}' #172.30.0.0/16
+platform:
+  none: {}
+fips: false
+pullSecret: '{{ ocp_pull_token }}'
+sshKey: '{{ ssh_key }}'
