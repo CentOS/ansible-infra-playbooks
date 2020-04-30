@@ -10,11 +10,15 @@
 #  rhcos_install_img_url: # Where to grab rhcos install http://<host>/<path>/rhcos/rhcos-4.3.8-x86_64-metal.x86_64.raw.gz
 #  rhcos_ignition_file_url: # where to find ignition file http://<host>/config/rhcos/bootstrap.ign #to be modified based on group or host level, for bootstrap, master, etc
 #
-# Call this adhoc playbook with --limit to deploy host[s]/group
 #
-- hosts: all
+- hosts: "{{ ocp_init_hosts }}"
   become: true
   gather_facts: false
+  vars_prompt:
+    - name: "ocp_init_hosts"
+      prompt: "[WARNING] Nodes to be fully wiped/reinstalled with OCP => "
+      private: no
+
   tasks:
 
     - name: == Hardware provisioning == Generating the tftp configuration boot file
