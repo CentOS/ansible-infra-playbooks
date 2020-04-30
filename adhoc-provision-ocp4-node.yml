@@ -4,15 +4,11 @@
 #  rhcos_version: 4.3.8  # default rhcos version deployed
 #  arch: x86_64          # default architecture
 #  md-raid-dev:          # mdadm device eg: /dev/md126
-#  root_pass:            # default root_password on provisioned nodes
 #  deploy_host:          # node hosting pxelinux.cfg configurations
 #  ipmitool_host:        # node with ipmitool and mgmt vlan access
-#  use_md_raid: True     # Default to use md_raid for /dev/sda and /dev/sdb
-#  md_raid_level: 1      # RAID 1?
-#  lv_root_size: 10000   # in GB
-#  lv_root_expand: False # do we want to have / to max capacity of the VG ?
-#  lv_home_size: 2048    # in GB
 #  pxe_bootdev: eth0     # device used as bootdev and first interface configured
+#  rhcos_install_img_url: # Where to grab rhcos install http://<host>/<path>/rhcos/rhcos-4.3.8-x86_64-metal.x86_64.raw.gz
+#  rhcos_ignition_file_url: # where to find ignition file http://<host>/config/rhcos/bootstrap.ign #to be modified based on group or host level, for bootstrap, master, etc
 #
 # Call this adhoc playbook with --limit to deploy host[s]/group
 #
@@ -23,7 +19,7 @@
 
     - name: == Hardware provisioning == Generating the tftp configuration boot file
       template: 
-        src: ../templates/ocp4.3_pxeboot.j2
+        src: ../templates/ocp_pxeboot.j2
         dest: /var/lib/tftpboot/pxelinux.cfg/01-{{ macaddress | lower | replace(":","-") }}
         mode: 0755
       delegate_to: "{{ deploy_host }}"
