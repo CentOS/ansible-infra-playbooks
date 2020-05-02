@@ -1,0 +1,14 @@
+---
+- hosts: "{{ vm_to_reset }}"
+  become: True
+  vars_prompt:
+    - name: "vm_to_reset"
+      prompt: "[WARNING] Virtual Machine to hard-reset ? "
+      private: no
+  gather_facts: False
+
+  tasks:
+    - name: Resetting VM {{ vm_to_reset }} through virsh
+      shell: virsh destroy {{ vm_to_reset }} ; virsh start {{ vm_to_reset }}
+      delegate_to: "{{ kvm_host }}"
+    
