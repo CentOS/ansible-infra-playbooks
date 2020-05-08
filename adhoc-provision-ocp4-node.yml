@@ -17,7 +17,7 @@
   vars_prompt:
     - name: "ocp_init_hosts"
       prompt: "[WARNING] Nodes to be fully wiped/reinstalled with OCP => "
-      private: no
+      private: no  
 
   tasks:
 
@@ -29,6 +29,19 @@
       delegate_to: "{{ deploy_host }}"
       tags:
         - pxe
+
+    - name: == Hardware provisioning == Importing generated Ignition files
+      template: 
+        src: "{{ filestore }}/rhos/{{ item }}"
+        dest: "/var/www/html/repo/rhcos/{{ item }}"
+        mode: 0755
+      with_items:
+        - bootstrap.ign
+        - master.ign
+        - compute.ign
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - ignition
 
     - name: == Hardware provisioning == Ensuring node is powered off
       command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis power off
