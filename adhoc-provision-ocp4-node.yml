@@ -32,7 +32,7 @@
 
     - name: == Hardware provisioning == Importing generated Ignition files
       template: 
-        src: "{{ filestore }}/rhos/{{ item }}"
+        src: "{{ filestore }}/rhcos/{{ item }}"
         dest: "/var/www/html/repo/rhcos/{{ item }}"
         mode: 0755
       with_items:
