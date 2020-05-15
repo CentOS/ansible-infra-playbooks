@@ -1,7 +1,7 @@
 ---
 # This playbook is an ad-hoc task used to deploy bare-metal nodes for OCP4
 # It used the following variables, declared through inventory (group/host vars):
-#  rhcos_version: 4.3.8  # default rhcos version deployed
+#  rhcos_version: 4.4.3  # default rhcos version deployed
 #  arch: x86_64          # default architecture
 #  md-raid-dev:          # mdadm device eg: /dev/md126
 #  deploy_host:          # node hosting pxelinux.cfg configurations
@@ -78,9 +78,3 @@
         timeout: 1200
       delegate_to: "{{ deploy_host }}"
 
-    - name: Updating/Adding IP in local CI dns resolver if needed
-      shell: "/usr/local/bin/update_dns -n {{ inventory_hostname }} -i {{ ip }}"
-      delegate_to: "{{ deploy_host }}"
-      when: centos_ci_node is defined and centos_ci_node
-      tags:
-        - dns
