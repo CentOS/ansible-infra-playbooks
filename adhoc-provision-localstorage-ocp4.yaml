@@ -1,0 +1,66 @@
+---
+# This playbook is an ad-hoc task used to deploy the Local Storage Operator to a OCP4 cluster
+# It used the following variables, declared through inventory (group/host vars):
+# deploy_host: some.server.com           # The cloud instance which we delegate our commands to be executed from
+# filestore: /path/to/filestore          # location the filestore is checked out
+# pkistore: /path/to/pkistore            # location the pkistore is checked out
+# kube_api: https://api.server.com:6443  # URI to the OCP4 cluster's API
+#
+- hosts: "{{ deploy_host }}"
+  become: true
+  gather_facts: false
+
+  tasks:
+
+    - name: == Copying templates == Copying the Local Storage Operator deployment and configuration templates to the deploy_host
+      template: 
+        src: "{{ filestore }}/rhcos/localstorage/{{ item }}"
+        dest: "/root/ocp-ci-centos-org/localstorage/"
+        mode: 644
+      with_items:
+        - local_storage_operator_subscription.yaml
+        - ocp_local_volume.yaml
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - localstorage
+
+    - name: == Copying kubeconfig == Copying the kubeconfig to the deploy_host
+      template: 
+        src: "{{ pkistore }}/auth/{{ item }}"
+        dest: "/root/ocp-ci-centos-org/auth/"
+        mode: 644
+      with_items:
+        - kubeconfig
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - localstorage
+
+    - name: == export KUBECONFIG == Export the kubeconfig
+      command: export KUBECONFIG=/root/ocp-ci-centos-org/auth/kubeconfig 
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - localstorage
+
+    - name: == Create subscription == Create subscription for the Local Storage Operator
+      command: "oc apply -f /root/ocp-ci-centos-org/localstorage/local_storage_operator_subscription.yaml"
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - localstorage
+
+    - name: == Wait for deployment == Wait for the Local Storage Operator to be deployed
+      shell: "oc get deployment  local-storage-operator -n local-storage"
+      register: get_local_storage_deployment_cmd
+      failed_when: get_local_storage_deployment_cmd.rc == 0
+      until: get_local_storage_deployment_cmd.rc != 0
+      changed_when: "'NotFound' in get_deployment_cmd.stderr"
+      retries: 10
+      delay: 5
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - localstorage
+
+    - name: == Create localstorage configuration == Create LocalStorage configuration for the Local Storage Operator
+      command: "oc apply -f /root/ocp-ci-centos-org/localstorage/ocp_local_volume.yaml"
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - localstorage
