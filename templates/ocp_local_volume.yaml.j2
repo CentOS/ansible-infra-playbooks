@@ -1,0 +1,23 @@
+apiVersion: "local.storage.openshift.io/v1"
+kind: "LocalVolume"
+metadata:
+  name: "local-disks"
+  namespace: "local-storage" 
+spec:
+  nodeSelector: 
+    nodeSelectorTerms:
+    - matchExpressions:
+      - key: kubernetes.io/hostname
+        operator: In
+        values:
+        {% for host in ocp-ci %}
+        - {{ host}}
+        {% endfor %}
+  storageClassDevices:
+  - storageClassName: "local-sc"
+    volumeMode: Filesystem 
+    fsType: ext4
+    devicePaths: 
+    - /dev/sdb 
+  tolerations:
+  - operator: Exists

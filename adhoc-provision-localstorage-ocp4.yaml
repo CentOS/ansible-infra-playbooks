@@ -14,8 +14,8 @@
 
     - name: == Copying templates == Copying the Local Storage Operator deployment and configuration templates to the deploy_host
       template: 
-        src: "{{ filestore }}/rhcos/localstorage/{{ item }}"
-        dest: "/root/ocp-ci-centos-org/localstorage/"
+        src: "../templates/{{ item }}.j2"
+        dest: "/root/ocp-ci-centos-org/localstorage/{{ item }}"
         mode: 644
       with_items:
         - local_storage_operator_subscription.yaml
@@ -35,8 +35,9 @@
       tags:
         - localstorage
 
-    - name: == export KUBECONFIG == Export the kubeconfig
-      command: export KUBECONFIG=/root/ocp-ci-centos-org/auth/kubeconfig 
+    - name: == Set KUBECONFIG == Set the kubeconfig environment variable
+      environment:
+        KUBECONFIG: /root/ocp-ci-centos-org/auth/kubeconfig 
       delegate_to: "{{ deploy_host }}"
       tags:
         - localstorage
