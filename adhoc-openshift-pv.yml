@@ -1,0 +1,71 @@
+---
+# This playbook is to create a persistent volume for openshift CI namespace
+# Example to run the playbook
+# `ansible-playbook -e "env_prefix=ocp-prod" -e "pv_size=10Gi" -e
+# "cico_project_name=new_fancy_project" adhoc-openshift-pv.yml -i inventory`
+
+
+- hosts: "{{ ocp_management_group }}"
+  become: true
+  become_user: "{{ ocp_service_account }}"
+  vars:
+    ocp_management_group:
+      - "{{ ocp_ci_management }}"
+
+  tasks:
+    - name: Generate a UUID
+      set_fact:
+        pv_uuid: "{{ (cico_project_name + pv_claimref|default('noclaimref', true)) | to_uuid }}"
+      tags:
+        - pv
+
+    - name: UUID Generated
+      debug:
+        var: pv_uuid
+      tags:
+        - pv
+
+    - name: Make a pv name
+      set_fact:
+        pv_name: "pv-{{ pv_size | lower }}-{{ pv_uuid }}"
+      tags:
+        - pv
+
+    - name: UUID Generated
+      debug:
+        var: pv_name
+      tags:
+        - pv
+
+    - name: See if the PV already exists
+      command: "/home/{{ ocp_service_account }}/bin/oc get pv/{{ pv_name }}"
+      register: results
+      changed_when: false
+      failed_when:
+        - results.rc == 0
+      tags:
+        - pv
+
+    - name: make directories for each PV
+      file:
+        path: "/exports/{{ env_prefix }}/{{ pv_name }}"
+        owner: nfsnobody
+        group: nfsnobody
+        mode: 0777
+        state: directory
+      delegate_to: {{ storage_server }}
+      tags:
+        - pv
+
+    - name: create json files for PV
+      template:
+            src: "templates/openshift-pv-storage/persistent-volume.json.j2"
+            dest: "/home/{{ ocp_service_account }}/{{ pv_name }}.json"
+      tags:
+        - pv
+
+    - name: apply the transformation
+      command: "/home/{{ ocp_service_account }}/bin/oc create -f /home/{{ ocp_service_account }}/{{ pv_name }}.json"
+      tags:
+        - pv
+
