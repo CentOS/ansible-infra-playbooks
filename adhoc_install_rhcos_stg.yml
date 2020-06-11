@@ -1,0 +1,71 @@
+- hosts: "{{ ocp_init_hosts }}"
+  become: true
+  gather_facts: false
+  vars_prompt:
+    - name: "ocp_init_hosts"
+      prompt: "[WARNING] Nodes to be fully wiped/reinstalled with RHCOS=> "
+      private: no
+
+
+  tasks:
+    - name: Deleting additional path to the Seamicro node[s]
+      uri: 
+        url="https://{{ seamicro_chassis }}.ci.centos.org/v2.0/server/{{ seamicro_srvid }}/vdisk/{{ seamicro_vdisk_slot }}?username={{ seamicro_user_login }}&password={{ seamicro_user_pass }}" 
+        validate_certs=no
+        method=DELETE
+        status_code=200,400
+        timeout=120
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - test
+
+    - name: Wait for the disk to be removed
+      uri:
+        url=https://{{ seamicro_chassis }}.ci.centos.org/v2.0/server/{{ seamicro_srvid }}/vdisk/{{ seamicro_vdisk_slot }}?username={{ seamicro_user_login }}&password={{ seamicro_user_pass }} 
+        validate_certs=no
+        method=GET
+        timeout=120
+        status_code=200,201,404
+      register: http_result
+      until: http_result['status'] == 404
+      retries: 5
+      delay: 10
+      delegate_to: "{{ deploy_host }}"
+
+
+    - name: == Hardware provisioning == Importing generated Ignition files
+      template:
+        src: "{{ filestore }}/rhcos/staging/{{ item }}"
+        dest: "/var/www/html/repo/rhcos/staging/{{ item }}"
+        mode: 0755
+      with_items:
+        - bootstrap.ign
+        - master.ign
+        - compute.ign
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - ignition
+
+    - name: Generating the tftp configuration boot file
+      template: src={{ item }} dest=/var/lib/tftpboot/pxelinux.cfg/01-{{ mac_address | lower | replace(":","-") }} mode=0755
+      with_first_found:
+          - "templates/ocp_pxeboot.j2"
+      delegate_to: "{{ deploy_host }}"
+
+    - name: Resetting the Seamicro node[s]
+      uri:
+        url: https://{{ seamicro_chassis }}.ci.centos.org/v2.0/server/{{ seamicro_srvid }} 
+        validate_certs: no
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body: '{{ seamicro_reset_body | to_json }}'
+        timeout: 180
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - reset
+
+    - name: Waiting for Seamicro node[s] to be available through ssh ...
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1200
+      tags:
+        - wait
