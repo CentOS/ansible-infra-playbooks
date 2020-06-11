@@ -1,16 +1,16 @@
 ---
 # This playbook is to create a persistent volume for openshift CI namespace
 # Example to run the playbook
-# `ansible-playbook -e "env_prefix=ocp-prod" -e "pv_size=10Gi" -e
-# "cico_project_name=new_fancy_project" adhoc-openshift-pv.yml -i inventory`
+# ansible-playbook-ci playbooks/adhoc-openshift-pv.yml -e "env_prefix=ocp-stg" -e "host=n4-136.cloud.ci.centos.org" -e "pv_size=10Gi" -e "cico_project_name=test" 
+# The node on which we'll run this should have the exported NFS volume mounted locally
+# using variables from inventory:
+#   ocp_nfs_server: (like node.domain)
+#   ocp_nfs_export: ocp-staging
 
 
-- hosts: "{{ ocp_management_group }}"
+- hosts: "{{ host }}"
   become: true
   become_user: "{{ ocp_service_account }}"
-  vars:
-    ocp_management_group:
-      - "{{ ocp_ci_management }}"
 
   tasks:
     - name: Generate a UUID
@@ -18,24 +18,28 @@
         pv_uuid: "{{ (cico_project_name + pv_claimref|default('noclaimref', true)) | to_uuid }}"
       tags:
         - pv
+        - nfs
 
     - name: UUID Generated
       debug:
         var: pv_uuid
       tags:
         - pv
+        - nfs
 
     - name: Make a pv name
       set_fact:
         pv_name: "pv-{{ pv_size | lower }}-{{ pv_uuid }}"
       tags:
         - pv
+        - nfs
 
     - name: UUID Generated
       debug:
         var: pv_name
       tags:
         - pv
+        - nfs
 
     - name: See if the PV already exists
       command: "/home/{{ ocp_service_account }}/bin/oc get pv/{{ pv_name }}"
@@ -45,17 +49,31 @@
         - results.rc == 0
       tags:
         - pv
+    
+    - block:
+        - name: Ensuring we have local mount point
+          file:
+            path: /mnt/ocp_store
+            state: directory
 
-    - name: make directories for each PV
-      file:
-        path: "/exports/{{ env_prefix }}/{{ pv_name }}"
-        owner: nfsnobody
-        group: nfsnobody
-        mode: 0777
-        state: directory
-      delegate_to: {{ storage_server }}
+        - name: Ensuring nfs export is mounted on mgmt station
+          mount:
+            fstype: nfs
+            src: "{{ ocp_nfs_server }}:{{ ocp_nfs_export }}"
+            path: /mnt/ocp_store
+            state: mounted
+            
+        - name: make directories for each PV
+          file:
+            path: "/mnt/ocp_store/{{ pv_name }}"
+            owner: nobody
+            group: nobody
+            mode: 0777
+            state: directory
+      become_user: root  
       tags:
         - pv
+        - nfs
 
     - name: create json files for PV
       template:

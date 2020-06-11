@@ -21,8 +21,8 @@
     },
 {% endif %}
     "nfs": {
-      "server": "{{ storage_server }}",
-      "path": "/exports/{{ env_prefix }}/{{ pv_name }}"
+      "server": "{{ ocp_nfs_server }}",
+      "path": "/{{ ocp_nfs_export }}/{{ pv_name }}"
     }
   }
 }
