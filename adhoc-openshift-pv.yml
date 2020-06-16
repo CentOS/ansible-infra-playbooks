@@ -1,7 +1,11 @@
 ---
 # This playbook is to create a persistent volume for openshift CI namespace
+# Needed variables as extra-vars:
+#  - pv_size (like 100Gi)
+#  - cico_project_name (registry)
+#  - host (where to execute command, like ocp-admin.ci.centos.org)
 # Example to run the playbook
-# ansible-playbook-ci playbooks/adhoc-openshift-pv.yml -e "env_prefix=ocp-stg" -e "host=n4-136.cloud.ci.centos.org" -e "pv_size=10Gi" -e "cico_project_name=test" 
+# ansible-playbook-ci playbooks/adhoc-openshift-pv.yml -e "host=n4-136.cloud.ci.centos.org" -e "pv_size=10Gi" -e "cico_project_name=test" 
 # The node on which we'll run this should have the exported NFS volume mounted locally
 # using variables from inventory:
 #   ocp_nfs_server: (like node.domain)
