@@ -1,0 +1,29 @@
+# This playbook is to use templates/openshift-resources.j2 and extra vars
+# (project details) and apply the resources created from the template.
+# ansible-playbook playbooks/adhoc-openshift-resources.yaml -e "host=ocp-ci-management" -e "@projects_vars.yaml"
+#
+# Example of project_vars.yaml
+# ```
+# project_name: billionDollarProject
+# project_admins:
+#   - admin1
+#   - admin2
+#
+# bug_id: '000000' #bug id is the place/id where the project is requested
+# ```
+
+
+- hosts: "{{ host }}"
+  become: true
+  become_user: "{{ ocp_service_account }}"
+
+  tasks:
+    # generate the template for project to be created
+    - name: apply the template
+      template:
+        src: openshift-resources.j2
+        dest: "/home/{{ ocp_service_account }}/ocp_configs/{{ project_name }}.yaml"
+
+    # apply created openshift resources
+    - name: oc apply resources
+      command: "/home/{{ ocp_service_account }}/bin/oc apply -f /home/{{ ocp_service_account }}/ocp_configs/{{ project_name }}.yaml"
