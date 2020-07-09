@@ -32,6 +32,9 @@
 - src: https://github.com/CentOS/ansible-role-httpd
   name: httpd
   version: staging
+- src: https://github.com/CentOS/ansible-role-httpd-compose
+  name: httpd-compose
+  version: staging
 - src: https://github.com/CentOS/ansible-role-httpd-feeds
   name: httpd-feeds
   version: staging

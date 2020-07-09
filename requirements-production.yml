@@ -21,6 +21,8 @@
   name: haproxy
 - src: https://github.com/CentOS/ansible-role-httpd
   name: httpd
+- src: https://github.com/CentOS/ansible-role-httpd-compose
+  name: httpd-compose
 - src: https://github.com/CentOS/ansible-role-httpd-feeds
   name: httpd-feeds
 - src: https://github.com/CentOS/ansible-role-ipsilon

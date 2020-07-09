@@ -11,9 +11,9 @@ LABEL local
 
 LABEL {{ inventory_hostname}}-deploy
         MENU LABEL CentOS {{ centos_version }} {{ arch }}- Kickstart for {{ inventory_hostname }}
-        kernel CentOS//{{ centos_version }}/{{ arch }}/vmlinuz
+        kernel boot/centos/{{ centos_version }}/{{ arch }}/vmlinuz
          {% if centos_version == 7 or centos_version == 8 or centos_version == '8-stream' -%}
-	append initrd=CentOS/{{ centos_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+	append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
          {% else -%}
-        append initrd=CentOS/{{ centos_version }}/{{ arch }}/initrd.img ksdevice=eth0 ip=dhcp ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg
+        append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img ksdevice=eth0 ip=dhcp ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg
          {% endif %}

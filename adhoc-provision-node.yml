@@ -16,9 +16,14 @@
 #
 # Call this adhoc playbook with --limit to deploy host[s]/group
 #
-- hosts: all
+- hosts: "{{ init_hosts }}"
   become: true
   gather_facts: false
+  vars_prompt:
+    - name: "init_hosts"
+      prompt: "[WARNING] Nodes to be fully wiped/reinstalled with CentOS => "
+      private: no
+
   tasks:
     
     - name: == Hardware provisioning == Creating kickstart to provision VM[s]
