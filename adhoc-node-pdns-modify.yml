@@ -1,0 +1,20 @@
+# This playbook can be used to disable/enable a msync/vault/other role that is delegated to Pdns(PowerDNS) through our GeoIP backend
+---
+- hosts: "{{ target }}"
+  vars_prompt:
+    - name: "target"
+      prompt: "Host to modify in PowerDNS ? => "
+      private: no
+    - name: "action"
+      prompt: "Action (enable|disable) ? => "
+      private: no
+  become: True    
+  gather_facts: False
+
+  tasks:
+    - name: Enable/Disable msync node in PowerDNS geoip backend
+      shell: 
+        cmd: /var/lib/centos-infra/host-modify -a "{{ action }}" -n "{{ target }}"
+        chdir: /var/lib/centos-infra
+      delegate_to: "{{ zabbix_api_srv }}"
+    
