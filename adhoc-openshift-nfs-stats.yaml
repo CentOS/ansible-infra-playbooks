@@ -1,0 +1,39 @@
+# This playbook is to use 
+
+- hosts: "{{ ocp_init_hosts }}"
+  become: true
+  gather_facts: false
+  vars_prompt:
+    - name: "ocp_init_hosts"
+      prompt: "Target nodes: => "
+      private: no
+
+  tasks:
+    - name: Gather NFS metrics
+      block:
+        - name: Distributing nfs stats generation script
+          copy:
+            src: "nfs_stats.sh"
+            dest: "/home/{{ coreos_account }}/nfs_stats.sh"
+            owner: "{{ coreos_account }}"
+            group: "{{ coreos_account }}"
+            mode: '0755'
+        - name: Execute the nfs stats script
+          shell: 
+            cmd: "/home/{{ coreos_account }}/nfs_stats.sh"
+          register: get_nfs_stats_collection_cmd
+          failed_when: get_nfs_stats_collection_cmd.rc != 0
+        - name: debug
+          debug:
+            msg: "nfs stats: {{ get_nfs_stats_collection_cmd.stdout }}"
+        - name: Push the metrics to the prometheus pushgateway
+          shell: |
+            cat <<EOF | curl --data-binary @- https://prometheus-pushgateway-route-monitoring-example.apps.ocp.stg.ci.centos.org/metrics/job/nfs_stats/instance/{{ inventory_hostname }}
+            {{ get_nfs_stats_collection_cmd.stdout }}
+            EOF
+          register: post_nfs_stats_pushgateway
+          failed_when: post_nfs_stats_pushgateway.rc != 0
+  vars:
+    coreos_account: "{{ ansible_user }}"
+    ansible_user: "core"
+    ansible_ssh_private_key_file: "pkistore/ssh/ocp-stg-ci-centos-org"
