@@ -1,0 +1,18 @@
+#!/bin/bash
+
+virt-install \
+  --name {{ inventory_hostname }} \
+  --vcpus {{ kvm_guest_vcpus }} \
+  --cpu host \
+  --ram  {{ kvm_guest_memory }} \
+  --disk path=/var/lib/libvirt/images/{{ inventory_hostname }}.qcow2,size={{ kvm_guest_disk_size }},format=qcow2,device=disk,bus=virtio,cache=none \
+  --nographics \
+  --network bridge={{ kvm_host_bridge }},model=virtio \
+  --hvm --accelerate \
+  --autostart --wait=-1 \
+  --extra-args "ip={{ ip }}::{{ gateway }}:{{ netmask }}:{{ inventory_hostname }}:{{ kvm_guest_vnic }}:none {% for ns in nameservers -%} nameserver={{ ns }} {% endfor -%} console=ttyS0 nomodeset rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda coreos.inst.image_url={{ rhcos_install_img_url }} coreos.inst.ignition_url={{ rhcos_ignition_file_url }}" \
+  --os-type linux --os-variant rhel7 \
+  --location  {{ rhcos_install_url }}
+
+
+

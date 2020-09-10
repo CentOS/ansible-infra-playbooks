@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 # This playbook can be used to disable/enable a msync/vault/other role that is delegated to Pdns(PowerDNS) through our GeoIP backend
 ---
 - hosts: "{{ target }}"
