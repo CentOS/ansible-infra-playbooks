@@ -47,10 +47,12 @@
             dest: /var/www/html/repo/ocp/
             mode: 0755
             url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/{{ rhcos_version }}/{{ item }}"
+          run_once: True  
           with_items:
             - "rhcos-{{ rhcos_version }}-x86_64-installer-initramfs.x86_64.img"
             - "rhcos-{{ rhcos_version }}-x86_64-installer-kernel-x86_64"
             - "rhcos-{{ rhcos_version }}-x86_64-metal.x86_64.raw.gz"
+
         - name: == OCP KVM provisioning == Ensuring symlink for correct version {{ rhcos_version }}
           file:
             state: link
@@ -74,6 +76,8 @@
       no_log: True
       delegate_to: "{{ kvm_host }}"
       register: vm_exists
+      tags:
+        - kvm_deploy
 
     - name: == OCP KVM provisioning == Creating temporary virt-install command
       template: 
@@ -84,12 +88,14 @@
         group: root
       delegate_to: "{{ kvm_host }}"
       tags:
-        - ks
+        - kvm_deploy
 
     - name: == OCP KVM provisioning == Deploying the OCP Virtual Guest[s]
       command: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}"
       when: vm_exists is failed
       delegate_to: "{{ kvm_host }}"
+      tags:
+        - kvm_deploy
 
     - name: == OCP KVM provisioning == Waiting for sshd to be available on the deployed node
       wait_for: 
@@ -98,9 +104,13 @@
         timeout: 1200 
       delegate_to: "{{ deploy_host }}"
       when: vm_exists is failed
+      tags:
+        - kvm_deploy
 
     - name: == OCP KVM provisioning == Ensuring we remove the templatized virt-install script
       file:
         path: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}"
         state: absent
       delegate_to: "{{ kvm_host }}"
+      tags:
+        - kvm_deploy

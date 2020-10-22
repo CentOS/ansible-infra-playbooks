@@ -1,0 +1,30 @@
+---
+- hosts: hostgroup-role-phpbb
+  become: True
+  vars_prompt:
+    - name: "phpbb_target_version"
+      prompt: "[WARNING] phpbb target version (like 3.2.10) that you want to bump to (has to be in same major release) : "
+      private: no  
+  pre_tasks:
+    - name: Checking if no-ansible file is there
+      stat:
+        path: /etc/no-ansible
+      register: no_ansible
+
+    - name: Verifying if we can run ansible or not
+      assert:
+        that:
+          - "not no_ansible.stat.exists" 
+        msg: "/etc/no-ansible file exists so skipping ansible run on this node"
+
+  tasks:
+    - import_role:
+        name: phpbb
+        tasks_from: update
+
+  post_tasks:
+    - name: Touching ansible-run (monitored by Zabbix)
+      file:
+        path: /var/log/ansible.run
+        state: touch
+
