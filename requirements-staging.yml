@@ -38,6 +38,9 @@
 - src: https://github.com/CentOS/ansible-role-httpd-feeds
   name: httpd-feeds
   version: staging
+- src: https://github.com/CentOS/ansible-role-ipa-client
+  name: ipa-client
+  version: staging
 - src: https://github.com/CentOS/ansible-role-ipsilon
   name: ipsilon
   version: staging

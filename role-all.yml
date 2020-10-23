@@ -11,6 +11,7 @@
 - import_playbook: role-httpd.yml
 - import_playbook: role-httpd-compose.yml
 - import_playbook: role-httpd-feeds.yml
+- import_playbook: role-ipa-client.yml
 - import_playbook: role-ipsilon.yml
 - import_playbook: role-iptables.yml
 - import_playbook: role-iscsid-target.yml
