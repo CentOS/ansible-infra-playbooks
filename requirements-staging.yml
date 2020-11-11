@@ -119,6 +119,12 @@
 - src: https://github.com/CentOS/ansible-role-ocp-admin-node
   name: ocp-admin-node
   version: staging
+- src: https://github.com/CentOS/ansible-role-odcs-backend
+  name: odcs-backend
+  version: staging
+- src: https://github.com/CentOS/ansible-role-odcs-frontend
+  name: odcs-frontend
+  version: staging
 - src: https://github.com/CentOS/ansible-role-opennebula-frontend
   name: opennebula-frontend
   version: staging
