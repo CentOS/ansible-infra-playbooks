@@ -1,0 +1,13 @@
+---
+- hosts: "{{ ipmi_target }}"
+  vars_prompt:
+    - name: "ipmi_target"
+      prompt: "Host[s] to power on through ipmi ? "
+      private: no
+  gather_facts: False
+
+  tasks:
+    - name: Powering on node[s] through ipmi
+      shell: ipmitool -H "{{ ipmi_ip }}" -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" -I lanplus chassis power on
+      delegate_to: "{{ ipmitool_host }}"
+    

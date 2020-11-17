@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: True
+  gather_facts: False
+
+  tasks:
+    - name: Update Operating System pkgs
+      yum:
+        name: "*"
+        state: latest
+        update_cache: True
+
+    - name: Reboot the machine to ensure latest kernel is booted
+      reboot:
+
