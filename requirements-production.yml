@@ -79,6 +79,10 @@
   name: nfs-server
 - src: https://github.com/CentOS/ansible-role-ocp-admin-node
   name: ocp-admin-node
+- src: https://github.com/CentOS/ansible-role-odcs-backend
+  name: odcs-backend
+- src: https://github.com/CentOS/ansible-role-odcs-frontend
+  name: odcs-frontend
 - src: https://github.com/CentOS/ansible-role-opennebula-frontend
   name: opennebula-frontend
 - src: https://github.com/CentOS/ansible-role-opennebula-kvm-host

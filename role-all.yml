@@ -38,6 +38,8 @@
 - import_playbook: role-mysql.yml
 - import_playbook: role-nfs-server.yml
 - import_playbook: role-ocp-admin-node.yml
+- import_playbook: role-odcs-backend.yml
+- import_playbook: role-odcs-frontend.yml
 - import_playbook: role-opennebula-frontend.yml
 - import_playbook: role-opennebula-kvm-host.yml
 - import_playbook: role-opentracker.yml
