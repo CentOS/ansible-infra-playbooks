@@ -2,10 +2,21 @@
 - hosts: hostgroup-role-wp
   become: True
   tasks: 
-    - name: Upgrading wordpress to latest version (or specific release)
+    - name: Upgrading wordpress to version {{ wp_release }}
       unarchive:
         src: "https://wordpress.org/wordpress-{{ wp_release | default('latest') }}.tar.gz"
         remote_src: yes
         dest: "{{ wp_local_path | default('/var/www/wordpress') }}"
         extra_opts:
-          - --strip-components=1
+          - --strip-components=1   
+      tags:
+        - core
+
+    - name: Upgrading wordpress plugins if needed
+      unarchive:
+        src: "https://downloads.wordpress.org/plugin/{{ item.name }}.{{ item.version }}.zip"
+        remote_src: yes
+        dest: "{{ wp_local_path | default('/var/www/wordpress') }}/wp-content/plugins/"
+      with_items: "{{ wp_plugins }}"  
+      tags:
+        - plugins
