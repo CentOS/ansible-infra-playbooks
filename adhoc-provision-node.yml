@@ -71,6 +71,16 @@
       tags:
         - ipmi
 
+    - name: == Hardware provisioning == Pausing before forcing again booting from disk (bad Dell firmware/bios)
+      pause:
+        seconds: 120
+
+    - name: == Hardware provisioning == Ensuring we'll reboot from disk
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis bootdev disk options=persistent
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
     - name: == Hardware provisioning == Waiting for host to be reachable
       wait_for: 
         host: "{{ ip }}" 
