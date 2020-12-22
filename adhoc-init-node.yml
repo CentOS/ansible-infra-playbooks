@@ -17,6 +17,7 @@
       when: infra_admin_hosts is defined 
 
 - import_playbook: adhoc-sshd_sign_host_key.yml  
+  when: ssh_ca_sign is defined and ssh_ca_sign
 - import_playbook: adhoc-host-getvars.yml 
 
 # Just the new baseline everywhere
