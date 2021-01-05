@@ -1,0 +1,6 @@
+set timeout=3
+
+menuentry '{{ inventory_hostname }}-Ansible-deploy' {
+	linuxefi boot/centos/{{ centos_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+	initrdefi boot/centos/{{ centos_version }}/{{ arch }}/initrd.img
+}

@@ -43,11 +43,22 @@
       tags:
         - pxe
 
+    - name: == Hardware provisioning == Generating the tftp configuration boot file (EFI/Grub)
+      template: 
+        src: ../templates/pxe-grub.cfg.j2
+        dest: /var/lib/tftpboot/grub.cfg-01-{{ macaddress | lower | replace(":","-") }}
+        mode: 0755
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - pxe
+
     - name: == Hardware provisioning == Ensuring node is powered off
       command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis power off
       delegate_to: "{{ ipmitool_host }}"
       tags:
         - ipmi
+      ignore_errors: True
+      no_log: True
 
     - name: == Hardware provisioning == Pausing ...
       pause:
