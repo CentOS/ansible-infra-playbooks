@@ -13,6 +13,7 @@
 #  lv_root_expand: False  # do we want to have / to max capacity of the VG ?
 #  lv_home_size: 2048 # in GB
 #  pxe_bootdev: eth0 # device used as bootdev and first interface configured
+#  bridge_nic: False # If set to True, pxe_bootdev will become the bridgeslave device for br0 bridge
 #
 # Call this adhoc playbook with --limit to deploy host[s]/group
 #

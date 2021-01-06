@@ -31,7 +31,11 @@ repo --name="updates" --baseurl=http://mirror.centos.org/centos/7/updates/{{ arc
 
 # Network information
 network  --hostname={{ inventory_hostname }}
+{% if bridge_nic %}
+network  --bootproto=static --device=br0 --bridgeslaves={{ pxe_bootdev }} --gateway={{ gateway }} --ip={{ ip }} --nameserver={{ dns }} --netmask={{ netmask }} --ipv6=auto --activate 
+{% else %}
 network  --bootproto=static --device={{ pxe_bootdev }} --gateway={{ gateway }} --ip={{ ip }} --nameserver={{ dns }} --netmask={{ netmask }} --ipv6=auto --activate 
+{% endif %}
 
 # Root password
 rootpw --iscrypted {{ root_pass | password_hash('sha512') }}
