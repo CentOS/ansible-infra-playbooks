@@ -1,6 +1,5 @@
 ---
-- name: Setup ODCS frontend
-  hosts: hostgroup-role-odcs-frontend
+- hosts: hostgroup-role-odcs-frontend
   become: True
   pre_tasks:
     - name: Checking if no-ansible file is there
@@ -22,3 +21,4 @@
       file:
         path: /var/log/ansible.run
         state: touch
+

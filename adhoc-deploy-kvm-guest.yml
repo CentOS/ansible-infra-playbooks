@@ -1,7 +1,12 @@
 ---
-- hosts: kvm-guests
+- hosts: "{{ init_kvm_guests }}"
   become: true
   gather_facts: false
+  vars_prompt:
+    - name: "init_kvm_guests"
+      prompt: "[WARNING] KVM guests to be deployed with CentOS => "
+      private: no
+
   tasks:
     - name: Checking Virtual Guest exists
       virt: 

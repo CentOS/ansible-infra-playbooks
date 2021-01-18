@@ -5,7 +5,7 @@
 auth --enableshadow --passalgo=sha512
 
 # Use network installation
-url --url="http://mirror.centos.org/centos/8/BaseOS/{{ kvm_guest_arch }}/os/"
+url --url="http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/BaseOS/{{ kvm_guest_arch }}/os/"
 # Run the Setup Agent on first boot
 firstboot --enable
 #ignoredisk --only-use=sda

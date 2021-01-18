@@ -20,6 +20,9 @@
 - src: https://github.com/CentOS/ansible-role-certbot
   name: certbot
   version: staging
+- src: https://github.com/CentOS/ansible-role-distgit-lookaside
+  name: distgit-lookaside
+  version: staging
 - src: https://github.com/CentOS/ansible-role-geoip2
   name: geoip2
   version: staging

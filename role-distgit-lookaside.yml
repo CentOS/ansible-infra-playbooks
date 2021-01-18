@@ -1,5 +1,5 @@
 ---
-- hosts: hostgroup-role-odcs-backend
+- hosts: hostgroup-role-distgit-lookaside
   become: True
   pre_tasks:
     - name: Checking if no-ansible file is there
@@ -14,7 +14,7 @@
         msg: "/etc/no-ansible file exists so skipping ansible run on this node"
 
   roles:
-    - odcs-backend
+    - distgit-lookaside
 
   post_tasks:
     - name: Touching ansible-run (monitored by Zabbix)
