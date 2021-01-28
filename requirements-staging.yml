@@ -23,6 +23,9 @@
 - src: https://github.com/CentOS/ansible-role-distgit-lookaside
   name: distgit-lookaside
   version: staging
+- src: https://github.com/CentOS/ansible-role-fedora-messaging-client
+  name: fedora-messaging-client
+  version: staging
 - src: https://github.com/CentOS/ansible-role-geoip2
   name: geoip2
   version: staging

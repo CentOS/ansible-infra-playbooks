@@ -6,6 +6,7 @@
 - import_playbook: role-centos-backup.yml
 - import_playbook: role-certbot.yml
 - import_playbook: role-distgit-lookaside.yml
+- import_playbook: role-fedora-messaging-client.yml
 - import_playbook: role-geoip2.yml
 - import_playbook: role-gitea.yml
 - import_playbook: role-haproxy.yml
