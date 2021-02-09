@@ -49,8 +49,9 @@
             url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/{{ rhcos_version }}/{{ item }}"
           run_once: True  
           with_items:
-            - "rhcos-{{ rhcos_version }}-x86_64-installer-initramfs.x86_64.img"
-            - "rhcos-{{ rhcos_version }}-x86_64-installer-kernel-x86_64"
+            - "rhcos-{{ rhcos_version }}-x86_64-live-initramfs.x86_64.img"
+            - "rhcos-{{ rhcos_version }}-x86_64-live-kernel-x86_64"
+            - "rhcos-{{ rhcos_version }}-x86_64-live-rootfs.x86_64.img"
             - "rhcos-{{ rhcos_version }}-x86_64-metal.x86_64.raw.gz"
 
         - name: == OCP KVM provisioning == Ensuring symlink for correct version {{ rhcos_version }}
