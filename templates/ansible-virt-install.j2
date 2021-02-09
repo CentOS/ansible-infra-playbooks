@@ -26,7 +26,7 @@ virt-install \
   --autostart --wait=-1 \
   --noautoconsole \
   --initrd-inject=/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg \
-{% if kvm_guest_arch == 'power9' %}
+{% if kvm_guest_arch == 'power9' or kvm_guest_arch == 'ppc64le' %}
   --extra-args "console=hvc0 console=hvc1 net.ifnames=0 ks=file:/{{ inventory_hostname }}.cfg" \
 {% else %}
   --extra-args "console=ttyS0 net.ifnames=0 ks=file:/{{ inventory_hostname }}.cfg" \
