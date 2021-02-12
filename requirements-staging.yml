@@ -83,6 +83,9 @@
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
   version: staging
+- src: https://github.com/CentOS/ansible-role-mbs
+  name: mbs
+  version: staging
 - src: https://github.com/CentOS/ansible-role-mirmon
   name: mirmon
   version: staging

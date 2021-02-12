@@ -55,6 +55,8 @@
   name: mailman
 - src: https://github.com/CentOS/ansible-role-mantisbt
   name: mantisbt
+- src: https://github.com/CentOS/ansible-role-mbs
+  name: mbs
 - src: https://github.com/CentOS/ansible-role-mirmon
   name: mirmon
 - src: https://github.com/CentOS/ansible-role-mirror

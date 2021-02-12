@@ -26,6 +26,7 @@
 - import_playbook: role-lsyncd.yml
 - import_playbook: role-mailman.yml
 - import_playbook: role-mantisbt.yml
+- import_playbook: role-mbs.yml
 - import_playbook: role-mirmon.yml
 - import_playbook: role-mirror.yml
 - import_playbook: role-mirror-buildlogs.yml
