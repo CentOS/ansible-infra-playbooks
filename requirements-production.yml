@@ -37,6 +37,8 @@
   name: iptables
 - src: https://github.com/CentOS/ansible-role-iscsid-target
   name: iscsid-target
+- src: https://github.com/CentOS/ansible-role-jenkins-server
+  name: jenkins-server
 - src: https://github.com/CentOS/ansible-role-kanboard
   name: kanboard
 - src: https://github.com/CentOS/ansible-role-keepalived
