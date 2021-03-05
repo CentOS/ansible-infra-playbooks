@@ -15,6 +15,8 @@
   name: certbot
 - src: https://github.com/CentOS/ansible-role-distgit-lookaside
   name: distgit-lookaside
+- src: https://github.com/CentOS/ansible-role-fedmsg
+  name: fedmsg
 - src: https://github.com/CentOS/ansible-role-fedora-messaging-client
   name: fedora-messaging-client
 - src: https://github.com/CentOS/ansible-role-geoip2
