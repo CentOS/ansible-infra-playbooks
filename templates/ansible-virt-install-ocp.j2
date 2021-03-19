@@ -10,7 +10,7 @@ virt-install \
   --network bridge={{ kvm_host_bridge }},model=virtio \
   --hvm --accelerate \
   --autostart --wait=-1 \
-  --extra-args "ip={{ ip }}::{{ gateway }}:{{ netmask }}:{{ inventory_hostname }}:{{ kvm_guest_vnic }}:none {% for ns in nameservers -%} nameserver={{ ns }} {% endfor -%} console=ttyS0 nomodeset rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda coreos.live.rootfs_url={{ rhcos_install_rootfs_url }} coreos.inst.image_url={{ rhcos_install_img_url }} coreos.inst.ignition_url={{ rhcos_ignition_file_url }} coreos.inst.insecure" \
+  --extra-args "ip={{ ip }}::{{ gateway }}:{{ netmask }}:{{ inventory_hostname }}:{{ kvm_guest_vnic }}:none {% for ns in nameservers -%} nameserver={{ ns }} {% endfor -%} console=ttyS0 nomodeset rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda coreos.live.rootfs_url={{ rhcos_install_rootfs_url }} coreos.inst.ignition_url={{ rhcos_ignition_file_url }} " \
   --os-type linux --os-variant rhel7 \
   --location  {{ rhcos_install_url }}
 
