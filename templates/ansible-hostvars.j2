@@ -14,7 +14,10 @@ prefix6: {{ ansible_default_ipv6.prefix }}
 gateway6: {{ ansible_default_ipv6.gateway }}
 {% endif %}
 macaddress: {{ ansible_default_ipv4.macaddress | default('')}}
-dns: {% for ns in ansible_dns.nameservers %}{{ ns }} {% endfor %}
+dns: 
+{% for ns in ansible_dns.nameservers %} 
+  - {{ ns }} 
+{% endfor %}
 
 hardware_vendor: {{ ansible_system_vendor }}
 product_name: {{ ansible_product_name }}

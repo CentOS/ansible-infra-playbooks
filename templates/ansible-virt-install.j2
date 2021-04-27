@@ -33,7 +33,7 @@ virt-install \
 {% endif %}
 {% if kvm_guest_distro_release == 8 or kvm_guest_distro_release == '8-stream' %}
   --location  http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/BaseOS/{{ kvm_guest_arch }}/os/ 
-{% elif (kvm_guest_distro_release == '7' and kvm_guest_arch == 'ppc64le') or (kvm_guest_distro_release == '7' and kvm_guest_arch == 'ppc64') or (kvm_guest_distro_release == '7' and kvm_guest_arch == 'power9') or (kvm_guest_distro_release == '7' and kvm_guest_arch == 'aarch64') %}
+{% elif (kvm_guest_distro_release == 7 and kvm_guest_arch == 'ppc64le') or (kvm_guest_distro_release == 7 and kvm_guest_arch == 'ppc64') or (kvm_guest_distro_release == 7 and kvm_guest_arch == 'power9') or (kvm_guest_distro_release == '7' and kvm_guest_arch == 'aarch64') %}
   --location  http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch }}/ 
 {% else %}
   --location  http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch }}/ 
