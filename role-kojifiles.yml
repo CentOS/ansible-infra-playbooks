@@ -1,0 +1,59 @@
+---
+- hosts: hostgroup-role-kojifiles
+  become: True
+  vars:
+    - httpd_tls: False
+
+  pre_tasks:
+    - name: Checking if no-ansible file is there
+      stat:
+        path: /etc/no-ansible
+      register: no_ansible
+
+    - name: Verifying if we can run ansible or not
+      assert:
+        that:
+          - "not no_ansible.stat.exists" 
+        msg: "/etc/no-ansible file exists so skipping ansible run on this node"
+
+  roles:
+    - httpd
+
+  tasks:
+    - name: "install nfs-utils"
+      package:
+        name: nfs-utils
+        state: installed
+      tags: nfs
+
+    - name: "Allow apache to pull from NFS" 
+      seboolean:
+        name: "httpd_use_nfs"
+        persistent: yes
+        state: yes
+      tags: nfs
+
+    - name: "mount the kojifiles volume"
+      mount:
+        path: "{{ item.path }}"
+        src: "{{ item.src }}"
+        fstype: "{{ item.fstype }}"
+        opts: "{{ item.opts }}"
+        state: mounted
+      with_items: "{{ kojifiles_nfs_mounts }}"
+      tags: nfs
+
+    - name: "Link pkgs dir to the right place" 
+      file: 
+        dest: "{{ item }}"
+        src: '/mnt/centos/koji' 
+        state: link
+      with_items:
+        - '/var/www/html/pkgs'
+        - '/var/www/html/kojifiles'
+
+  post_tasks:
+    - name: Touching ansible-run (monitored by Zabbix)
+      file:
+        path: /var/log/ansible.run
+        state: touch
