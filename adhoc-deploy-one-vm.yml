@@ -1,0 +1,43 @@
+---
+# This playbook can be called on demand to provision an Opennebula template/instance 
+# It needs to be called with some variables (see below) and will only deploy one instance, and wait for ip from the opennebula network/pool to be available , including sshd port
+#
+# You can call it like this:
+# ansible-playbook playbooks/adhoc-deploy-one-vm.yml --extra-vars "one_controller_host=controller.domain.com one_api_username=duffy one_api_password=NiceTry one_api_url=http://localhost:2633/RPC2 one_template_id=14"
+#
+# Variables:
+#
+#  one_controller_host: the opennebule frontend node (for delegation)
+#  one_api_username: username to use auth for opennebula
+#  one_api_password: password for that user
+#  one_api_url: opennebula RPC url, http://localhost:2633/RPC2 is the default one
+#  one_template_id: the 'existing' template ID (containing image, network, etc) that we want to provision
+
+
+- hosts: "{{ one_controller_host }}"
+  vars:
+    - one_api_username: ""
+    - one_api_password: ""
+    - one_api_url: ""
+    - one_template_id: ""
+
+  tasks:
+    - name: Deploying Opennebula template
+      one_vm:
+        template_id: "{{ one_template_id }}"
+        api_username: "{{ one_api_username }}"
+        api_password: "{{ one_api_password }}"
+        api_url: "{{ one_api_url }}"
+        count: 1
+        attributes:
+          name: 'cico-###'
+      register: onevm_result
+
+    - debug:
+        var: onevm_result.instances[0].networks[0].ip
+
+    - name: Waiting for OneVM to be available on network
+      wait_for:
+        host: '{{ onevm_result.instances[0].networks[0].ip }}'
+        port: 22
+        delay: 5
