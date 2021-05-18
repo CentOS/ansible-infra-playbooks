@@ -24,6 +24,7 @@
 - import_playbook: role-kojibot.yml
 - import_playbook: role-kojid.yml
 - import_playbook: role-kojihub.yml
+- import_playbook: role-krb5-client.yml
 - import_playbook: role-kvm-host.yml
 - import_playbook: role-lsyncd.yml
 - import_playbook: role-mailman.yml

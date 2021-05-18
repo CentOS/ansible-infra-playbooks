@@ -51,6 +51,8 @@
   name: kojid
 - src: https://github.com/CentOS/ansible-role-kojihub
   name: kojihub
+- src: https://github.com/CentOS/ansible-role-krb5-client
+  name: krb5-client
 - src: https://github.com/CentOS/ansible-role-kvm-host
   name: kvm-host
 - src: https://github.com/CentOS/ansible-role-lsyncd
