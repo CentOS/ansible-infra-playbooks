@@ -1,3 +1,11 @@
+# Merging CI and previous setup so different variables, let's merge
+{% set centos_version = centos_dist %}
+{% set arch = centos_arch %}
+# Let's setup for Serial console for CI and seamicro (no vga at all)
+{% if pxe_boot_serial is defined and pxe_boot_serial %}
+SERIAL 0 9600
+DEFAULT text
+{% endif %}
 DEFAULT {{ inventory_hostname }}-deploy
 PROMPT 0
 TIMEOUT 50
@@ -12,8 +20,8 @@ LABEL local
 LABEL {{ inventory_hostname}}-deploy
         MENU LABEL CentOS {{ centos_version }} {{ arch }}- Kickstart for {{ inventory_hostname }}
         kernel boot/centos/{{ centos_version }}/{{ arch }}/vmlinuz
-         {% if centos_version == 7 or centos_version == 8 or centos_version == '8-stream' -%}
-	append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+         {% if centos_version == '7' or centos_version == '8' or centos_version == '8-stream' -%}
+	append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg {%if pxe_boot_serial is defined and pxe_boot_serial %} console=ttyS0,115200n8 {% endif %} 
          {% else -%}
-        append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img ksdevice=eth0 ip=dhcp ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg
+        append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img ksdevice=eth0 ip=dhcp ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg {%if pxe_boot_serial is defined and pxe_boot_serial %} console=ttyS0,115200n8 {% endif %}
          {% endif %}
