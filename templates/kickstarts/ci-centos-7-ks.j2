@@ -1,0 +1,87 @@
+{% if centos_arch == 'x86_64' %}
+{% set basepath = 'centos' %}
+{% else %}
+{% set basepath = 'altarch' %}
+{% endif %}
+#version=RHEL7
+# System authorization information
+auth --enableshadow --passalgo=sha512
+
+# Use network installation
+url --url="http://mirror.centos.org/{{ basepath }}/7/os/{{ centos_arch }}/"
+# Run the Setup Agent on first boot
+firstboot --enable
+#ignoredisk --only-use=sda
+# Keyboard layouts
+# old format: keyboard be-latin1
+# new format:
+keyboard --vckeymap=be-latin1 --xlayouts='be'
+# System language
+lang en_GB.UTF-8
+
+# Network information
+network  --bootproto=static --device=eth0 --gateway={{ gateway }} --ip={{ ip }} --nameserver={{ nameserver }} --netmask={{ netmask }} --ipv6=auto --activate 
+network  --hostname={{ inventory_hostname }}
+# Root password
+rootpw --iscrypted $6$uPDi1RLccGatUM7N$es3S/p/J7/wQY5sN4PUxfk0ELNmVDddnNs/NCHJWTep9xQcRZ8xkOtDBHfqKTWM4CZQjLOXM0wZpL0tvo4D.41
+# System services
+services --enabled="chronyd"
+# System timezone
+timezone Europe/London --isUtc --ntpservers=0.centos.pool.centos.org,1.centos.pool.ntp.org,2.centos.pool.ntp.centos.org,3.centos.pool.ntp.centos.org
+# System bootloader configuration
+bootloader --location=mbr --boot-drive=mpatha
+# Partition clearing information
+clearpart --all --initlabel 
+# Disk partitioning information
+part /boot --fstype="ext4" --ondisk=mpatha --size=500
+part pv.14 --fstype="lvmpv" --ondisk=mpatha --size=10000 --grow
+volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.14
+logvol /  --fstype="xfs" --size=8200 --name=root --vgname=vg_{{ inventory_hostname_short }} --grow --maxsize=1000000
+logvol swap  --fstype="swap" --size=2136 --name=swap --vgname=vg_{{ inventory_hostname_short }}
+
+repo --name="base" --baseurl=http://mirror.centos.org/{{ basepath }}/7/os/{{ centos_arch }}/ --cost=100
+repo --name="updates" --baseurl=http://mirror.centos.org/{{ basepath }}/7/updates/{{ centos_arch }}/ --cost=100
+repo --name="ci-admin" --baseurl=http://repo.ci.centos.org/repo/admin/7/{{ centos_arch }}/ --cost=100
+repo --name="cr" --baseurl=http://mirror.centos.org/{{ basepath }}/7/cr/{{ centos_arch }}/ --cost=100
+
+reboot
+
+%packages
+@core
+chrony
+policycoreutils-python
+openssh-clients
+yum-utils
+sysstat
+
+%end
+
+%pre
+#!/bin/bash
+# Forcing performance instead of ondemand for AMD cpufreq_governor
+for i in {0..7} ; do echo performance > /sys/devices/system/cpu/cpu${i}/cpufreq/scaling_governor ; done
+# Forcing multibus (active/active) instead of failover for multipath devices
+/sbin/mpathconf --enable --with_multipathd y
+/sbin/multipath -F
+/sbin/multipath -r -p multibus
+/sbin/multipath -l
+/sbin/multipath -ll
+sed -i s/"user_friendly_names yes"/"user_friendly_names yes \n        path_grouping_policy multibus"/g /etc/multipath.conf
+%end
+
+%post
+
+# Injecting custom ssh pub key for root
+mkdir /root/.ssh
+echo "ssh-dss AAAAB3NzaC1kc3MAAACBAMNO2Yg/wRGMAf+sGYCRt5Awaq9Wuk/Flmt72p0l8j1WsmZi9qc4khnQi9asLxSFQmjpjp4L7kT5/53wQ/uuNrWMUksXA0StV7VBgmno/4xFnx668w5grhJ2pvmOC3RaT4eoQ2XkJeiHuyJxR6IbvzgBpAiomJR1g+mRVShfmUrPAAAAFQCQ5BN5/iAarg2p6rABCRaByapE9wAAAIEAohQP+6mrN+6vS8TyBr4KnEdC9r+681pO+ThlXvshaLZ3B9ZOC5nmbA9CW2BaEDQ+yWJiKm4Xq/XuQCCUXPERdr5QWN+mkLU6DGVfe8fqmlXMxUcgSz58zRVtmYRLJ8iDlCgfEvztrqSh0AjHK9zFF8buKFYKAAdvMFv6ZVSkyTUAAACAP/djl90gncguAAbGa4PdsvrvtmNOeT1gsykS2KBjh68CjY9ge3eEyQutnLlwkKAo/u36/U//5l3KooA8scFpfCv00PTghGcVrYHSVmqp5oUelvqhwn3NuElFYxyXVT+eZVBv+F9KuaMo6jhWFsgBrQhrxh5IwmjNO4dFDcTCHZ0= duffy@admin.ci.centos.org" >> /root/.ssh/authorized_keys
+#echo "{{ ssh_pub_key }}" >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
+
+#Forcing ci.centos.org as search domain in resolv.conf 
+echo "DOMAIN=ci.centos.org" >> /etc/sysconfig/network-scripts/ifcfg-eth0
+
+yum-config-manager --enable cr
+
+%end
+

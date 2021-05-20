@@ -1,0 +1,75 @@
+# System authorization information
+auth --enableshadow --passalgo=sha512
+
+# Use network installation
+url --url="http://mirror.centos.org/centos/8/BaseOS/{{ centos_arch }}/os"
+# Run the Setup Agent on first boot
+firstboot --enable
+#ignoredisk --only-use=sda
+# Keyboard layouts
+# old format: keyboard be-latin1
+# new format:
+keyboard --vckeymap=be-latin1 --xlayouts='be'
+# System language
+lang en_GB.UTF-8
+
+# Network information
+network  --bootproto=static --device=eth0 --gateway={{ gateway }} --ip={{ ip }} --nameserver={{ nameserver }} --netmask={{ netmask }} --ipv6=auto --activate
+network  --hostname={{ inventory_hostname }}
+# Root password
+rootpw --iscrypted $6$uPDi1RLccGatUM7N$es3S/p/J7/wQY5sN4PUxfk0ELNmVDddnNs/NCHJWTep9xQcRZ8xkOtDBHfqKTWM4CZQjLOXM0wZpL0tvo4D.41
+# System services
+services --enabled="chronyd"
+# System timezone
+timezone Europe/London --isUtc
+# System bootloader configuration
+bootloader --location=mbr --boot-drive=mpatha
+# Partition clearing information
+clearpart --all --initlabel
+# Disk partitioning information
+part /boot --fstype="ext4" --ondisk=mpatha --size=500
+part pv.14 --fstype="lvmpv" --ondisk=mpatha --size=10000 --grow
+volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.14
+logvol /  --fstype="xfs" --size=8200 --name=root --vgname=vg_{{ inventory_hostname_short }} --grow --maxsize=1000000
+logvol swap  --fstype="swap" --size=2136 --name=swap --vgname=vg_{{ inventory_hostname_short }}
+
+repo --name="base" --baseurl=http://mirror.centos.org/centos/8/BaseOS/{{ centos_arch }}/os --cost=100
+repo --name="appstream" --baseurl=http://mirror.centos.org/centos/8/AppStream/{{ centos_arch }}/os --cost=100
+repo --name="cr" --baseurl=http://mirror.centos.org/centos/8/cr/{{ centos_arch }}/os --cost=100
+
+reboot
+
+%packages
+@core
+
+%end
+
+%pre
+#!/bin/bash
+# Forcing performance instead of ondemand for AMD cpufreq_governor
+for i in {0..7} ; do echo performance > /sys/devices/system/cpu/cpu${i}/cpufreq/scaling_governor ; done
+# Forcing multibus (active/active) instead of failover for multipath devices
+/sbin/mpathconf --enable --with_multipathd y
+/sbin/multipath -F
+/sbin/multipath -r -p multibus
+/sbin/multipath -l
+/sbin/multipath -ll
+sed -i s/"user_friendly_names yes"/"user_friendly_names yes \n path_grouping_policy multibus"/g /etc/multipath.conf
+%end
+
+%post
+
+# Injecting custom ssh pub key for root
+mkdir /root/.ssh
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZzW9w3DN5oHQfyusxAXGqC//tVACrmHZhhNV+axzBF21nMn9402xqG6b5e4uY0W4JH8/FriUyy/hUgxtpXWIEH1ETaBJocqvM2QsNFczB/UDzovHfAczt2C7l7uG8Mezh3ubhQs+JGfV9DeUocldYyv2L83nGxXtySvqRGxcBfheyvZfp0pd6XPNgdJtee7aL1XW+nHH9K4mzWRc8hAxRezecBKbtXbWIouC+ttwU19AKfAiU1wouSo8b/0B8nVYMBPm58Pu+AKsjG0tRhJIH15MLQhgG6+2g3H8Ig28Y77YJkKE09+EBx+/Lob5cY9Y9oA7A+KGw9y4ShOJ7poC1 duffy@n1.hufty.ci.centos.org" >> /root/.ssh/authorized_keys
+#echo "{{ ssh_pub_key }}" >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
+
+#Forcing ci.centos.org as search domain in resolv.conf
+echo "DOMAIN=ci.centos.org" >> /etc/sysconfig/network-scripts/ifcfg-eth0
+
+dnf config-manager --enable cr
+
+%end
+
