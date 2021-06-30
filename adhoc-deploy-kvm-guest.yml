@@ -1,4 +1,26 @@
 ---
+# This Ad Hoc task will deploy a KVM virtual machine on existing KVM host
+# If you define a bridge network, it has to exist first of course on the kvm host, defined by the ansible-role-kvm-host role
+# Needed variables (per host or group inheritance):
+# kvm_host: The kvm host on which to deploy the guest (string)
+# kvm_guest_vcpus: number or cores to add to define the vm (string)
+# kvm_guest_memory: available RAM for the guest (string, in MB)
+# kvm_guest_disk_size: the qcow2 image size for the guest (string, in GB)
+# kvm_guest_luks_encrypted: if we want to encrypt disk (boolean : True|False)
+# kvm_guest_luks_passphrase: if we enabled it (see above) : the passphrase to crypt the disk
+#  Account:
+# kvm_guest_root_pass: the root account password to define by default
+#  Network settings:
+# kvm_guest_bridge: (boolean, True|False) : using an existing bridge on the kvm host
+# kvm_host_bridge: the bridge name to use if above is enabled (string, like br0)
+# kvm_guest_default_net: if kvm_guest_bridge is False, which other network we want to use, like 'default' (string)
+# kvm_guest_arch: the architecture for the guest (string, like x86_64, aarch64, ppc64le, etc)
+# kvm_guest_ip: ip address for the guest (string)
+# kvm_guest_netmask: netmask for the guest (string)
+# kvm_guest_gateway: gateway ip address for the guest (string)
+# kvm_guest_nameserver: resolver ip address to use for the guest (string)
+#
+
 - hosts: "{{ init_kvm_guests }}"
   become: true
   gather_facts: false
