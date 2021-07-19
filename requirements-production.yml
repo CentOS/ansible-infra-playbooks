@@ -125,6 +125,8 @@
   name: repospanner
 - src: https://github.com/CentOS/ansible-role-restic
   name: restic
+- src: https://github.com/CentOS/ansible-role-robosignatory
+  name: robosignatory
 - src: https://github.com/CentOS/ansible-role-rsnapshot
   name: rsnapshot
 - src: https://github.com/CentOS/ansible-role-rsyncd
