@@ -20,7 +20,8 @@
 # kvm_guest_gateway: gateway ip address for the guest (string)
 # kvm_guest_nameserver: resolver ip address to use for the guest (string)
 #
-
+#  Operating System
+# centos_version: which centos os version to deploy (string, like 8, 8-stream, etc) 
 - hosts: "{{ init_kvm_guests }}"
   become: true
   gather_facts: false
