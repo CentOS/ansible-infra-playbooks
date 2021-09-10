@@ -1,8 +1,8 @@
 # Merging CI and previous setup so different variables, let's merge
 {% set centos_version = centos_dist %}
 {% set arch = centos_arch %}
-# Let's setup for Serial console for CI and seamicro (no vga at all)
 {% if pxe_boot_serial is defined and pxe_boot_serial %}
+# Let's setup for Serial console for CI and seamicro (no vga at all)
 SERIAL 0 9600
 DEFAULT text
 {% endif %}
