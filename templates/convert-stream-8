@@ -1,0 +1,15 @@
+#!/bin/bash
+logfile="/var/log/centos-convert-stream.log"
+rpm -q centos-stream-repos 2>&1 >/dev/null 
+if [ "$?" -ne "0" ] ; then
+  dnf swap -y -d 0 -q centos-linux-repos centos-stream-repos >> $logfile && dnf distro-sync -y -q -d 0 >> $logfile 2>&1
+  if [ "$?" -ne "0" ] ;then
+    echo "Error converting to Stream 8" >> $logfile
+    exit 1
+  else
+    exit 2
+  fi
+else
+  exit 0
+fi
+

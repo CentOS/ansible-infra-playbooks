@@ -1,0 +1,21 @@
+# Convert CentOS 8 nodes to CentOS Stream 8
+---
+- hosts: all
+  become: True
+
+  tasks:
+    - block: 
+        - name: Importing convert shell script
+          template:
+            src: convert-stream-8
+            dest: /var/tmp/convert-stream-8
+            mode: 0750
+            owner: root
+
+        - name: Converting to stream 8
+          command: 
+            cmd: /var/tmp/convert-stream-8
+          register: result
+          changed_when: result.rc == 2
+          failed_when: result.rc == 1
+      when: ansible_distribution_major_version == '8'   
