@@ -1,0 +1,13 @@
+---
+- hosts: "{{ target }}"
+  become: True
+  vars_prompt:
+    - name: "target"
+      prompt: "Host to upgrade to latest Jenkins TLS version => "
+      private: no
+
+  tasks: 
+    - name: Upgrading Jenkins to latest version on "{{ target }}"
+      yum:
+        name: jenkins
+        state: latest
