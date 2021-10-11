@@ -218,6 +218,9 @@
 - src: https://github.com/CentOS/ansible-role-vbox-host
   name: vbox-host
   version: staging
+- src: https://github.com/CentOS/ansible-role-vsftpd
+  name: vsftpd
+  version: staging
 - src: https://github.com/CentOS/ansible-role-wp
   name: wp
   version: staging

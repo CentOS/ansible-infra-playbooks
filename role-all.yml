@@ -71,6 +71,7 @@
 - import_playbook: role-sync2s3.yml
 - import_playbook: role-unbound.yml
 - import_playbook: role-vbox-host.yml
+- import_playbook: role-vsftpd.yml
 - import_playbook: role-wp.yml
 - import_playbook: role-zabbix-agent.yml
 - import_playbook: role-zabbix-proxy.yml
