@@ -9,6 +9,8 @@
 #  ks_url: http://your.node/path/to/ks_dir # where to find the generated kickstarts
 #  use_md_raid: True # Default to use md_raid for /dev/sda and /dev/sdb
 #  md_raid_level: 1
+#  hdd_install_dev: sda # default but can point to mpatha for multipath, etc
+#  pxe_boot_serial: False # boolean if we only have serial console like on seamicro chassis
 #  lv_root_size: 10000 # in GB
 #  lv_root_expand: False  # do we want to have / to max capacity of the VG ?
 #  lv_home_size: 2048 # in GB
