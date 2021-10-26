@@ -12,7 +12,7 @@ url --url="http://mirror.centos.org/centos/7/os/{{ arch }}/"
 text
 # Disabling Setup Agent on first boot
 firstboot --disable
-ignoredisk --only-use=sda,sdb
+# ignoredisk --only-use=sda,sdb
 # Keyboard layouts
 # old format: keyboard be-latin1
 # new format:
@@ -43,7 +43,7 @@ rootpw --iscrypted {{ root_pass | password_hash('sha512') }}
 # System timezone
 timezone Etc/UTC --isUtc
 # System bootloader configuration
-bootloader --location=mbr --boot-drive=sda
+bootloader --location=mbr --boot-drive={{ hdd_install_dev | default('sda')}}
 # Partition clearing information
 clearpart --all --initlabel
 zerombr
@@ -74,8 +74,8 @@ volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.609
 
 {% else %}
 # Not using software raid
-part /boot --fstype="ext4" --ondisk=sda --size=1024
-part pv.14 --fstype="lvmpv" --ondisk=sda --size=20000 --grow
+part /boot --fstype="ext4" --ondisk={{ hdd_install_dev | default('sda')}} --size=1024
+part pv.14 --fstype="lvmpv" --ondisk={{ hdd_install_dev | default('sda')}} --size=20000 --grow
 volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.14
 {% endif %}
 # Common section for partitions : on top of VG, despite md device or not, see above
