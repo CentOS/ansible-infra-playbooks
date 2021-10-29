@@ -1,0 +1,21 @@
+---
+- hosts: "{{ ipmi_target }}"
+  vars_prompt:
+    - name: "ipmi_target"
+      prompt: "Host to reset and boot over pxe  ? "
+      private: no
+  gather_facts: False
+
+  tasks:
+    - name: == Hardware provisioning == configuring pxe boot
+      command: ipmitool -I lanplus -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" -H "{{ ipmi_ip }}" chassis bootdev pxe
+      delegate_to: "{{ ipmitool_host }}"
+
+    - name: Resetting node through ipmi (in case it's already powered on)
+      shell: ipmitool -H "{{ ipmi_ip }}" -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" -I lanplus chassis power reset
+      delegate_to: "{{ ipmitool_host }}"
+
+    - name: Powering on node[s] through ipmi (in case it's powered off)
+      shell: ipmitool -H "{{ ipmi_ip }}" -U "{{ ipmi_user }}" -P "{{ ipmi_pass }}" -I lanplus chassis power on
+      delegate_to: "{{ ipmitool_host }}"
+ 
