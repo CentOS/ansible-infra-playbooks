@@ -2,5 +2,25 @@
 - name: restart_sshd
   service:
     name: sshd
+    state: restarted 
+
+- name: restart_rsyncd
+  service:
+    name: rsyncd
     state: restarted
 
+- name: rebuild_rsyncd
+  assemble:
+    src: /etc/rsyncd.d/
+    dest: /etc/rsyncd.conf
+  notify: restart_rsyncd
+
+- name: restart_httpd
+  service: 
+    name: httpd 
+    state: restarted
+
+- name: reload_httpd
+  service:
+    name: httpd
+    state: reloaded

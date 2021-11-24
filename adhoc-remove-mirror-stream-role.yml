@@ -1,0 +1,79 @@
+---
+# This ad-hoc playbook can be used to "revert" the ansible-mirror role that would fetch by default stream9 content
+# Some sponsored mirrors don't have enough space for both, so we'll just remove the Stream 9 content (that is huge as it contains also src and debuginfo packages
+# Before launching this playbook you'd need to ensure that mirror_stream_content is set to `False` in ansible inventory (and pushed) : we don't want to have automated ansible replay the settings the other way around
+#
+
+- hosts: "{{ mirror_host }}"
+  become: true
+  gather_facts: false
+  vars_prompt:
+    - name: "mirror_host"
+      prompt: "[WARNING] Nodes to remove from mirror.stream.centos.org pool => "
+      private: no
+  handlers:
+    - import_tasks: handlers/main.yml
+
+
+  tasks:
+    - assert:
+        that:
+          - not mirror_stream_content
+        fail_msg: "{{ mirror_host }} see to inherit mirror_stream_content boolean to True !"
+
+    - block:
+        - name: Updating PDNS GeoIP backend to remove stream roles
+          shell:
+            cmd: echo "update nodes set \"{{ item }}\"='false' where fqdn='{{ mirror_host }}';" |sqlite3 nodes.db
+            chdir: /var/lib/centos-infra/
+          with_items:
+            - mirror.stream
+            - rsync.stream
+          delegate_to: "{{ pdns_db_host }}"
+
+        - name: Regenerating .json backend for powerdns and wait a little bit for dns propagation  
+          shell:
+            cmd: ./gen_backend ; sleep 15
+            chdir: /var/lib/centos-infra
+          delegate_to: "{{ pdns_db_host }}"
+        
+        - name: Ensuring we don't actually try to fetch Stream content
+          become_user: centos
+          shell:
+            cmd: pkill -9 rsync ; /bin/true
+          tags:
+            - centos
+        - name: Cron job to rsync Stream 9content from upstream node
+          cron:
+            name: "CentOS mirror.stream rsync job"
+            job: "/home/{{ mirror_local_user }}-scripts/rsync-stream-full {{ mirror_rsync_from }} > /dev/null 2>&1"
+            minute: "*/7"
+            user: "{{ mirror_local_user }}"
+            state: absent
+          tags:
+            - cron
+        - name: Cleaning up some files coming from role (not needed anymore)
+          file:
+            path: "{{ item }}"
+            state: absent
+          with_items:
+            - /etc/httpd/conf.d/11_mirror_stream.conf
+            - /etc/rsyncd.d/02_CentOS-Stream.conf
+            - /etc/rsyncd.d/03_centosstream.conf
+          notify:
+            - reload_httpd
+            - rebuild_rsyncd
+          
+        - name: Removing stream content
+          file:
+            path: /home/centos-stream
+            state: absent
+          register: stream_content  
+          tags:
+            - cleanup
+
+        - name: Reporting zabbix value
+          shell: zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k msync.stream.diff -o 5
+          when: stream_content is changed
+          tags:
+            - cleanup
