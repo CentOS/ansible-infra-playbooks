@@ -11,6 +11,9 @@
 - src: https://github.com/CentOS/ansible-role-boot-server
   name: boot-server
   version: staging
+- src: https://github.com/CentOS/ansible-role-cachethq
+  name: cachethq
+  version: staging
 - src: https://github.com/CentOS/ansible-role-centbot
   name: centbot
   version: staging
@@ -166,6 +169,9 @@
   version: staging
 - src: https://github.com/CentOS/ansible-role-planet
   name: planet
+  version: staging
+- src: https://github.com/CentOS/ansible-role-podman-host
+  name: podman-host
   version: staging
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix

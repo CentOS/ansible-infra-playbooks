@@ -7,6 +7,8 @@
   name: bind
 - src: https://github.com/CentOS/ansible-role-boot-server
   name: boot-server
+- src: https://github.com/CentOS/ansible-role-cachethq
+  name: cachethq
 - src: https://github.com/CentOS/ansible-role-centbot
   name: centbot
 - src: https://github.com/CentOS/ansible-role-centos-backup
@@ -111,6 +113,8 @@
   name: phpbb
 - src: https://github.com/CentOS/ansible-role-planet
   name: planet
+- src: https://github.com/CentOS/ansible-role-podman-host
+  name: podman-host
 - src: https://github.com/CentOS/ansible-role-postfix
   name: postfix
 - src: https://github.com/CentOS/ansible-role-postgresql
