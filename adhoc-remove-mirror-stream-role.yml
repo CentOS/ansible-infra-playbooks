@@ -6,6 +6,7 @@
 
 - hosts: "{{ mirror_host }}"
   become: true
+  strategy: linear
   gather_facts: false
   vars_prompt:
     - name: "mirror_host"
@@ -31,18 +32,27 @@
             - rsync.stream
           delegate_to: "{{ pdns_db_host }}"
 
-        - name: Regenerating .json backend for powerdns and wait a little bit for dns propagation  
+        - name: Regenerating .json backend for powerdns infra
           shell:
-            cmd: ./gen_backend ; sleep 15
+            cmd: ./gen_backend 
             chdir: /var/lib/centos-infra
           delegate_to: "{{ pdns_db_host }}"
-        
+  
+        - name: Reloading directly powerdns zone on pdns nodes
+          command:
+            cmd: /var/lib/centos-pdns/backend_download
+          delegate_to: "{{ item }}"  
+          with_items: "{{ groups['pdns-nodes'] }}"
+          tags:
+            - pdns
+
         - name: Ensuring we don't actually try to fetch Stream content
           become_user: centos
           shell:
             cmd: pkill -9 rsync ; /bin/true
           tags:
             - centos
+
         - name: Cron job to rsync Stream 9content from upstream node
           cron:
             name: "CentOS mirror.stream rsync job"
