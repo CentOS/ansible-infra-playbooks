@@ -6,16 +6,25 @@
     - name: "target"
       prompt: "Host to modify in PowerDNS ? => "
       private: no
-    - name: "action"
+    - name: "pdns_action"
       prompt: "Action (enable|disable) ? => "
       private: no
   become: True    
+  strategy: linear
   gather_facts: False
 
   tasks:
     - name: Enable/Disable msync node in PowerDNS geoip backend
       shell: 
-        cmd: /var/lib/centos-infra/host-modify -a "{{ action }}" -n "{{ target }}"
+        cmd: /var/lib/centos-infra/host-modify -a "{{ pdns_action }}" -n "{{ target }}"
         chdir: /var/lib/centos-infra
       delegate_to: "{{ zabbix_api_srv }}"
     
+    - name: Reloading directly powerdns zone on pdns nodes
+      command:
+        cmd: /var/lib/centos-pdns/backend_download
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['pdns-nodes'] }}"
+      tags:
+        - pdns
+
