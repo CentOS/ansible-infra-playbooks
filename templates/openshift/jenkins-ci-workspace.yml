@@ -1,0 +1,310 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  app: cico-workspace
+  template: cico-workspace-template
+message: A Jenkins service has been created in your project.
+metadata:
+  annotations:
+    description: |-
+      Jenkins service, with persistent storage, for deployment in the ci.centos.org infrastructure.
+
+    iconClass: icon-jenkins
+    openshift.io/display-name: cico-workspace
+    openshift.io/documentation-url: https://docs.openshift.org/latest/using_images/other_images/jenkins.html
+    openshift.io/long-description: This template deploys a Jenkins server for using test resources in ci.centos.org
+    openshift.io/provider-display-name: The CentOS Project
+    openshift.io/support-url: https://bugs.centos.org
+    template.openshift.io/bindable: "false"
+    tags: instant-app,jenkins
+  creationTimestamp: null
+  name: cico-workspace
+objects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: duffy-ssh-key
+  type: kubernetes.io/ssh-auth
+  stringData:
+    ssh-privatekey: |
+      {{ duffy_ssh_key | indent(6) }}
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    name: duffy-api-key
+  type: Opaque
+  stringData:
+    key: {{ duffy_api_key }}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      haproxy.router.openshift.io/timeout: 4m
+      template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+    name: ${JENKINS_SERVICE_NAME}
+  spec:
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${JENKINS_SERVICE_NAME}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: ${JENKINS_SERVICE_NAME}
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: ${VOLUME_CAPACITY}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    name: ${JENKINS_SERVICE_NAME}
+  spec:
+    replicas: 1
+    selector:
+      name: ${JENKINS_SERVICE_NAME}
+    strategy:
+      type: Recreate
+      recreateParams:
+        timeoutSeconds: 1200
+    template:
+      metadata:
+        labels:
+          name: ${JENKINS_SERVICE_NAME}
+      spec:
+        containers:
+        - capabilities: {}
+          env:
+          - name: OPENSHIFT_ENABLE_OAUTH
+            value: ${ENABLE_OAUTH}
+          - name: OPENSHIFT_ENABLE_REDIRECT_PROMPT
+            value: "true"
+          - name: DISABLE_ADMINISTRATIVE_MONITORS
+            value: ${DISABLE_ADMINISTRATIVE_MONITORS}
+          - name: KUBERNETES_MASTER
+            value: https://kubernetes.default:443
+          - name: KUBERNETES_TRUST_CERTIFICATES
+            value: "true"
+          - name: JENKINS_SERVICE_NAME
+            value: ${JENKINS_SERVICE_NAME}
+          - name: JNLP_SERVICE_NAME
+            value: ${JNLP_SERVICE_NAME}
+          image: ' '
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 2
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 420
+            periodSeconds: 360
+            timeoutSeconds: 240
+          name: jenkins
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 3
+            timeoutSeconds: 240
+          resources:
+            limits:
+              memory: ${MEMORY_LIMIT}
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+          - mountPath: /var/lib/jenkins
+            name: ${JENKINS_SERVICE_NAME}-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        serviceAccountName: ${JENKINS_SERVICE_NAME}
+        volumes:
+        - name: ${JENKINS_SERVICE_NAME}-data
+          persistentVolumeClaim:
+            claimName: ${JENKINS_SERVICE_NAME}
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - jenkins
+        from:
+          kind: ImageStreamTag
+          name: ${JENKINS_IMAGE_STREAM_TAG}
+          namespace: ${NAMESPACE}
+        lastTriggeredImage: ""
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"${JENKINS_SERVICE_NAME}"}}'
+    name: ${JENKINS_SERVICE_NAME}
+- apiVersion: v1
+  groupNames: null
+  kind: RoleBinding
+  metadata:
+    name: ${JENKINS_SERVICE_NAME}_edit
+  roleRef:
+    name: edit
+  subjects:
+  - kind: ServiceAccount
+    name: ${JENKINS_SERVICE_NAME}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${JNLP_SERVICE_NAME}
+  spec:
+    ports:
+    - name: agent
+      nodePort: 0
+      port: 50000
+      protocol: TCP
+      targetPort: 50000
+    selector:
+      name: ${JENKINS_SERVICE_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "${JNLP_SERVICE_NAME}",
+        "namespace": "", "kind": "Service"}]'
+      service.openshift.io/infrastructure: "true"
+    name: ${JENKINS_SERVICE_NAME}
+  spec:
+    ports:
+    - name: web
+      nodePort: 0
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      name: ${JENKINS_SERVICE_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    labels:
+      role: jenkins-slave
+    name: cico-workspace
+  data:
+    cico-workspace: |-
+          <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+            <inheritFrom></inheritFrom>
+            <name>cico-workspace</name>
+            <privileged>false</privileged>
+            <capOnlyOnAlivePods>false</capOnlyOnAlivePods>
+            <alwaysPullImage>false</alwaysPullImage>
+            <instanceCap>2147483647</instanceCap>
+            <slaveConnectTimeout>100</slaveConnectTimeout>
+            <idleMinutes>0</idleMinutes>
+            <activeDeadlineSeconds>0</activeDeadlineSeconds>
+            <label>cico-workspace</label>
+            <nodeSelector></nodeSelector>
+            <nodeUsageMode>EXCLUSIVE</nodeUsageMode>
+            <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
+            <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
+              <memory>false</memory>
+            </workspaceVolume>
+            <volumes>
+              <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                <mountPath>/duffy-ssh-key/</mountPath>
+                <secretName>duffy-ssh-key</secretName>
+                <defaultMode></defaultMode>
+              </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+            </volumes>
+            <containers>
+              <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                <name>jnlp</name>
+                <image>quay.io/centosci/cico-workspace:latest</image>
+                <privileged>false</privileged>
+                <alwaysPullImage>true</alwaysPullImage>
+                <workingDir>/tmp</workingDir>
+                <command></command>
+                <args>${computer.jnlpmac} ${computer.name}</args>
+                <ttyEnabled>true</ttyEnabled>
+                <resourceRequestCpu></resourceRequestCpu>
+                <resourceRequestMemory></resourceRequestMemory>
+                <resourceLimitCpu></resourceLimitCpu>
+                <resourceLimitMemory></resourceLimitMemory>
+                <envVars>
+                  <org.csanchez.jenkins.plugins.kubernetes.model.SecretEnvVar>
+                    <key>CICO_API_KEY</key>
+                    <secretName>duffy-api-key</secretName>
+                    <secretKey>key</secretKey>
+                  </org.csanchez.jenkins.plugins.kubernetes.model.SecretEnvVar>
+                </envVars>
+                <ports/>
+                <livenessProbe>
+                  <execArgs></execArgs>
+                  <timeoutSeconds>0</timeoutSeconds>
+                  <initialDelaySeconds>0</initialDelaySeconds>
+                  <failureThreshold>0</failureThreshold>
+                  <periodSeconds>0</periodSeconds>
+                  <successThreshold>0</successThreshold>
+                </livenessProbe>
+              </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+            </containers>
+            <envVars/>
+            <annotations/>
+            <imagePullSecrets/>
+            <nodeProperties/>
+            <yamlMergeStrategy class="org.csanchez.jenkins.plugins.kubernetes.pod.yaml.Overrides"/>
+            <showRawYaml>true</showRawYaml>
+            <podRetention class="org.csanchez.jenkins.plugins.kubernetes.pod.retention.OnFailure"/>
+          </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+parameters:
+- description: The name of the OpenShift Service exposed for the Jenkins container.
+  displayName: Jenkins Service Name
+  name: JENKINS_SERVICE_NAME
+  value: jenkins
+- description: The name of the service used for master/slave communication.
+  displayName: Jenkins JNLP Service Name
+  name: JNLP_SERVICE_NAME
+  value: jenkins-jnlp
+- description: Whether to enable OAuth OpenShift integration. If false, the static
+    account 'admin' will be initialized with the password 'password'.
+  displayName: Enable OAuth in Jenkins
+  name: ENABLE_OAUTH
+  value: "true"
+- description: Maximum amount of memory the container can use.
+  displayName: Memory Limit
+  name: MEMORY_LIMIT
+  value: 3072Mi
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Volume Capacity
+  name: VOLUME_CAPACITY
+  required: true
+  value: 10Gi
+- description: The OpenShift Namespace where the Jenkins ImageStream resides.
+  displayName: Jenkins ImageStream Namespace
+  name: NAMESPACE
+  value: openshift
+#- description: The Duffy API Key
+#  displayName: Duffy API Key
+#  name: DUFFY_API_KEY
+#  required: true
+#- description: The Duffy SSH Key
+#  displayName: Duffy SSH Key
+#  name: DUFFY_SSH_KEY
+#  required: true
+- description: Whether to perform memory intensive, possibly slow, synchronization
+    with the Jenkins Update Center on start.  If true, the Jenkins core update monitor
+    and site warnings monitor are disabled.
+  displayName: Disable memory intensive administrative monitors
+  name: DISABLE_ADMINISTRATIVE_MONITORS
+  value: "True"
+- description: Name of the ImageStreamTag to be used for the Jenkins image.
+  displayName: Jenkins ImageStreamTag
+  name: JENKINS_IMAGE_STREAM_TAG
+  value: jenkins:2
