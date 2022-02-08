@@ -3,13 +3,10 @@
   become: True
   gather_facts: False
 
-  pre_tasks:
-    - name: removing versionlock plugin
-      yum:
-        name: "*"
-        state: latest
-        update_cache: True
+  tasks:
+    - name: kojid is running
+      service: 
+        name: kojid
+        state: restarted
 
-  roles:
-    - kojid
 

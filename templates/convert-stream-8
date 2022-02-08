@@ -2,7 +2,13 @@
 logfile="/var/log/centos-convert-stream.log"
 rpm -q centos-stream-repos 2>&1 >/dev/null 
 if [ "$?" -ne "0" ] ; then
-  dnf swap -y -d 0 -q centos-linux-repos centos-stream-repos >> $logfile && dnf distro-sync -y -q -d 0 >> $logfile 2>&1
+  dnf swap -y -d 0 -q centos-linux-repos centos-stream-repos >> $logfile 
+  if [ "$?" -ne "0" ] ;then
+    rpm -e --nodeps centos-linux-repos  >> $logfile 2>&1
+    rpm -Uvh http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-4.el8.noarch.rpm http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-4.el8.noarch.rpm  >> $logfile 2>&1
+  fi
+  dnf distro-sync -y -q -d 0 >> $logfile 2>&1
+  fi
   if [ "$?" -ne "0" ] ;then
     echo "Error converting to Stream 8" >> $logfile
     exit 1

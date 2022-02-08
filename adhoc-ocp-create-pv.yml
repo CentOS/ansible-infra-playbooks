@@ -1,0 +1,106 @@
+---
+# This playbook is to create a persistent volume for openshift CI namespace
+# The node on which we'll run this should have the exported NFS volume mounted locally
+# using variables from inventory:
+#   ocp_nfs_server: (like node.domain)
+#   ocp_nfs_export: ocp-staging
+
+
+- hosts: "ocp-ci-management"
+  become: true
+  become_user: "{{ ocp_service_account }}"
+  vars_prompt:
+    - name: "ocp_project"
+      prompt: "Existing project/namespace in ocp we'll deploy jenkins to/for (has to exist before !) "
+      private: no
+    - name: "pv_name"
+      prompt: "Reason for PV (computed into uuid) "
+      private: no
+    - name: "pv_size"
+      prompt: "Persistent Volume size (example 10Gi) "
+      private: no
+
+
+  tasks:
+    - name: Generate a UUID
+      set_fact:
+        pv_uuid: "{{ (ocp_project + pv_claimref|default('noclaimref', true)) + pv_name | to_uuid }}"
+      tags:
+        - pv
+        - nfs
+
+    - name: UUID Generated
+      debug:
+        var: pv_uuid
+      tags:
+        - pv
+        - nfs
+
+    - name: Make a pv name
+      set_fact:
+        pv_name: "pv-{{ pv_size | lower }}-{{ pv_uuid }}"
+      tags:
+        - pv
+        - nfs
+
+    - name: UUID Generated
+      debug:
+        var: pv_name
+      tags:
+        - pv
+        - nfs
+
+    - name: See if the PV already exists
+      command: 
+        cmd: "bin/oc get pv/{{ pv_name }}"
+        chdir: "/home/{{ ocp_service_account }}"
+      register: results
+      changed_when: false
+      failed_when:
+        - results.rc == 0
+      tags:
+        - pv
+    
+    - block:
+        - name: Ensuring we have local mount point
+          file:
+            path: /mnt/ocp_store
+            state: directory
+
+        - name: Ensuring nfs export is mounted on mgmt station
+          mount:
+            fstype: nfs
+            src: "{{ ocp_nfs_server }}:{{ ocp_nfs_export }}"
+            path: /mnt/ocp_store
+            state: mounted
+            
+        - name: make directories for each PV
+          file:
+            path: "/mnt/ocp_store/{{ pv_name }}"
+            owner: nobody
+            group: nobody
+            mode: 0777
+            state: directory
+      become_user: root  
+      tags:
+        - pv
+        - nfs
+
+    - name: create json files for PV
+      template:
+        src: "templates/openshift-pv-storage/persistent-volume.json.j2"
+        dest: "/home/{{ ocp_service_account }}/pv_configs/{{ pv_name }}.json"
+      register: pv_init  
+      tags:
+        - pv
+
+    - name: apply the transformation
+      command: 
+        cmd: "bin/oc create -f pv_configs/{{ pv_name }}.json"
+        chdir: "/home/{{ ocp_service_account }}"
+      when: pv_init is changed
+      tags:
+        - pv
+      
+
+
