@@ -16,7 +16,7 @@ virt-install \
   --cpu host \
 {% endif %}
   --ram  {{ kvm_guest_memory }} \
-  --disk path=/var/lib/libvirt/images/{{ inventory_hostname}}.qcow2,size={{ kvm_guest_disk_size }},format=qcow2,device=disk,bus=virtio,cache=none \
+  --disk path={{ kvm_host_libvirt_images_path | default('/var/lib/libvirt/images') }}/{{ inventory_hostname}}.qcow2,size={{ kvm_guest_disk_size }},format=qcow2,device=disk,bus=virtio,cache=none \
   --nographics \
   --network {{ kvm_guest_network }},model=virtio \
 {% if kvm_guest_eth1_bridge is defined %}
