@@ -147,6 +147,8 @@
   name: sync2git
 - src: https://github.com/CentOS/ansible-role-sync2s3
   name: sync2s3
+- src: https://github.com/CentOS/ansible-role-tinyproxy
+  name: tinyproxy
 - src: https://github.com/CentOS/ansible-role-unbound
   name: unbound
 - src: https://github.com/CentOS/ansible-role-vbox-host

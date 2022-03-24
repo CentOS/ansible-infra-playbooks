@@ -221,6 +221,9 @@
 - src: https://github.com/CentOS/ansible-role-sync2s3
   name: sync2s3
   version: staging
+- src: https://github.com/CentOS/ansible-role-tinyproxy
+  name: tinyproxy
+  version: staging
 - src: https://github.com/CentOS/ansible-role-unbound
   name: unbound
   version: staging
