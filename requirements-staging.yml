@@ -1,247 +1,273 @@
----
-- src: https://github.com/CentOS/ansible-role-ansible-host
-  name: ansible-host
-  version: staging
-- src: https://github.com/CentOS/ansible-role-baseline
-  name: baseline
-  version: staging
-- src: https://github.com/CentOS/ansible-role-bind
-  name: bind
-  version: staging
-- src: https://github.com/CentOS/ansible-role-boot-server
-  name: boot-server
-  version: staging
-- src: https://github.com/CentOS/ansible-role-cachethq
-  name: cachethq
-  version: staging
-- src: https://github.com/CentOS/ansible-role-centbot
-  name: centbot
-  version: staging
-- src: https://github.com/CentOS/ansible-role-centos-backup
-  name: centos-backup
-  version: staging
-- src: https://github.com/CentOS/ansible-role-certbot
-  name: certbot
-  version: staging
-- src: https://github.com/CentOS/ansible-role-debuginfod
-  name: debuginfod
-  version: staging
-- src: https://github.com/CentOS/ansible-role-distgit-lookaside
-  name: distgit-lookaside
-  version: staging
-- src: https://github.com/CentOS/ansible-role-duffy
-  name: duffy
-  version: staging
-- src: https://github.com/CentOS/ansible-role-fedmsg
-  name: fedmsg
-  version: staging
-- src: https://github.com/CentOS/ansible-role-fedora-messaging-client
-  name: fedora-messaging-client
-  version: staging
-- src: https://github.com/CentOS/ansible-role-geoip2
-  name: geoip2
-  version: staging
-- src: https://github.com/CentOS/ansible-role-gitea
-  name: gitea
-  version: staging
-- src: https://github.com/CentOS/ansible-role-haproxy
-  name: haproxy
-  version: staging
-- src: https://github.com/CentOS/ansible-role-httpd
-  name: httpd
-  version: staging
-- src: https://github.com/CentOS/ansible-role-httpd-compose
-  name: httpd-compose
-  version: staging
-- src: https://github.com/CentOS/ansible-role-httpd-feeds
-  name: httpd-feeds
-  version: staging
-- src: https://github.com/CentOS/ansible-role-ipa-client
-  name: ipa-client
-  version: staging
-- src: https://github.com/CentOS/ansible-role-ipsilon
-  name: ipsilon
-  version: staging
-- src: https://github.com/CentOS/ansible-role-iptables
-  name: iptables
-  version: staging
-- src: https://github.com/CentOS/ansible-role-iscsid-target
-  name: iscsid-target
-  version: staging
-- src: https://github.com/CentOS/ansible-role-jenkins-server
-  name: jenkins-server
-  version: staging
-- src: https://github.com/CentOS/ansible-role-kanboard
-  name: kanboard
-  version: staging
-- src: https://github.com/CentOS/ansible-role-keepalived
-  name: keepalived
-  version: staging
-- src: https://github.com/CentOS/ansible-role-kojibot
-  name: kojibot
-  version: staging
-- src: https://github.com/CentOS/ansible-role-kojid
-  name: kojid
-  version: staging
-- src: https://github.com/CentOS/ansible-role-kojihub
-  name: kojihub
-  version: staging
-- src: https://github.com/CentOS/ansible-role-krb5-client
-  name: krb5-client
-  version: staging
-- src: https://github.com/CentOS/ansible-role-kvm-host
-  name: kvm-host
-  version: staging
-- src: https://github.com/CentOS/ansible-role-lsyncd
-  name: lsyncd
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mailman
-  name: mailman
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mantisbt
-  name: mantisbt
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mbs
-  name: mbs
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirmon
-  name: mirmon
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror
-  name: mirror
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror-buildlogs
-  name: mirror-buildlogs
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror-cloud
-  name: mirror-cloud
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror-debuginfo
-  name: mirror-debuginfo
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirrorlist
-  name: mirrorlist
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror-master
-  name: mirror-master
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror-qa
-  name: mirror-qa
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mirror-vault
-  name: mirror-vault
-  version: staging
-- src: https://github.com/CentOS/ansible-role-moin
-  name: moin
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mqtt
-  name: mqtt
-  version: staging
-- src: https://github.com/CentOS/ansible-role-mysql
-  name: mysql
-  version: staging
-- src: https://github.com/CentOS/ansible-role-nfs-server
-  name: nfs-server
-  version: staging
-- src: https://github.com/CentOS/ansible-role-ocp-admin-node
-  name: ocp-admin-node
-  version: staging
-- src: https://github.com/CentOS/ansible-role-odcs-backend
-  name: odcs-backend
-  version: staging
-- src: https://github.com/CentOS/ansible-role-odcs-frontend
-  name: odcs-frontend
-  version: staging
-- src: https://github.com/CentOS/ansible-role-opennebula-frontend
-  name: opennebula-frontend
-  version: staging
-- src: https://github.com/CentOS/ansible-role-opennebula-kvm-host
-  name: opennebula-kvm-host
-  version: staging
-- src: https://github.com/CentOS/ansible-role-opentracker
-  name: opentracker
-  version: staging
-- src: https://github.com/CentOS/ansible-role-pagure
-  name: pagure
-  version: staging
-- src: https://github.com/CentOS/ansible-role-pdns-pipe
-  name: pdns-pipe
-  version: staging
-- src: https://github.com/CentOS/ansible-role-phpbb
-  name: phpbb
-  version: staging
-- src: https://github.com/CentOS/ansible-role-planet
-  name: planet
-  version: staging
-- src: https://github.com/CentOS/ansible-role-podman-host
-  name: podman-host
-  version: staging
-- src: https://github.com/CentOS/ansible-role-postfix
-  name: postfix
-  version: staging
-- src: https://github.com/CentOS/ansible-role-postgresql
-  name: postgresql
-  version: staging
-- src: https://github.com/CentOS/ansible-role-reimzul-bstore
-  name: reimzul-bstore
-  version: staging
-- src: https://github.com/CentOS/ansible-role-reimzul-builder
-  name: reimzul-builder
-  version: staging
-- src: https://github.com/CentOS/ansible-role-reimzul-controller
-  name: reimzul-controller
-  version: staging
-- src: https://github.com/CentOS/ansible-role-repospanner
-  name: repospanner
-  version: staging
-- src: https://github.com/CentOS/ansible-role-restic
-  name: restic
-  version: staging
-- src: https://github.com/CentOS/ansible-role-robosignatory
-  name: robosignatory
-  version: staging
-- src: https://github.com/CentOS/ansible-role-rsnapshot
-  name: rsnapshot
-  version: staging
-- src: https://github.com/CentOS/ansible-role-rsyncd
-  name: rsyncd
-  version: staging
-- src: https://github.com/CentOS/ansible-role-sshd
-  name: sshd
-  version: staging
-- src: https://github.com/CentOS/ansible-role-stikked
-  name: stikked
-  version: staging
-- src: https://github.com/CentOS/ansible-role-stylo
-  name: stylo
-  version: staging
-- src: https://github.com/CentOS/ansible-role-sync2git
-  name: sync2git
-  version: staging
-- src: https://github.com/CentOS/ansible-role-sync2s3
-  name: sync2s3
-  version: staging
-- src: https://github.com/CentOS/ansible-role-tinyproxy
-  name: tinyproxy
-  version: staging
-- src: https://github.com/CentOS/ansible-role-unbound
-  name: unbound
-  version: staging
-- src: https://github.com/CentOS/ansible-role-vbox-host
-  name: vbox-host
-  version: staging
-- src: https://github.com/CentOS/ansible-role-vsftpd
-  name: vsftpd
-  version: staging
-- src: https://github.com/CentOS/ansible-role-wp
-  name: wp
-  version: staging
-- src: https://github.com/CentOS/ansible-role-zabbix-agent
-  name: zabbix-agent
-  version: staging
-- src: https://github.com/CentOS/ansible-role-zabbix-proxy
-  name: zabbix-proxy
-  version: staging
-- src: https://github.com/CentOS/ansible-role-zabbix-server
-  name: zabbix-server
-  version: staging
+roles:
+  - src: https://github.com/CentOS/ansible-role-ansible-host
+    name: ansible-host
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-baseline
+    name: baseline
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-bind
+    name: bind
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-boot-server
+    name: boot-server
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-cachethq
+    name: cachethq
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-centbot
+    name: centbot
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-centos-backup
+    name: centos-backup
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-certbot
+    name: certbot
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-debuginfod
+    name: debuginfod
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-distgit-lookaside
+    name: distgit-lookaside
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-duffy
+    name: duffy
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-fedmsg
+    name: fedmsg
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-fedora-messaging-client
+    name: fedora-messaging-client
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-geoip2
+    name: geoip2
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-gitea
+    name: gitea
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-haproxy
+    name: haproxy
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-httpd
+    name: httpd
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-httpd-compose
+    name: httpd-compose
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-httpd-feeds
+    name: httpd-feeds
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-ipa-client
+    name: ipa-client
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-ipsilon
+    name: ipsilon
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-iptables
+    name: iptables
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-iscsid-target
+    name: iscsid-target
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-jenkins-server
+    name: jenkins-server
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-kanboard
+    name: kanboard
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-keepalived
+    name: keepalived
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-kojibot
+    name: kojibot
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-kojid
+    name: kojid
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-kojihub
+    name: kojihub
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-krb5-client
+    name: krb5-client
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-kvm-host
+    name: kvm-host
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-lsyncd
+    name: lsyncd
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mailman
+    name: mailman
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mantisbt
+    name: mantisbt
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mbs
+    name: mbs
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirmon
+    name: mirmon
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror
+    name: mirror
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror-buildlogs
+    name: mirror-buildlogs
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror-cloud
+    name: mirror-cloud
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
+    name: mirror-debuginfo
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirrorlist
+    name: mirrorlist
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror-master
+    name: mirror-master
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror-qa
+    name: mirror-qa
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mirror-vault
+    name: mirror-vault
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-moin
+    name: moin
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mqtt
+    name: mqtt
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-mysql
+    name: mysql
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-nfs-server
+    name: nfs-server
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-ocp-admin-node
+    name: ocp-admin-node
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-odcs-backend
+    name: odcs-backend
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-odcs-frontend
+    name: odcs-frontend
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-opennebula-frontend
+    name: opennebula-frontend
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-opennebula-kvm-host
+    name: opennebula-kvm-host
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-opentracker
+    name: opentracker
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-pagure
+    name: pagure
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-pdns-pipe
+    name: pdns-pipe
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-phpbb
+    name: phpbb
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-planet
+    name: planet
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-podman-host
+    name: podman-host
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-postfix
+    name: postfix
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-postgresql
+    name: postgresql
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-reimzul-bstore
+    name: reimzul-bstore
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-reimzul-builder
+    name: reimzul-builder
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-reimzul-controller
+    name: reimzul-controller
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-repospanner
+    name: repospanner
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-restic
+    name: restic
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-robosignatory
+    name: robosignatory
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-rsnapshot
+    name: rsnapshot
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-rsyncd
+    name: rsyncd
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-sshd
+    name: sshd
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-stikked
+    name: stikked
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-stylo
+    name: stylo
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-sync2git
+    name: sync2git
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-sync2s3
+    name: sync2s3
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-tinyproxy
+    name: tinyproxy
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-unbound
+    name: unbound
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-vbox-host
+    name: vbox-host
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-vsftpd
+    name: vsftpd
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-wp
+    name: wp
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-zabbix-agent
+    name: zabbix-agent
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-zabbix-proxy
+    name: zabbix-proxy
+    version: staging
+  - src: https://github.com/CentOS/ansible-role-zabbix-server
+    name: zabbix-server
+    version: staging
+collections:
+  - name: ansible.posix
+    type: git
+    source: https://github.com/ansible-collections/ansible.posix.git
+    version: 1.3.0
+  - name: community.general
+    type: git
+    source: https://github.com/ansible-collections/community.general.git
+    version: 4.6.1
+  - name: community.libvirt
+    type: git
+    source: https://github.com/ansible-collections/community.libvirt.git
+    version: 1.0.2
+  - name: community.mysql
+    type: git
+    source: https://github.com/ansible-collections/community.mysql.git
+    version: 3.1.2
+  - name: community.postgresql
+    type: git
+    source: https://github.com/ansible-collections/community.postgresql.git
+    version: 2.1.2
+  - name: containers.podman
+    type: git
+    source: https://github.com/containers/ansible-podman-collections.git
+    version: 1.9.2
+
