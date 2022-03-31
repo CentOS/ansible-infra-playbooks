@@ -1,0 +1,273 @@
+roles:
+  - src: https://github.com/CentOS/ansible-role-ansible-host
+    name: ansible-host
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-baseline
+    name: baseline
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-bind
+    name: bind
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-boot-server
+    name: boot-server
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-cachethq
+    name: cachethq
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-centbot
+    name: centbot
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-centos-backup
+    name: centos-backup
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-certbot
+    name: certbot
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-debuginfod
+    name: debuginfod
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-distgit-lookaside
+    name: distgit-lookaside
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-duffy
+    name: duffy
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-fedmsg
+    name: fedmsg
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-fedora-messaging-client
+    name: fedora-messaging-client
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-geoip2
+    name: geoip2
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-gitea
+    name: gitea
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-haproxy
+    name: haproxy
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-httpd
+    name: httpd
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-httpd-compose
+    name: httpd-compose
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-httpd-feeds
+    name: httpd-feeds
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-ipa-client
+    name: ipa-client
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-ipsilon
+    name: ipsilon
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-iptables
+    name: iptables
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-iscsid-target
+    name: iscsid-target
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-jenkins-server
+    name: jenkins-server
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-kanboard
+    name: kanboard
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-keepalived
+    name: keepalived
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-kojibot
+    name: kojibot
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-kojid
+    name: kojid
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-kojihub
+    name: kojihub
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-krb5-client
+    name: krb5-client
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-kvm-host
+    name: kvm-host
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-lsyncd
+    name: lsyncd
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mailman
+    name: mailman
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mantisbt
+    name: mantisbt
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mbs
+    name: mbs
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirmon
+    name: mirmon
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror
+    name: mirror
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror-buildlogs
+    name: mirror-buildlogs
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror-cloud
+    name: mirror-cloud
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror-debuginfo
+    name: mirror-debuginfo
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirrorlist
+    name: mirrorlist
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror-master
+    name: mirror-master
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror-qa
+    name: mirror-qa
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mirror-vault
+    name: mirror-vault
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-moin
+    name: moin
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mqtt
+    name: mqtt
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-mysql
+    name: mysql
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-nfs-server
+    name: nfs-server
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-ocp-admin-node
+    name: ocp-admin-node
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-odcs-backend
+    name: odcs-backend
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-odcs-frontend
+    name: odcs-frontend
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-opennebula-frontend
+    name: opennebula-frontend
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-opennebula-kvm-host
+    name: opennebula-kvm-host
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-opentracker
+    name: opentracker
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-pagure
+    name: pagure
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-pdns-pipe
+    name: pdns-pipe
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-phpbb
+    name: phpbb
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-planet
+    name: planet
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-podman-host
+    name: podman-host
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-postfix
+    name: postfix
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-postgresql
+    name: postgresql
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-reimzul-bstore
+    name: reimzul-bstore
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-reimzul-builder
+    name: reimzul-builder
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-reimzul-controller
+    name: reimzul-controller
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-repospanner
+    name: repospanner
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-restic
+    name: restic
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-robosignatory
+    name: robosignatory
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-rsnapshot
+    name: rsnapshot
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-rsyncd
+    name: rsyncd
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-sshd
+    name: sshd
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-stikked
+    name: stikked
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-stylo
+    name: stylo
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-sync2git
+    name: sync2git
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-sync2s3
+    name: sync2s3
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-tinyproxy
+    name: tinyproxy
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-unbound
+    name: unbound
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-vbox-host
+    name: vbox-host
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-vsftpd
+    name: vsftpd
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-wp
+    name: wp
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-zabbix-agent
+    name: zabbix-agent
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-zabbix-proxy
+    name: zabbix-proxy
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-zabbix-server
+    name: zabbix-server
+    version: master 
+collections:
+  - name: ansible.posix
+    type: git
+    source: https://github.com/ansible-collections/ansible.posix.git
+    version: 1.3.0
+  - name: community.general
+    type: git
+    source: https://github.com/ansible-collections/community.general.git
+    version: 4.6.1
+  - name: community.libvirt
+    type: git
+    source: https://github.com/ansible-collections/community.libvirt.git
+    version: 1.0.2
+  - name: community.mysql
+    type: git
+    source: https://github.com/ansible-collections/community.mysql.git
+    version: 3.1.2
+  - name: community.postgresql
+    type: git
+    source: https://github.com/ansible-collections/community.postgresql.git
+    version: 2.1.2
+  - name: containers.podman
+    type: git
+    source: https://github.com/containers/ansible-podman-collections.git
+    version: 1.9.2
+
