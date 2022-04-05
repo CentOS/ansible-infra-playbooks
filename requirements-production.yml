@@ -182,6 +182,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-postgresql
     name: postgresql
     version: master 
+  - src: https://github.com/CentOS/ansible-role-redis
+    name: redis
+    version: master 
   - src: https://github.com/CentOS/ansible-role-reimzul-bstore
     name: reimzul-bstore
     version: master 

@@ -182,6 +182,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-postgresql
     name: postgresql
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-redis
+    name: redis
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-reimzul-bstore
     name: reimzul-bstore
     version: staging 

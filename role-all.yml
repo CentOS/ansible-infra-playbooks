@@ -59,6 +59,7 @@
 - import_playbook: role-podman-host.yml
 - import_playbook: role-postfix.yml
 - import_playbook: role-postgresql.yml
+- import_playbook: role-redis.yml
 - import_playbook: role-reimzul-bstore.yml
 - import_playbook: role-reimzul-builder.yml
 - import_playbook: role-reimzul-controller.yml
