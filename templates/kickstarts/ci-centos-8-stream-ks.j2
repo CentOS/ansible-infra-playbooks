@@ -69,8 +69,7 @@ sed -i s/"user_friendly_names yes"/"user_friendly_names yes \n        path_group
 
 # Injecting custom ssh pub key for root
 mkdir /root/.ssh
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZzW9w3DN5oHQfyusxAXGqC//tVACrmHZhhNV+axzBF21nMn9402xqG6b5e4uY0W4JH8/FriUyy/hUgxtpXWIEH1ETaBJocqvM2QsNFczB/UDzovHfAczt2C7l7uG8Mezh3ubhQs+JGfV9DeUocldYyv2L83nGxXtySvqRGxcBfheyvZfp0pd6XPNgdJtee7aL1XW+nHH9K4mzWRc8hAxRezecBKbtXbWIouC+ttwU19AKfAiU1wouSo8b/0B8nVYMBPm58Pu+AKsjG0tRhJIH15MLQhgG6+2g3H8Ig28Y77YJkKE09+EBx+/Lob5cY9Y9oA7A+KGw9y4ShOJ7poC1 duffy@n1.hufty.ci.centos.org" >> /root/.ssh/authorized_keys
-#echo "{{ ssh_pub_key }}" >> /root/.ssh/authorized_keys
+echo "{{ duffy_ssh_pub_key }}" >> /root/.ssh/authorized_keys
 chmod 700 /root/.ssh
 chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
 
