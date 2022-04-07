@@ -73,8 +73,7 @@ sed -i s/"user_friendly_names yes"/"user_friendly_names yes \n        path_group
 
 # Injecting custom ssh pub key for root
 mkdir /root/.ssh
-echo "ssh-dss AAAAB3NzaC1kc3MAAACBAMNO2Yg/wRGMAf+sGYCRt5Awaq9Wuk/Flmt72p0l8j1WsmZi9qc4khnQi9asLxSFQmjpjp4L7kT5/53wQ/uuNrWMUksXA0StV7VBgmno/4xFnx668w5grhJ2pvmOC3RaT4eoQ2XkJeiHuyJxR6IbvzgBpAiomJR1g+mRVShfmUrPAAAAFQCQ5BN5/iAarg2p6rABCRaByapE9wAAAIEAohQP+6mrN+6vS8TyBr4KnEdC9r+681pO+ThlXvshaLZ3B9ZOC5nmbA9CW2BaEDQ+yWJiKm4Xq/XuQCCUXPERdr5QWN+mkLU6DGVfe8fqmlXMxUcgSz58zRVtmYRLJ8iDlCgfEvztrqSh0AjHK9zFF8buKFYKAAdvMFv6ZVSkyTUAAACAP/djl90gncguAAbGa4PdsvrvtmNOeT1gsykS2KBjh68CjY9ge3eEyQutnLlwkKAo/u36/U//5l3KooA8scFpfCv00PTghGcVrYHSVmqp5oUelvqhwn3NuElFYxyXVT+eZVBv+F9KuaMo6jhWFsgBrQhrxh5IwmjNO4dFDcTCHZ0= duffy@admin.ci.centos.org" >> /root/.ssh/authorized_keys
-#echo "{{ ssh_pub_key }}" >> /root/.ssh/authorized_keys
+echo "{{ duffy_ssh_pub_key }}" >> /root/.ssh/authorized_keys
 chmod 700 /root/.ssh
 chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
 
