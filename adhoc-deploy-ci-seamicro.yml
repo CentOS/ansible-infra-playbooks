@@ -3,7 +3,7 @@
 # It uses some variables like user/pass to access Chassis rest API and configure/reset compute nodes
 # By default, for CI purposes we are ensuring that we add a second path to chassis/fabric to present multipath and so increase available bandwdith during tests
 
-- hosts: seamicro-nodes
+- hosts: "{{ node_name }}"
   gather_facts: False
   become: True
 
