@@ -92,7 +92,7 @@
       - name: Waiting for Seamicro node[s] to be available through ssh 
         wait_for:
           port: 22 
-          host: "{{ inventory_hostname }}" 
+          host: "{{ ip }}" 
           timeout: 1200
 
       - name: Sending back useful information for duffy provisioner
