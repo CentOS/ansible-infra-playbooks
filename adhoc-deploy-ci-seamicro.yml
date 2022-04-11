@@ -95,6 +95,14 @@
           host: "{{ inventory_hostname }}" 
           timeout: 1200
 
+      - name: Sending back useful information for duffy provisioner
+        set_fact:
+          duffy_out:
+            nodes:
+              - hostname: "{{ node_name }}"
+                ipaddr: "{{ ip }}"
+
+
       delegate_to: localhost
 
 
