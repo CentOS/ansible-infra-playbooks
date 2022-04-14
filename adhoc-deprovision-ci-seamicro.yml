@@ -1,0 +1,52 @@
+---
+# This ad-hoc playbook is written only to support Seamicro Chassis (now dead product)
+# It uses some variables like user/pass to access Chassis rest API and configure/reset compute nodes
+# By default, for CI purposes we are ensuring that we add a second path to chassis/fabric to present multipath and so increase available bandwdith during tests
+
+- hosts: "{{ node_name }}"
+  gather_facts: False
+  become: True
+
+# Some pre-defined list that will be added for 'uri' module and converted to json for rest api
+  vars:
+    seamicro_add_disk_body:
+      value: "{{ seamicro_diskid }}"
+      readonly: false
+      username: "{{ seamicro_chassis_user }}"
+      password: "{{ seamicro_chassis_pass }}"
+    seamicro_reset_body:
+      action: reset
+      using-pxe: "true"
+      username: "{{ seamicro_chassis_user }}"
+      password: "{{ seamicro_chassis_pass }}"
+    seamicro_poweroff_body:
+      action: power-off
+      force: "true"
+      username: "{{ seamicro_chassis_user }}"
+      password: "{{ seamicro_chassis_pass }}"
+
+
+  tasks:
+    - block:
+      - name: Shutting down Seamicro node[s]
+        uri:
+          url: "https://{{ seamicro_chassis }}.ci.centos.org/v2.0/server/{{ seamicro_srvid }}"
+          validate_certs: no
+          method: POST
+          body_format: json
+          body: "{{ seamicro_poweroff_body | to_json }}"
+          timeout: 180
+        tags: 
+          - reset
+
+      - name: Sending back useful information for duffy provisioner
+        set_fact:
+          duffy_out:
+            nodes:
+              - hostname: "{{ node_name }}"
+                ipaddr: "{{ ip }}"
+
+
+      delegate_to: localhost
+
+
