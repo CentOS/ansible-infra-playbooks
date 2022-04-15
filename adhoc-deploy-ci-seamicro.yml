@@ -5,7 +5,7 @@
 
 - hosts: "{{ node_name }}"
   gather_facts: False
-  become: True
+  become: False
 
 # Some pre-defined list that will be added for 'uri' module and converted to json for rest api
   vars:
@@ -28,14 +28,14 @@
 
   tasks:
     - block:
-      - name: Generate tftp config for Seamicro node
+      - name: "Generate tftp config [{{ centos_dist }}] for Seamicro node"
         template:
           src: pxeboot.j2
           dest: "/var/lib/tftpboot/pxelinux.cfg/01-{{ mac_address | lower | replace(':','-') }}"
           mode: 0755
         tags:
           - pxe
-      - name: Generate kickstart file[s] for Seamicro node[s]  
+      - name: "Generate kickstart file [{{centos_dist }}] for Seamicro node[s]"
         template: 
           src: "{{ item }}"
           dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg" 

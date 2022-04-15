@@ -5,7 +5,7 @@
 
 - hosts: "{{ node_name }}"
   gather_facts: False
-  become: True
+  become: False
 
 # Some pre-defined list that will be added for 'uri' module and converted to json for rest api
   vars:
