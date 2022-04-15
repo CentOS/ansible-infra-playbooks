@@ -1,0 +1,49 @@
+# This playbook will be used by Duffy CI provisioner to deploy Opennebula VMs 
+# Duffy will call this playbook with quantity and also opennebula template to use (defined in nodepools)
+# Needed variables (either through inventory or --extra-vars):
+#  - one_api_username: opennebula user to interact with one api
+#  - one_api_password: opennebula password
+#  - one_api_url: can default to localhost on controller but still a variable in case of
+#  - one_template_name: existing vm template (in opennebula) to instantiate
+#  - one_vm_quantity: number of VMs to instantiate with that template
+#
+
+- hosts: localhost
+  gather_facts: False
+  become: False
+  vars:
+    - one_api_url: http://localhost:2633
+  tasks:
+    - name: "Instantiating Opennebula template [{{ one_template_name }}]"
+      one_vm:
+        template_name: "{{ one_template_name }}"
+        api_username: "{{ one_api_username }}"
+        api_password: "{{ one_api_password }}"
+        api_url: "{{ one_api_url }}"
+        count: "{{ one_vm_quantity | int }}"
+        attributes:
+          name: 'duffy-###'
+      register: opennebula_result
+      delegate_to: "{{ one_controller_host }}"
+
+    - name: Opennebula instances IP addresses
+      debug:
+        msg: "One VM IP address is {{ item }}"
+      with_items: "{{ opennebula_result | json_query('instances[*].networks[0].ip') }}"
+
+    - name: Waiting for OneVM to be available on network
+      wait_for:
+        host: "{{ item }}"
+        port: 22
+        delay: 5
+      with_items: "{{ opennebula_result | json_query('instances[*].networks[0].ip') }}"
+              
+    - name: Sending data back to Duffy provisioner
+      set_fact:
+        duffy_out:
+          nodes: "{{ opennebula_result | json_query(nodes_query) }}"
+      vars:
+        nodes_query: >-
+          instances[*].{
+            opennebula: {id: vm_id}, hostname: vm_name, ipaddr: networks[0].ip
+          }
