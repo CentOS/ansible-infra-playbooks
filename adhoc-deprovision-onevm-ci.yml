@@ -1,0 +1,67 @@
+- hosts: localhost
+  become: no
+  gather_facts: no
+  vars:
+    - one_api_url: http://localhost:2633
+
+  tasks:
+    # The playbook consumes structures of this form passed in by the mechanism
+    # in the Ansible variable `duffy_in`:
+    #
+    # duffy_in ->
+    #   {
+    #     "nodes": [
+    #       {
+    #         "id": 1,
+    #         "hostname": "...",
+    #         "ipaddr": "...",
+    #         "data": {"provision": {"id": 1, ...}}
+    #       },
+    #       {
+    #         "id": 2,
+    #         "hostname": "...",
+    #         "ipaddr": "...",
+    #         "data": {"provision": {"id": 2, ...}}
+    #       },
+    #       ...
+    #     ]
+    #   }
+    #
+    # The data.provision field of a node contains the result returned for that
+    # node from the provisioning playbook and should contain all necessary
+    # information to perform the deprovisioning (e.g. a machine id specific to
+    # the used cloud management software).
+
+    # This task emulates deprovisioning the nodes, its result can be arbitrary
+    # in principle, but ...
+    - name: "Deprovision the things!"
+      delegate_to: "{{ one_controller_host }}"
+      one_vm:
+        api_username: "{{ one_api_username }}"
+        api_password: "{{ one_api_password }}"
+        api_url: "{{ one_api_url }}"
+        hard: yes
+        state: absent
+        instance_ids: >-
+          {{ duffy_in.nodes | json_query(nodes_id_query) }}
+      register: one_vm_result
+      vars:
+        nodes_id_query: "[*].data.provision.opennebula.id"
+
+    # ... this (mandatory) task has to be able to transform it into the
+    # expected output format, i.e. set a fact `duffy_out` which repeats enough
+    # of data.provision passed into the playbook for each successfully
+    # deprovisioned node to clearly correlate results with node objects so
+    # Duffy can chalk up nodes for reuse, or mark them as retired or failed
+    # appropriately.
+    #
+    # duffy_out ->
+    #   {
+    #     "nodes": [{"id": 1, ...}, {"id": 2, ...}]
+    #   }
+    - name: "Summarize the things!"
+      set_fact:
+        duffy_out:
+          nodes: "{{ duffy_in.nodes | json_query(one_vm_result_query) }}"
+      vars:
+        one_vm_result_query: "[*].data.provision"
