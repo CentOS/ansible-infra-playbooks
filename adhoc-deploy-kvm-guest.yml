@@ -20,8 +20,12 @@
 # kvm_guest_gateway: gateway ip address for the guest (string)
 # kvm_guest_nameserver: resolver ip address to use for the guest (string)
 #
-#  Operating System
+# Operating Systems
+# 
+# rhel_version: if defined at host/group level, use RHEL and that version (string) and not centos at all
 # centos_version: which centos os version to deploy (string, like 8, 8-stream, etc) 
+
+
 - hosts: "{{ init_kvm_guests }}"
   become: true
   gather_facts: false
@@ -42,9 +46,19 @@
 
     - name: Creating kickstart to provision VM[s]
       template: 
+        src: "../templates/kickstarts/kvm-guest-rhel{{ rhel_version }}-ks.j2" 
+        dest: "/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg"
+      delegate_to: "{{ kvm_host }}"
+      when: rhel_version is defined
+      tags:
+        - ks
+
+    - name: Creating kickstart to provision VM[s]
+      template: 
         src: "../templates/kickstarts/kvm-guest-c{{ kvm_guest_distro_release }}-ks.j2" 
         dest: "/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg"
       delegate_to: "{{ kvm_host }}"
+      when: rhel_version is not defined
       tags:
         - ks
 

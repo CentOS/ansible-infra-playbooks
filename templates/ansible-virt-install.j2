@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# This template will check some ansible variables to know what and how to deploy:
+# - kvm_guest_bridge (boolean) => if we'll be using bridge network
+#  - if true => kvm_host_bridge is the br interface on which to attach vnic for bridge
+#  - if not, which kvm_guest_network to use (usually 'default' from libvirt)
+# - rhel_version : if defined, we'll deploy RHEL and not CentOS version (kvm_guest_distro_release)
+
 {% if kvm_guest_bridge == True %}
  {% set kvm_guest_network = 'bridge=' + kvm_host_bridge %}
 {% else %}
@@ -31,7 +38,9 @@ virt-install \
 {% else %}
   --extra-args "console=ttyS0 net.ifnames=0 inst.ks=file:/{{ inventory_hostname }}.cfg" \
 {% endif %}
-{% if kvm_guest_distro_release == 8 or kvm_guest_distro_release == '8-stream' %}
+{% if rhel_version is defined %}
+  --location {{ rhel_deploy_mirror_url }}/{{ rhel_version }}/{{ kvm_guest_arch }}/
+{% elif kvm_guest_distro_release == 8 or kvm_guest_distro_release == '8-stream' %}
   --location http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/BaseOS/{{ kvm_guest_arch }}/os/ 
 {% elif kvm_guest_distro_release == '9-stream' %}
   --location http://mirror.stream.centos.org/{{ kvm_guest_distro_release }}/BaseOS/{{ kvm_guest_arch}}/os/
