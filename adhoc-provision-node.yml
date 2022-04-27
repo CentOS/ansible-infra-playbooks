@@ -2,6 +2,7 @@
 # This playbook is an ad-hoc task used to deploy bare-metal nodes
 # It used the following variables, declared through inventory (group/host vars):
 #  centos_version: 7  # default centos version deployed
+#  rhel_version:      # if rhel_version is defined, we'll deploy RHEL instead
 #  arch: x86_64       # default architecture
 #  root_pass:         # default root_password on provisioned nodes
 #  deploy_host:       # node hosting pxelinux.cfg configurations
@@ -34,6 +35,16 @@
         src: "../templates/kickstarts/centos-{{ centos_version }}-ks.cfg.j2" 
         dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
       delegate_to: "{{ deploy_host }}"
+      when: rhel_version is not defined
+      tags:
+        - ks
+
+    - name: == Hardware provisioning == Creating kickstart to provision VM[s]
+      template: 
+        src: "../templates/kickstarts/rhel-{{ rhel_version }}-ks.cfg.j2" 
+        dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
+      delegate_to: "{{ deploy_host }}"
+      when: rhel_version is defined
       tags:
         - ks
 
@@ -87,7 +98,7 @@
 
     - name: == Hardware provisioning == Pausing before forcing again booting from disk (bad Dell firmware/bios)
       pause:
-        seconds: 120
+        seconds: 210
 
     - name: == Hardware provisioning == Ensuring we'll reboot from disk
       command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis bootdev disk options=persistent

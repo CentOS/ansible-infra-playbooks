@@ -3,6 +3,15 @@
 {% set centos_version = centos_dist %}
 {% set arch = centos_arch %}
 {% endif %}
+
+{% if rhel_version is defined %}
+{% set pxe_boot_dir = 'rhel' %}
+{% set os_version = rhel_version %}
+{% else %}
+{% set pxe_boot_dir = 'centos' %}
+{% set os_version = centos_version %}
+{% endif %}
+
 {% if pxe_boot_serial is defined and pxe_boot_serial %}
 # Let's setup for Serial console for CI and seamicro (no vga at all)
 SERIAL 0 9600
@@ -20,6 +29,6 @@ LABEL local
         LOCALBOOT 0
 
 LABEL {{ inventory_hostname}}-deploy
-        MENU LABEL CentOS {{ centos_version }} {{ arch }}- Kickstart for {{ inventory_hostname }}
-        kernel boot/centos/{{ centos_version }}/{{ arch }}/vmlinuz
-	      append initrd=boot/centos/{{ centos_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg {%if pxe_boot_serial is defined and pxe_boot_serial %} console=ttyS0,115200n8 {% endif %} 
+        MENU LABEL Deploying {{ inventory_hostname }} - kickstart (OS {{ os_version }}/{{ arch }})
+        kernel boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz
+	      append initrd=boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg {%if pxe_boot_serial is defined and pxe_boot_serial %} console=ttyS0,115200n8 {% endif %} 

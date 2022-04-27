@@ -1,6 +1,15 @@
+{% if rhel_version is defined %}
+{% set pxe_boot_dir = 'rhel' %}
+{% set os_version = rhel_version %}
+{% else %}
+{% set pxe_boot_dir = 'centos' %}
+{% set os_version = centos_version %}
+{% endif %}
+
+
 set timeout=3
 
 menuentry '{{ inventory_hostname }}-Ansible-deploy' {
-	linuxefi boot/centos/{{ centos_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
-	initrdefi boot/centos/{{ centos_version }}/{{ arch }}/initrd.img
+	linuxefi boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+	initrdefi boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
 }

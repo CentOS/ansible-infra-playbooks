@@ -1,0 +1,117 @@
+#version=DEVEL
+# System authorization information
+auth --enableshadow --passalgo=sha512
+
+# Use network installation
+url --url="{{ rhel_deploy_mirror_url }}/{{ rhel_version }}/{{ arch }}/"
+
+text
+# Disabling Setup Agent on first boot
+firstboot --disable
+# Keyboard layouts
+# old format: keyboard be-latin1
+# new format:
+keyboard --vckeymap=be-latin1 --xlayouts='us'
+# System language
+lang en_GB.UTF-8
+
+# Network information
+network  --hostname={{ inventory_hostname }}
+{% if bridge_nic is defined and bridge_nic %}
+network  --bootproto=static --device={{ bridge_name | default('br0') }} --bridgeslaves={{ pxe_bootdev }} --gateway={{ gateway }} --ip={{ ip }} {% for ns in dns %} --nameserver={{ ns }} {% endfor %} --netmask={{ netmask }} --ipv6=auto --activate 
+{% else %}
+network  --bootproto=static --device={{ pxe_bootdev }} --gateway={{ gateway }} --ip={{ ip }}  {% for ns in dns %} --nameserver={{ ns }} {% endfor %} --netmask={{ netmask }} --ipv6=auto --activate 
+{% endif %}
+
+# Root password
+rootpw --iscrypted {{ root_pass | password_hash('sha512') }}
+
+# System timezone
+timezone Etc/UTC --isUtc
+# System bootloader configuration
+bootloader --location=mbr --boot-drive={{ hdd_install_dev | default('sda')}}
+# Partition clearing information
+clearpart --all --initlabel
+zerombr
+
+# Disk partitioning information
+# Adding first reqpart to automatically add /boot/efi or prepboot for aarch64, uefi, or IBM Power architectures
+reqpart
+
+{% if use_md_raid and md_raid_level == 1 %}
+# Using software raid 1
+part raid.603 --fstype="mdmember" --ondisk=sdb --size=20000 --grow
+part raid.469 --fstype="mdmember" --ondisk=sda --size=1024
+part raid.597 --fstype="mdmember" --ondisk=sda --size=20000 --grow
+part raid.475 --fstype="mdmember" --ondisk=sdb --size=1024
+raid pv.609 --device=pv00 --fstype="lvmpv" --level=RAID1 raid.597 raid.603
+raid /boot --device=boot --fstype="ext4" --level=RAID1 raid.469 raid.475
+volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.609
+
+{% elif use_md_raid and md_raid_level == 0 %}
+# Using software raid 0
+part raid.603 --fstype="mdmember" --ondisk=sdb --size=20000 --grow
+part raid.469 --fstype="mdmember" --ondisk=sda --size=1024
+part raid.597 --fstype="mdmember" --ondisk=sda --size=20000 --grow
+part raid.475 --fstype="mdmember" --ondisk=sdb --size=1024
+raid pv.609 --device=pv00 --fstype="lvmpv" --level=RAID0 raid.597 raid.603
+raid /boot --device=boot --fstype="ext4" --level=RAID0 raid.469 raid.475
+volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.609
+
+{% else %}
+# Not using software raid
+part /boot --fstype="ext4" --ondisk={{ hdd_install_dev | default('sda')}} --size=1024
+part pv.14 --fstype="lvmpv" --ondisk={{ hdd_install_dev | default('sda')}} --size=20000 --grow
+volgroup vg_{{ inventory_hostname_short }} --pesize=4096 pv.14
+{% endif %}
+# Common section for partitions : on top of VG, despite md device or not, see above
+{% if lv_root_expand %}
+logvol /  --fstype="ext4" --size={{ lv_root_size }} --name=root --vgname=vg_{{ inventory_hostname_short }} --grow 
+{% else %}
+logvol /  --fstype="ext4" --size={{ lv_root_size }} --name=root --vgname=vg_{{ inventory_hostname_short }}  
+{% endif %}
+logvol /home  --fstype="ext4" --size={{ lv_home_size }} --name=home --vgname=vg_{{ inventory_hostname_short }}
+logvol swap  --fstype="swap" --size=2048 --name=swap --vgname=vg_{{ inventory_hostname_short }}
+
+
+#Ensuring rebooting at the end
+reboot
+
+%post
+# Ensuring that sshd is locked on reboot with key-based auth only
+sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config 
+
+# Using Ansible vars to automatically render template and add users 
+{% for user in admins_list %}
+# Adding user,ssh pub key and sudo right for {{ user.login_name }} 
+/sbin/useradd {{ user.login_name}} -c "{{ user.full_name }}"
+mkdir /home/{{ user.login_name }}/.ssh
+{% for key in user.ssh_pub_key  %}
+  echo "{{ key }}" >> /home/{{ user.login_name }}/.ssh/authorized_keys
+{% endfor %}
+chmod 700 /home/{{ user.login_name }}/.ssh
+chmod 600 /home/{{ user.login_name }}/.ssh/* ; chcon -v -R -t ssh_home_t /home/{{ user.login_name }}/.ssh*
+chown -R {{ user.login_name }}.{{ user.login_name}} /home/{{ user.login_name }}/
+echo "{{ user.login_name }} ALL=(ALL) NOPASSWD: ALL" >/etc/sudoers.d/{{ user.login_name }}
+{% endfor %}
+
+%end   
+
+%packages
+@^minimal-environment
+@standard
+wget
+chrony
+
+%end
+
+%addon com_redhat_kdump --disable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
+
