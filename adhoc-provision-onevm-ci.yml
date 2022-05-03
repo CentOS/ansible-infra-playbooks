@@ -45,5 +45,5 @@
       vars:
         nodes_query: >-
           instances[*].{
-            opennebula: {id: vm_id}, hostname: vm_name, ipaddr: networks[0].ip
+            opennebula: {id: vm_id}, ipaddr: networks[0].ip
           }
