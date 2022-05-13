@@ -277,4 +277,7 @@ collections:
     type: git
     source: https://github.com/containers/ansible-podman-collections.git
     version: 1.9.2
-
+  - name: amazon.aws
+    type: git
+    source: https://github.com/ansible-collections/amazon.aws.git
+    version: 3.2.0

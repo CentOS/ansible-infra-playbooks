@@ -11,10 +11,11 @@
 #   ssh_ca_host: which host (from your inventory) is the signing host
 #   ssh_ca_keystore: file on disk on the CA host that will contain the nodes files
 #   ssh_ca_host_key: the ssh private key that will be used to sign all the .pub files
-  
+
 - hosts: all
   become: True
   tasks:
+    - meta: clear_facts
     - name: Ad-hoc task, ensuring we delete first
       file:
         path: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}"
@@ -46,6 +47,7 @@
       loop_control:
         label: '{{ item.path }}'
 
+    - meta: clear_facts
     - name: Ensuring we have needed .pub files on CA host
       copy:
         src: "/var/tmp/ssh-pub-keys-{{ inventory_hostname }}/"
