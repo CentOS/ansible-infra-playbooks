@@ -1,0 +1,37 @@
+# This playbook will need some variables to terminate instances, passed as variables
+# needed variables:
+#   aws_ec2_region: us-east-2
+#   aws_access_key:
+#   aws_secret_key:
+#   aws_ec2_instance_ids:
+#     - i-longinstanceid
+#     - i-otherlonginstid
+#
+---
+- hosts: localhost
+  gather_facts: False
+  become: False
+
+  tasks:
+    - name: Delete EC2 instance[s]
+      amazon.aws.ec2_instance:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        region: "{{ aws_ec2_region }}"
+        instance_ids: >-
+          {{ duffy_in.nodes | json_query(nodes_id_query) }}        
+        state: absent
+        wait: True
+      register: ec2_delete_result
+      vars:
+         nodes_id_query: "[*].data.provision.ec2_instance_id"      
+      
+    - debug: 
+        msg: "{{ ec2_delete_result }}" 
+
+    - name: "Summarize the things!"
+      set_fact:
+        duffy_out:
+          nodes: "{{ duffy_in.nodes | json_query(ec2_delete_result_query) }}"
+      vars:
+        ec2_delete_result_query: "[*].data.provision"        

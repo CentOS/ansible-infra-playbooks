@@ -1,0 +1,73 @@
+# this playbook will need some variables to deploy one or more instances (same instance type per call)
+#    aws_ec2_region: us-east-2        # (region)
+#    aws_ec2_instance_type: t2.large  
+#    aws_ec2_instance_name: "duffy-ci-node" #prefix in front of computed name
+#    aws_ec2_security_group: 
+#    aws_ec2_security_keypair: my_keypair
+#    aws_ec2_ebs_size: '20'           # in GB
+#    aws_ec2_vpc_subnets:             # subnet presents in that region for our vpc
+#      - subnet-zerr13e
+#      - subnet-0fqzefq
+#      - subnet-8648e45
+#    aws_ec2_user_data: |
+#      #cloud-config
+#      disable_root: False
+#      runcmd:
+#        - dnf update -y
+#    aws_access_key: 
+#    aws_secret_key: 
+#    aws_ec2_instances_count: 2
+#
+
+---
+- hosts: localhost
+  gather_facts: False
+  become: False
+  
+  tasks:
+    - name: create ECS instance[s]
+      amazon.aws.ec2_instance:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        name: "{{ aws_ec2_instance_name }}-{{ aws_ec2_instance_type }}-{{ aws_ec2_distro }}-{{ aws_ec2_dist_release }}-{{ aws_ec2_arch }}"
+        state: running
+        region: "{{ aws_ec2_region }}"
+        count: "{{ aws_ec2_instances_count }}"
+        instance_type: "{{ aws_ec2_instance_type }}"
+        image_id: "{{ aws_ec2_distributions[aws_ec2_distro]['releases'][aws_ec2_dist_release][aws_ec2_arch].ami_id }}"
+        instance_role: "{{ instance_role | default(omit) }}"
+        user_data: "{{ aws_ec2_user_data }}"
+        key_name: "{{ aws_ec2_security_keypair }}"
+        vpc_subnet_id: "{{ aws_ec2_vpc_subnets | random }}"
+        network:
+          assign_public_ip: true
+        security_group: "{{ aws_ec2_security_group }}"
+        volumes:
+          - device_name: /dev/sda1
+            ebs:
+              volume_size: "{{ aws_ec2_ebs_size }}"
+              delete_on_termination: True
+        wait: True
+        tags:
+          CentOSGroup: "Duffy"
+      register: ec2_deploy_result
+
+    - name: EC2 instance[s] public ip address[es]
+      debug:
+        msg: "EC2 public ip address is {{ item }}"
+      with_items: "{{ ec2_deploy_result | json_query('instances[*].public_ip_address') }}"
+
+    - name: Waiting for EC2 instance[s] to be reachable
+      wait_for:
+        host: "{{ item }}"
+        port: 22
+        delay: 5
+      with_items: "{{ ec2_deploy_result | json_query('instances[*].public_ip_address') }}"
+
+    - name: Sending data back to Duffy provisioner
+      set_fact:
+        duffy_out:
+          nodes: "{{ ec2_deploy_result | json_query(nodes_query) }}"
+      vars:
+        nodes_query: "instances[*].{ec2_instance_id: instance_id, hostname: public_dns_name, ipaddr: public_ip_address, private_ipaddress: private_ip_address, internal_hostname: private_dns_name, ec2_instance_type: instance_type}"
+
