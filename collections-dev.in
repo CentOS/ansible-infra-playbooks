@@ -31,3 +31,8 @@ collections:
     type: git
     source: https://github.com/ansible-collections/amazon.aws.git
     version: 3.2.0
+  - name: community.aws
+    type: git
+    source: https://github.com/ansible-collections/community.aws.git
+    version: 3.2.1
+
