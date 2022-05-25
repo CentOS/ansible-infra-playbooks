@@ -21,15 +21,28 @@
         instance_ids: >-
           {{ duffy_in.nodes | json_query(nodes_id_query) }}        
         state: absent
-        wait: True
+        wait: False
       register: ec2_delete_result
       vars:
          nodes_id_query: "[*].data.provision.ec2_instance_id"      
       
-    - debug: 
-        msg: "{{ ec2_delete_result }}" 
+    - name: Deleting route53 record[s]     
+      community.aws.route53:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        hosted_zone_id: "{{ aws_route53_zoneid }}"
+        overwrite: True
+        record: "{{ item.hostname }}"
+        state: absent
+        type: A
+        wait: no
+      with_items: "{{ duffy_in.nodes | json_query(nodes_name_query ) }}"
+      vars:
+        nodes_name_query: "[*].data.provision"
+      loop_control:
+        label: "{{ item.hostname }}"
 
-    - name: "Summarize the things!"
+    - name: Sending data back to Duffy
       set_fact:
         duffy_out:
           nodes: "{{ duffy_in.nodes | json_query(ec2_delete_result_query) }}"

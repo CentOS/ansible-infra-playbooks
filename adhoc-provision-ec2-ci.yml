@@ -17,7 +17,9 @@
 #    aws_access_key: 
 #    aws_secret_key: 
 #    aws_ec2_instances_count: 2
-#
+#    aws_ec2_prefix: ip-172-                # part of the private hostname we'll replace 
+#    aws_ec2_internal_domain: ec2.internal  # part of ec2 domain name we'll replace with our domain
+
 
 ---
 - hosts: localhost
@@ -25,7 +27,7 @@
   become: False
   
   tasks:
-    - name: create ECS instance[s]
+    - name: Instantiate EC2 instance[s]
       amazon.aws.ec2_instance:
         aws_access_key: "{{ aws_access_key }}"
         aws_secret_key: "{{ aws_secret_key }}"
@@ -52,6 +54,34 @@
           CentOSGroup: "Duffy"
       register: ec2_deploy_result
 
+    - name: Parsing returned json from ec2 with info we need
+      set_fact:
+        duffy_tmp:
+          nodes: "{{ ec2_deploy_result | json_query(nodes_query) }}"
+      vars:
+        nodes_query: "instances[*].{ec2_instance_id: instance_id, hostname: public_dns_name, ipaddr: public_ip_address, private_ipaddress: private_ip_address, internal_hostname: private_dns_name, ec2_instance_type: instance_type}"
+
+    - name: Creating list of returned nodes and transforming data
+      set_fact:
+        duffy_ec2_nodes: "{{ duffy_ec2_nodes|default([]) + [ {'ec2_instance_id': item.ec2_instance_id, 'ec2_instance_type': item.ec2_instance_type, 'hostname': item.internal_hostname |replace(aws_ec2_prefix, 'n') | replace(aws_ec2_internal_domain, 'pool.ci.centos.org'), 'ipaddr': item.private_ipaddress, 'public_hostname': item.hostname, 'public_ipaddress': item.ipaddr} ] }}"
+      with_items: "{{ duffy_tmp['nodes'] }}"  
+
+    - name: Creating/Updating route53 records     
+      community.aws.route53:
+        aws_access_key: "{{ aws_access_key }}"
+        aws_secret_key: "{{ aws_secret_key }}"
+        hosted_zone_id: "{{ aws_route53_zoneid }}"
+        overwrite: True
+        record: "{{ item.hostname }}"
+        value: "{{ item.ipaddr }}"
+        state: present
+        ttl: 60
+        type: A
+        wait: yes
+      with_items: "{{ duffy_ec2_nodes }}"
+      loop_control:
+        label: "{{ item.hostname }}"
+
     - name: EC2 instance[s] public ip address[es]
       debug:
         msg: "EC2 public ip address is {{ item }}"
@@ -67,7 +97,5 @@
     - name: Sending data back to Duffy provisioner
       set_fact:
         duffy_out:
-          nodes: "{{ ec2_deploy_result | json_query(nodes_query) }}"
-      vars:
-        nodes_query: "instances[*].{ec2_instance_id: instance_id, hostname: public_dns_name, ipaddr: public_ip_address, private_ipaddress: private_ip_address, internal_hostname: private_dns_name, ec2_instance_type: instance_type}"
+          nodes: "{{ duffy_ec2_nodes }}"
 
