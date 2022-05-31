@@ -2,6 +2,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-ansible-host
     name: ansible-host
     version: master 
+  - src: https://github.com/CentOS/ansible-role-artifacts-srv
+    name: artifacts-srv
+    version: master 
   - src: https://github.com/CentOS/ansible-role-baseline
     name: baseline
     version: master 

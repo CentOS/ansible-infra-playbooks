@@ -1,5 +1,6 @@
 ---
 - import_playbook: role-ansible-host.yml
+- import_playbook: role-artifacts-srv.yml
 - import_playbook: role-bind.yml
 - import_playbook: role-boot-server.yml
 - import_playbook: role-cachethq.yml
