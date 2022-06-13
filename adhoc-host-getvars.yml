@@ -17,4 +17,5 @@
       template:
         src: ansible-hostvars.j2
         dest: "{{ out_dir }}/{{ inventory_hostname }}"
-      delegate_to: localhost  
+      delegate_to: localhost
+      become: False
