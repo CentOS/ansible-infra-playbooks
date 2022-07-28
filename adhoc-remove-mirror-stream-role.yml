@@ -20,7 +20,7 @@
     - assert:
         that:
           - not mirror_stream_content
-        fail_msg: "{{ mirror_host }} see to inherit mirror_stream_content boolean to True !"
+        fail_msg: "{{ mirror_host }} seems to inherit mirror_stream_content boolean to True !"
 
     - block:
         - name: Updating PDNS GeoIP backend to remove stream roles
@@ -53,7 +53,7 @@
           tags:
             - centos
 
-        - name: Cron job to rsync Stream 9content from upstream node
+        - name: Cron job to rsync Stream 9 content from upstream node
           cron:
             name: "CentOS mirror.stream rsync job"
             job: "/home/{{ mirror_local_user }}-scripts/rsync-stream-full {{ mirror_rsync_from }} > /dev/null 2>&1"
@@ -73,7 +73,10 @@
           notify:
             - reload_httpd
             - rebuild_rsyncd
-          
+
+        - name: Reloading rsync/httpd if needed
+          meta: flush_handlers
+
         - name: Removing stream content
           file:
             path: /home/centos-stream
