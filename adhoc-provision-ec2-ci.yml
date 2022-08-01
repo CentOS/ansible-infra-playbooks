@@ -49,6 +49,10 @@
             ebs:
               volume_size: "{{ aws_ec2_ebs_size }}"
               delete_on_termination: True
+          - device_name: /dev/sdb
+            ebs:
+              volume_size: "{{ aws_ec2_ebs_size }}"
+              delete_on_termination: True
         wait: True
         tags:
           CentOSGroup: "Duffy"
