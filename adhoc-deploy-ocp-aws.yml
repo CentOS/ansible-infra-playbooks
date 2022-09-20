@@ -1,0 +1,14 @@
+---
+
+# This playbook requires a file provided to it for vars
+# An example of the file exists in inventory/group_vars/openshift-ci-stg
+
+# It also assumes that an empty Route53 zone exists
+
+# it creates some files locally which should be pushed to the filestore as
+# they contain install info needed for the cluster
+
+- hosts: localhost
+
+  roles:
+    - "aws-openshift"
