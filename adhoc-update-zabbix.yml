@@ -1,0 +1,13 @@
+---
+- hosts: hostgroup-role-zabbix-server:hostgroup-role-zabbix-proxy
+  become: True
+
+  tasks: 
+    - name: Ensuring metadata cache is updated
+      yum:
+        name: glibc
+        state: present
+        update_cache: True
+
+- import_playbook: role-zabbix-server.yml
+- import_playbook: role-zabbix-proxy.yml
