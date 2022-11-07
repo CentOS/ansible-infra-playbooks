@@ -1,0 +1,24 @@
+apiVersion: v1
+baseDomain: {{ openshift_cluster_base_domain }}
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  platform:
+    aws:
+      type: {{ openshift_control_node_instance_type }}
+  replicas: {{ openshift_control_node_replicas }}
+compute:
+- hyperthreading: Enabled
+  name: worker
+  platform:
+    aws:
+      type: {{ openshift_worker_node_instance_type }}
+  replicas: {{ openshift_worker_node_replicas }}
+metadata:
+  name: {{ openshift_cluster_name }}
+platform:
+  aws:
+    region: {{ aws_region }}
+pullSecret: '{{ openshift_install_pull_secret | regex_replace( '^ ', '' ) }}'
+fips: false
+sshKey: {{ openshift_node_ssh_public_key }}
