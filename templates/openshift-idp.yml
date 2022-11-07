@@ -1,0 +1,23 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: {{idp_name}}   # should be the same used in the callback url used when creating oidc provider
+    mappingMethod: claim
+    type: OpenID
+    openID:
+      clientID: {{idp_client_id}}   # should be the name used to create idp provider
+      clientSecret:
+        name: {{idp_secret_name}}  # Name of secret created in previous step
+      claims:
+        email:
+        - email
+        groups:
+        - groups
+        name:
+        - name
+        preferredUsername:
+        - nickname
+      issuer: {{idp_issuer_url}}

@@ -1,0 +1,21 @@
+---
+#################################################
+#
+# This creates applies config to allow oauth through an openid provider
+# A vars file needs to be passed at run time with the correct config defined
+# This playbook assumes a logged in admin oc user locally
+#
+#################################################
+
+- hosts: localhost
+  name: Idp config setup
+
+
+  tasks:
+
+    - name: Create secret for openid
+      command: /usr/bin/oc create secret generic {{idp_secret_name}} --from-literal=clientSecret={{idp_secret}} -n openshift-config
+
+
+    - name: Apply oauth config
+      command: /usr/bin/oc apply -f templates/openshift-idp.yml
