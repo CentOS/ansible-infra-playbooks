@@ -16,6 +16,19 @@
     - name: Create secret for openid
       command: /usr/bin/oc create secret generic {{idp_secret_name}} --from-literal=clientSecret={{idp_secret}} -n openshift-config
 
+    - name: Try toGenerate and apply config
+      block:
+        - name: generate config
+          template:
+            src: templates/openshift-idp.yml
+            dest: templates/openshift-idp-complete.yml
 
-    - name: Apply oauth config
-      command: /usr/bin/oc apply -f templates/openshift-idp.yml
+        - name: Apply oauth config
+          command: /usr/bin/oc apply -f templates/openshift-idp-complete.yml
+
+      always:
+        - name: remove temp config file
+          file:
+            path: templates/openshift-idp-complete.yml
+            state: absent
+

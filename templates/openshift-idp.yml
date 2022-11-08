@@ -4,13 +4,13 @@ metadata:
   name: cluster
 spec:
   identityProviders:
-  - name: {{idp_name}}   # should be the same used in the callback url used when creating oidc provider
+  - name: "{{idp_name}}"   # should be the same used in the callback url used when creating oidc provider
     mappingMethod: claim
     type: OpenID
     openID:
-      clientID: {{idp_client_id}}   # should be the name used to create idp provider
+      clientID: "{{idp_client_id}}"   # should be the name used to create idp provider
       clientSecret:
-        name: {{idp_secret_name}}  # Name of secret created in previous step
+        name: "{{idp_secret_name}}"  # Name of secret created in previous step
       claims:
         email:
         - email
@@ -20,4 +20,4 @@ spec:
         - name
         preferredUsername:
         - nickname
-      issuer: {{idp_issuer_url}}
+      issuer: "{{idp_issuer_url}}"
