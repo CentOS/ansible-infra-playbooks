@@ -34,4 +34,7 @@
         dest: "{{ openshift_build_path }}/install-config.yaml.backup"
 
     - name: Run the install
-      command: AWS_ACCESS_KEY="{{openshift_ci_access_key}}" AWS_SECRET_ACCESS_KEY= "{{openshift_ci_secret_key}}" "{{ openshift_build_path }}/openshift-install create cluster --dir={{ openshift_build_path }}"
+      command: "{{ openshift_build_path }}/openshift-install create cluster --dir={{ openshift_build_path }}"
+      environment:
+        AWS_ACCESS_KEY: "{{openshift_ci_access_key}}"
+        AWS_SECRET_ACCESS_KEY: "{{openshift_ci_secret_key}}"
