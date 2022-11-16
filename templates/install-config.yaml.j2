@@ -6,6 +6,9 @@ controlPlane:
   platform:
     aws:
       type: {{ openshift_control_node_instance_type }}
+      rootVolume:
+        size: {{ openshift_control_node_ebs_size }}
+        type: {{ openshift_control_node_ebs_type }}
   replicas: {{ openshift_control_node_replicas }}
 compute:
 - hyperthreading: Enabled
@@ -13,9 +16,15 @@ compute:
   platform:
     aws:
       type: {{ openshift_worker_node_instance_type }}
+      rootVolume:
+        size: {{ openshift_worker_node_ebs_size }}
+        type: {{ openshift_worker_node_ebs_type }}
   replicas: {{ openshift_worker_node_replicas }}
 metadata:
   name: {{ openshift_cluster_name }}
+networking:
+  machineNetwork:
+  - cidr: {{ openshift_pvc_machine_network }}
 platform:
   aws:
     region: {{ aws_region }}

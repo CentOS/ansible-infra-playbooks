@@ -2,11 +2,32 @@
 
 # This playbook requires a file provided to it for vars
 # An example of the file exists in inventory/group_vars/openshift-ci-stg
+# Needed variables:
+# openshift_cluster_base_domain: cloud.stg.ci.centos.org # This is the Route53 delegated zone
+# openshift_cluster_name: ocp # sub-domain under base domain that will be the openshift cluster name
+# openshift_control_node_instance_type: "m5.xlarge" # EC2 instance type
+# openshift_control_node_replicas: 3 # number of control plane nodes
+# openshift_control_node_ebs_size: 200 # size in Gigabytes
+# openshift_control_node_ebs_type: gp3 # Better throughput than gp2 but less than io1/io2  
+# openshift_worker_node_instance_type: "m5.xlarge" # ec2 instance type for workers/compute nodes
+# openshift_worker_node_replicas: 3 # number of compute ondes
+# openshift_worker_node_ebs_size: 200 # size in Gigabytes
+# openshift_worker_node_ebs_type: gp3 # Better throughput than gp2 but less than io1/io2
+# openshift_install_pull_secret: '' # To be retrieved from https://console.redhat.com/openshift/downloads (limited validity cert)
+# openshift_node_ssh_public_key: "ssh-rsa ..." # ssh pub key to login into rhcos nodes
+# openshift_ci_access_key: #IAM access key needed to create/deploy resources
+# openshift_ci_secret_key: #IAM secret key for access key above
+# openshift_build_path: "{{ ansible_env.HOME }}/tmp/ocp-aws-ci-stg" # Tmp and local directory created by openshift-install
+# openshift_pvc_machine_network: 172.25.0.0/16 # The large subnet that be splitted in new VPC. Ensure it doesn't overlap for peering/routing/vpn (it will be internal/private in vpc anyway)
+#
 
-# It also assumes that an empty Route53 zone exists
+# Pre-checks:
+# It also assumes that an empty Route53 zone exists for {{ openshift_cluster_base_domain }} (to be created first)
 
 # it creates some files locally which should be pushed to the filestore as
 # they contain install info needed for the cluster
+
+# how to call it : ansible-playbook playbook/adhoc-deploy-ocp-aws.yml -e '@/path/to/inventory/group_vars/cluster_name'
 
 - hosts: localhost
 
@@ -17,11 +38,12 @@
         state: directory
         mode: 0700
 
-    - name: download and extract openshift installer
+    - name: download and extract openshift installer (if needed)
       unarchive:
         src: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-install-linux.tar.gz
         dest: "{{ openshift_build_path }}"
         remote_src: yes
+        creates: "{{ openshift_build_path }}/openshift-install"
 
     - name: create openshift install-config.yaml file
       template:
@@ -33,7 +55,7 @@
         src: "{{ openshift_build_path }}/install-config.yaml"
         dest: "{{ openshift_build_path }}/install-config.yaml.backup"
 
-    - name: Run the install
+    - name: Run openshift-install cli to deploy cluster
       command: "{{ openshift_build_path }}/openshift-install create cluster --dir={{ openshift_build_path }}"
       environment:
         AWS_ACCESS_KEY: "{{openshift_ci_access_key}}"
