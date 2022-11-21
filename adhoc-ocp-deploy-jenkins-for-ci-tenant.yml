@@ -5,8 +5,30 @@
 #   ocp_nfs_server: (like node.domain)
 #   ocp_nfs_export: ocp-staging
 
+- hosts: localhost
+  vars_prompt:
+    - name: "ocp_env"
+      prompt: | 
+        Select OCP env:
+          - ci-rdu2
+          - ci-aws
+          - ci-aws-stg
+        
+      private: False
+  vars:
+    ocp_groups:
+      ci-rdu2: ocp-ci-management
+      ci-aws-stg: ocp-stg-ci-management
+      ci-aws: aws-ocp-ci-management
+  tasks:
+    - set_fact: 
+        mgmt_hosts: "{{ ocp_groups[ocp_env] }}"
+    - add_host:
+        name: "{{ item }}"
+        groups: ocp_target_host
+      with_items: "{{ groups[mgmt_hosts] }}"  
 
-- hosts: "ocp-ci-management"
+- hosts: ocp_target_host
   become: true
   become_user: "{{ ocp_service_account }}"
   vars_prompt:
@@ -21,12 +43,14 @@
       private: no
     #- name: "duffy_ssh_key"
     #  prompt: "Existing ssh private key this project to be injected as secret "
-
+  vars:
+    pv_claimref: jenkins
+    pv_name: jenkins
 
   tasks:
     - name: Generate a UUID
       set_fact:
-        pv_uuid: "{{ (ocp_project + pv_claimref|default('noclaimref', true)) | to_uuid }}"
+        pv_uuid: "{{ (ocp_project  + '-' + pv_claimref|default('noclaimref', true)) + '-' + pv_name | to_uuid }}"
       tags:
         - pv
         - nfs
@@ -90,15 +114,15 @@
 
     - name: create json files for PV
       template:
-        src: "templates/openshift-pv-storage/persistent-volume.json.j2"
-        dest: "/home/{{ ocp_service_account }}/pv_configs/{{ pv_name }}.json"
+        src: "templates/openshift-pv-storage/pv.yml.j2"
+        dest: "/home/{{ ocp_service_account }}/pv_configs/{{ pv_name }}.yml"
       register: pv_init  
       tags:
         - pv
 
     - name: apply the transformation
       command: 
-        cmd: "bin/oc create -f pv_configs/{{ pv_name }}.json"
+        cmd: "bin/oc create -f pv_configs/{{ pv_name }}.yml"
         chdir: "/home/{{ ocp_service_account }}"
       when: pv_init is changed
       tags:

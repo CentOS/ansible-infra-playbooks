@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ pv_name }}
+  labels:
+    type: nfs
+spec:
+  capacity:
+    storage: {{ pv_size }}
+  accessModes:
+    - ReadOnlyMany
+    - ReadWriteOnce
+    - ReadWriteMany
+  mountOptions: 
+    - nfsvers=4.1
+  nfs:
+    path: /{{ ocp_nfs_export }}/{{ pv_name }}
+    server: {{ ocp_nfs_server }}
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    namespace: {{ ocp_project }}
+    name: {{ pv_claimref }}
