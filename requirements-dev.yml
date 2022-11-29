@@ -5,6 +5,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-artifacts-srv
     name: artifacts-srv
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-aws-openshift
+    name: aws-openshift
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-baseline
     name: baseline
     version: staging 
@@ -288,4 +291,7 @@ collections:
     type: git
     source: https://github.com/ansible-collections/community.aws.git
     version: 3.2.1
-
+  - name: community.rabbitmq
+    type: git
+    source: https://github.com/ansible-collections/community.rabbitmq.git
+    version: 1.2.3
