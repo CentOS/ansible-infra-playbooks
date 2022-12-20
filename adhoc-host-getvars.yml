@@ -8,10 +8,10 @@
         url: http://ipv4.icanhazip.com
         return_content: yes
       register: public_ip
-      when: "'aws' in inventory_hostname"
+      when: ansible_bios_vendor == 'Amazon EC2'
     - set_fact:
         pub_ip: "{{ public_ip.content | replace('\n', '') }}"
-      when: "'aws' in inventory_hostname"
+      when: ansible_bios_vendor == 'Amazon EC2'
 
     - name: Generate initial host_vars/{{ inventory_hostname }} in ../out
       template:

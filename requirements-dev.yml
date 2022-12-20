@@ -5,9 +5,6 @@ roles:
   - src: https://github.com/CentOS/ansible-role-artifacts-srv
     name: artifacts-srv
     version: staging 
-  - src: https://github.com/CentOS/ansible-role-aws-openshift
-    name: aws-openshift
-    version: staging 
   - src: https://github.com/CentOS/ansible-role-baseline
     name: baseline
     version: staging 
