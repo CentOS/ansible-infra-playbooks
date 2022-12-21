@@ -271,7 +271,7 @@ collections:
   - name: community.mysql
     type: git
     source: https://github.com/ansible-collections/community.mysql.git
-    version: 3.1.2
+    version: 3.5.1
   - name: community.postgresql
     type: git
     source: https://github.com/ansible-collections/community.postgresql.git
