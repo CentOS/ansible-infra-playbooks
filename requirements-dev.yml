@@ -47,6 +47,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-gitea
     name: gitea
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-gitlab-runner
+    name: gitlab-runner
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-haproxy
     name: haproxy
     version: staging 

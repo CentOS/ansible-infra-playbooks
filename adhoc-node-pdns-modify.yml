@@ -18,7 +18,7 @@
       shell: 
         cmd: /var/lib/centos-infra/host-modify -a "{{ pdns_action }}" -n "{{ target }}"
         chdir: /var/lib/centos-infra
-      delegate_to: "{{ zabbix_api_srv }}"
+      delegate_to: "{{ pdns_db_host }}"
     
     - name: Reloading directly powerdns zone on pdns nodes
       command:

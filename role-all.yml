@@ -14,6 +14,7 @@
 - import_playbook: role-fedora-messaging-client.yml
 - import_playbook: role-geoip2.yml
 - import_playbook: role-gitea.yml
+- import_playbook: role-gitlab-runner.yml
 - import_playbook: role-haproxy.yml
 - import_playbook: role-httpd.yml
 - import_playbook: role-httpd-compose.yml

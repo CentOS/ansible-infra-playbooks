@@ -23,10 +23,14 @@
   tasks:
     - set_fact: 
         mgmt_hosts: "{{ ocp_groups[ocp_env] }}"
+      tags:
+        - vars
     - add_host:
         name: "{{ item }}"
         groups: ocp_target_host
       with_items: "{{ groups[mgmt_hosts] }}"  
+      tags:
+        - vars
 
 - hosts: ocp_target_host
   become: true

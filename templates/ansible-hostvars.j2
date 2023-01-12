@@ -17,12 +17,16 @@ macaddress: {{ ansible_default_ipv4.macaddress | default('')}}
 dns: 
 {% for ns in ansible_dns.nameservers %} 
   - {{ ns }} 
-{% endfor %}
+{%- endfor %}
 
 hardware_vendor: {{ ansible_system_vendor }}
 product_name: {{ ansible_product_name }}
 serial_number: {{ ansible_product_serial }}
 
+{% if ansible_bios_vendor == 'Amazon EC2' %}
+aws_ec2_instance_id:
+aws_ec2_region:
+{% else %}
 root_password: 
 
 sponsor_name:
@@ -33,6 +37,6 @@ sponsor_portal:
   - user: 
   - password: 
 sponsor_contacts: []
+{% endif %}
 
-aws_ec2_instance_id:
-aws_ec2_region:
+
