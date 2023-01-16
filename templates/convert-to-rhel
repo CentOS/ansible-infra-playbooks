@@ -1,0 +1,27 @@
+#!/bin/bash
+logfile="/var/log/centos-convert-rhel.log"
+
+function f_log () {
+  echo "[+] $(date +%Y%m%d-%H:%M) stylo -> $*" >>$logfile
+}
+
+f_log "Detecting if we have redhat-release package installed"
+rpm -q redhat-release 2>&1 >/dev/null 
+if [ "$?" -eq "0" ] ; then
+  f_log "Detected $(rpm -q redhat-release) so exiting"
+  exit 0
+else
+  f_log "Forcing removal of centos-stream-repos and centos-stream-release pkgs ..."
+  rpm -e --nodeps centos-stream-repos centos-stream-release 2>&1 >>$logfile
+  f_log "Forcing dnf makecache from RHEL repositories ..."
+  dnf clean all --releasever {{ ansible_distribution_major_version }} >> $logfile
+  dnf makecache --releasever {{ ansible_distribution_major_version }} >> $logfile
+  dnf distro-sync -y -q --releasever {{ ansible_distribution_major_version }} >> $logfile 2>&1
+  if [ "$?" -ne "0" ] ;then
+    echo "Error converting to RHEL 8" >> $logfile
+    exit 1
+  else
+    exit 2
+  fi
+fi
+

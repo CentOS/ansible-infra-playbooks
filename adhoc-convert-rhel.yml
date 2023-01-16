@@ -1,0 +1,53 @@
+# Convert CentOS Stream 8 nodes to RHEL 8
+---
+- hosts: "{{ target }}"
+  vars_prompt:
+    - name: "target"
+      prompt: "Host[s]/Group[s] to convert from Stream to RHEL ? => "
+      private: no
+  become: True
+  gather_facts: True
+
+
+  tasks:
+
+    - import_role:
+        name: baseline
+        tasks_from: rhel
+      when: 
+        - ansible_distribution_major_version == '8'
+        - ansible_distribution == 'CentOS'
+
+    - block:
+        - name: Ensuring we can drop some TLS cdn files
+          file:
+            path: "{{ item }}"
+            state: directory
+          with_items:
+            - /etc/rhsm/ca
+            - /etc/pki/entitlement
+
+        - name: Ensuring we have correct RHEL gpg pub key
+          copy:
+            src: "{{ item.file }}"
+            dest: "{{ item.dest }}"
+          loop:
+            - { file: '{{ pkistore }}/rpm/redhat-uep.pem', dest: '/etc/rhsm/ca/redhat-uep.pem' }
+            - { file: '{{ pkistore }}/rpm/RPM-GPG-KEY-redhat-release', dest: '/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release' }
+
+        - name: Importing convert shell script
+          template:
+            src: convert-to-rhel
+            dest: /var/tmp/convert-to-rhel
+            mode: 0750
+            owner: root
+
+        - name: Converting to RHEL 8
+          command: 
+            cmd: /var/tmp/convert-to-rhel
+          register: result
+          changed_when: result.rc == 2
+          failed_when: result.rc == 1
+      when: 
+        - ansible_distribution == 'CentOS'
+        - ansible_distribution_major_version == '8'   
