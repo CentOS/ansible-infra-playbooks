@@ -2,7 +2,7 @@
 logfile="/var/log/centos-convert-rhel.log"
 
 function f_log () {
-  echo "[+] $(date +%Y%m%d-%H:%M) stylo -> $*" >>$logfile
+  echo "[+] $(date +%Y%m%d-%H:%M) -> $*" >>$logfile
 }
 
 f_log "Detecting if we have redhat-release package installed"
@@ -21,6 +21,16 @@ else
     echo "Error converting to RHEL 8" >> $logfile
     exit 1
   else
+    if [ -d /sys/firmware/efi ] ; then
+      f_log "UEFI system detected, forcing efibootmanager"
+      efi_dev=$(mount|grep "boot/efi"|awk '{print $1}') 
+      f_log "Detected EFI boot device is [${efi_dev:0:-1}]"
+      grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
+      efibootmgr --create --disk=${efi_dev:0:-1} --part=1 --label="Red Hat Enterprise Linux" --loader='EFI\redhat\shimx64.efi' >> $logfile
+      if [ "$?" -ne "0" ] ; then
+        f_log "ERROR, not able to configure efibootmgr so machine will not reboot"
+      fi
+    fi
     exit 2
   fi
 fi
