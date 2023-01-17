@@ -23,12 +23,13 @@ else
   else
     if [ -d /sys/firmware/efi ] ; then
       f_log "UEFI system detected, forcing efibootmanager"
-      efi_dev=$(mount|grep "boot/efi"|awk '{print $1}') 
-      f_log "Detected EFI boot device is [${efi_dev:0:-1}]"
+      efi_dev=$(lsblk -dno pkname $(mount|grep "boot/efi"|awk '{print $1}')) 
+      f_log "Detected EFI boot device is [/dev/${efi_dev}]"
       grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
-      efibootmgr --create --disk=${efi_dev:0:-1} --part=1 --label="Red Hat Enterprise Linux" --loader='EFI\redhat\shimx64.efi' >> $logfile
+      efibootmgr --create --disk=/dev/${efi_dev} --part=1 --label="Red Hat Enterprise Linux" --loader='EFI\redhat\shimx64.efi' >> $logfile
       if [ "$?" -ne "0" ] ; then
         f_log "ERROR, not able to configure efibootmgr so machine will not reboot"
+        exit 1
       fi
     fi
     exit 2

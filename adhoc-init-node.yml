@@ -1,6 +1,12 @@
 ---
 - hosts: all
+  vars_prompt:
+    - name: "warning_message"
+      prompt: "[WARNING] : have you called this script with --limit to apply only to some nodes/groups ? CTRL+C if not the case" 
+      private: no
   become: True
+  gather_facts: True
+
   tasks:
     - block: 
       - name: Find our public ip
