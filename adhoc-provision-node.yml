@@ -17,7 +17,7 @@
 #  lv_home_size: 2048 # in GB
 #  pxe_bootdev: eth0 # device used as bootdev and first interface configured
 #  bridge_nic: False # If set to True, pxe_bootdev will become the bridgeslave device for br0 bridge
-#
+#  rhel_verion: 9    # If defined, it will be installed with RHEL instead of centos
 # Call this adhoc playbook with --limit to deploy host[s]/group
 #
 - hosts: "{{ init_hosts }}"
@@ -113,9 +113,16 @@
         timeout: 1200
       delegate_to: "{{ deploy_host }}"
 
-    - name: Updating/Adding IP in local CI dns resolver if needed
-      shell: "/usr/local/bin/update_dns -n {{ inventory_hostname }} -i {{ ip }}"
+    - name: Removing template to avoid it being reinstalled by accident 
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
+        - "/var/lib/tftpboot/pxelinux.cfg/01-{{ macaddress | lower | replace(\":\",\"-\") }}"
+        - "/var/lib/tftpboot/grub.cfg-01-{{ macaddress | lower | replace(\":\",\"-\") }}"
       delegate_to: "{{ deploy_host }}"
-      when: centos_ci_node is defined and centos_ci_node
       tags:
-        - dns
+        - cleanup
+      
+

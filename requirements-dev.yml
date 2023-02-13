@@ -258,7 +258,7 @@ collections:
   - name: ansible.posix
     type: git
     source: https://github.com/ansible-collections/ansible.posix.git
-    version: 1.3.0
+    version: 1.5.1
   - name: ansible.netcommon
     type: git
     source: https://github.com/ansible-collections/ansible.netcommon.git
