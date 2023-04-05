@@ -9,7 +9,14 @@
 
 set timeout=3
 
+{% if arch == 'aarch64' %}
+menuentry '{{ inventory_hostname }}-Ansible-deploy' {
+	linux boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+	initrd boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
+}
+{% else %}
 menuentry '{{ inventory_hostname }}-Ansible-deploy' {
 	linuxefi boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
 	initrdefi boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
 }
+{% endif %}
