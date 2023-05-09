@@ -90,6 +90,7 @@
         patterns: "ssh_host*-cert.pub"
       register: ssh_signed_certs
       delegate_to: localhost
+      become: False
       when: ssh_signing is changed
 
     - name: Pushing back signed -cert.pub files back on the node

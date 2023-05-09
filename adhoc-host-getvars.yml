@@ -8,10 +8,14 @@
         url: http://ipv4.icanhazip.com
         return_content: yes
       register: public_ip
-      when: ansible_bios_vendor == 'Amazon EC2'
+      when: 
+        - dnf_use_proxy is defined and not dnf_use_proxy
+        - ansible_bios_vendor == 'Amazon EC2'
     - set_fact:
         pub_ip: "{{ public_ip.content | replace('\n', '') }}"
-      when: ansible_bios_vendor == 'Amazon EC2'
+      when: 
+        - ansible_bios_vendor == 'Amazon EC2'
+        - dnf_use_proxy is defined and not dnf_use_proxy
 
     - name: Generate initial host_vars/{{ inventory_hostname }} in ../out
       template:

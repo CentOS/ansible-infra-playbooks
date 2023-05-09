@@ -98,7 +98,7 @@
 
     - name: == Hardware provisioning == Pausing before forcing again booting from disk (bad Dell firmware/bios)
       pause:
-        seconds: 210
+        seconds: 240
 
     - name: == Hardware provisioning == Ensuring we'll reboot from disk
       command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis bootdev disk options=persistent
@@ -110,7 +110,7 @@
       wait_for: 
         host: "{{ ip }}" 
         port: 22 
-        timeout: 1200
+        timeout: 2400
       delegate_to: "{{ deploy_host }}"
 
     - name: Removing template to avoid it being reinstalled by accident 

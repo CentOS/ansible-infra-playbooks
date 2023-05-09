@@ -1,5 +1,5 @@
 hostname: {{ inventory_hostname }}
-{% if ansible_bios_vendor == 'Amazon EC2' %}
+{% if ansible_bios_vendor == 'Amazon EC2' and pub_ip is defined %}
 ip: {{ pub_ip }}
 {% elif ansible_default_ipv4.address is defined %}
 ip: {{ ansible_default_ipv4.address }}
