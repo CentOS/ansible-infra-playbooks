@@ -20,12 +20,29 @@
 #  rhel_verion: 9    # If defined, it will be installed with RHEL instead of centos
 # Call this adhoc playbook with --limit to deploy host[s]/group
 #
-- hosts: "{{ init_hosts }}"
+- hosts: bare-metal-nodes
   become: true
   gather_facts: false
 
   tasks:
-    
+    - name: Ensuring we have a dedicated qa pxe boot dir for [vmlinuz/initrd.img]
+      file:
+        path: "/var/lib/tftpboot/qa/centos/{{ centos_version }}/{{ arch }}"
+        state: directory
+      delegate_to: "{{ deploy_host }}"
+      tags: 
+        - prep
+    - name: Ensuring we have latest kernel/initrd.img
+      get_url:
+        dest: "/var/lib/tftpboot/qa/centos/{{ centos_version }}/{{ arch }}/"
+        url: "{{ mirror_baseurl | default('https://mirror.stream.centos.org/9-stream') }}/BaseOS/{{ arch }}/os/images/pxeboot/{{ item }}"
+      delegate_to: "{{ deploy_host }}"
+      with_items:
+        - vmlinuz
+        - initrd.img
+      tags: 
+        - prep
+
     - name: == Hardware provisioning == Creating kickstart[s]
       template: 
         src: "../templates/kickstarts/centos-{{ centos_version }}-ks.cfg.j2" 

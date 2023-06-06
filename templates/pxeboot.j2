@@ -4,6 +4,12 @@
 {% set arch = centos_arch %}
 {% endif %}
 
+{% if centos_infra_env == "qa" %}
+{% set pxe_base_dir = 'qa' %}
+{% else %}
+{% set pxe_base_dir = 'boot' %}
+{% endif %}
+
 {% if rhel_version is defined %}
 {% set pxe_boot_dir = 'rhel' %}
 {% set os_version = rhel_version %}
@@ -30,5 +36,5 @@ LABEL local
 
 LABEL {{ inventory_hostname}}-deploy
         MENU LABEL Deploying {{ inventory_hostname }} - kickstart (OS {{ os_version }}/{{ arch }})
-        kernel boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz
-	      append initrd=boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg {%if pxe_boot_serial is defined and pxe_boot_serial %} console=ttyS0,115200n8 {% endif %} 
+        kernel {{ pxe_base_dir }}/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz
+	      append initrd={{ pxe_base_dir }}/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img net.ifnames=0 biosdevname=0 ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg {%if pxe_boot_serial is defined and pxe_boot_serial %} console=ttyS0,115200n8 {% endif %} 

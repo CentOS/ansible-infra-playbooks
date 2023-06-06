@@ -1,7 +1,7 @@
 #version=DEVEL
 
 # Use network installation
-url --url="http://mirror.stream.centos.org/{{ centos_version }}/BaseOS/{{ arch }}/os/"
+url --url="{{ mirror_baseurl | default('http://mirror.stream.centos.org/9-stream') }}/BaseOS/{{ arch }}/os/"
 
 text
 # Disabling Setup Agent on first boot
@@ -79,6 +79,108 @@ reboot
 # Ensuring that sshd is locked on reboot with key-based auth only
 sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config 
 
+{% if centos_infra_env == "qa" %}
+echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
+mkdir /root/.ssh
+echo "{{ qa_jenkins_key | default('ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+kByMD9fmCXAkFUHau3EtHimd3UZ3chQKaDGnss+WO2dKMYljUiXf/qmI6tXP1DFcS7BchDAZkrh3O9YA+ZGzk59a+3fBYB31Mjogh83qATRJOB/aa8Q3vdijfUJH/9OFc7pzdP17+hlGiCnQuW1YxGUa2Q/dOmfZdgWWuwLTq4xTxpAFihzkY6jiDZ6ZPg75KgH1qurYQxyggnbwmC3SI4EEStNkG1I2+YRBZpGgQBp/DIFvPxoMMuwuAv5bnNQlAhKi8Turx+fzWRMXXFgUTGD//wjvZffN4LZ0wXqIaXv3cKUEJ9ToDxFTcBC1NeefYhYouSQMKFAp36EM+0/okdsw+kokUBc83uJClZ4WjmyGlHn0RfcBMU8TyZhy1HAwNd+t1XPwgvgasoAojNINtD+kVA+UqZt3FuBhUD5Y0jm/7yjozDWiyczjhTKimH7Bm/mWdI/xOgTbV59yreaXo2L5Ghh6TgCBQ/i4d+NOAIPPiwGGGQvKn+9CFBrWckE=') }}" >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
+
+cat > /etc/yum.repos.d/centos.repo << EOF
+[baseos]
+name=CentOS Stream $releasever - BaseOS
+baseurl=https://composes.stream.centos.org/production/latest-CentOS-Stream/compose/BaseOS/{{ arch }}/os/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=1
+
+[baseos-debuginfo]
+name=CentOS Stream $releasever - BaseOS - Debug
+metalink=https://mirrors.centos.org/metalink?repo=centos-baseos-debug-$stream&arch=$basearch&protocol=https,http
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=0
+
+[baseos-source]
+name=CentOS Stream $releasever - BaseOS - Source
+metalink=https://mirrors.centos.org/metalink?repo=centos-baseos-source-$stream&arch=source&protocol=https,http
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=0
+
+[appstream]
+name=CentOS Stream $releasever - AppStream
+baseurl=https://composes.stream.centos.org/production/latest-CentOS-Stream/compose/AppStream/{{ arch }}/os/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+countme=1
+enabled=1
+
+[appstream-debuginfo]
+name=CentOS Stream $releasever - AppStream - Debug
+metalink=https://mirrors.centos.org/metalink?repo=centos-appstream-debug-$stream&arch=$basearch&protocol=https,http
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=0
+
+[appstream-source]
+name=CentOS Stream $releasever - AppStream - Source
+metalink=https://mirrors.centos.org/metalink?repo=centos-appstream-source-$stream&arch=source&protocol=https,http
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=0
+
+[crb]
+name=CentOS Stream $releasever - CRB
+baseurl=https://composes.stream.centos.org/production/latest-CentOS-Stream/compose/CRB/{{ arch }}/os/
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+countme=1
+enabled=0
+
+[crb-debuginfo]
+name=CentOS Stream $releasever - CRB - Debug
+metalink=https://mirrors.centos.org/metalink?repo=centos-crb-debug-$stream&arch=$basearch&protocol=https,http
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=0
+
+[crb-source]
+name=CentOS Stream $releasever - CRB - Source
+metalink=https://mirrors.centos.org/metalink?repo=centos-crb-source-$stream&arch=source&protocol=https,http
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgcheck=1
+repo_gpgcheck=0
+metadata_expire=6h
+enabled=0
+
+EOF
+
+# Disabling addons
+cat > /etc/yum.repos.d/centos-addons.repo << EOF
+# All disabled for QA tests
+EOF
+
+{% else %}
+
+sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config 
+
 # Using Ansible vars to automatically render template and add users 
 {% for user in admins_list %}
 # Adding user,ssh pub key and sudo right for {{ user.login_name }} 
@@ -92,6 +194,8 @@ chmod 600 /home/{{ user.login_name }}/.ssh/* ; chcon -v -R -t ssh_home_t /home/{
 chown -R {{ user.login_name }}.{{ user.login_name}} /home/{{ user.login_name }}/
 echo "{{ user.login_name }} ALL=(ALL) NOPASSWD: ALL" >/etc/sudoers.d/{{ user.login_name }}
 {% endfor %}
+
+{% endif %}
 
 %end   
 
