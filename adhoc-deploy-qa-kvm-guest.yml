@@ -76,8 +76,6 @@
         src: ../templates/ansible-virt-install.j2 
         dest: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}" 
         mode: 0750 
-        owner: root 
-        group: root
       delegate_to: "{{ kvm_host }}"
       tags:
         - ks
