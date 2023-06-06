@@ -1,0 +1,124 @@
+---
+# This playbook is an ad-hoc task used to deploy bare-metal nodes
+# It used the following variables, declared through inventory (group/host vars):
+#  centos_version: 7  # default centos version deployed
+#  rhel_version:      # if rhel_version is defined, we'll deploy RHEL instead
+#  arch: x86_64       # default architecture
+#  root_pass:         # default root_password on provisioned nodes
+#  deploy_host:       # node hosting pxelinux.cfg configurations
+#  ipmitool_host:     # node with ipmitool and mgmt vlan access
+#  ks_url: http://your.node/path/to/ks_dir # where to find the generated kickstarts
+#  use_md_raid: True # Default to use md_raid for /dev/sda and /dev/sdb
+#  md_raid_level: 1
+#  hdd_install_dev: sda # default but can point to mpatha for multipath, etc
+#  pxe_boot_serial: False # boolean if we only have serial console like on seamicro chassis
+#  lv_root_size: 10000 # in GB
+#  lv_root_expand: False  # do we want to have / to max capacity of the VG ?
+#  lv_home_size: 2048 # in GB
+#  pxe_bootdev: eth0 # device used as bootdev and first interface configured
+#  bridge_nic: False # If set to True, pxe_bootdev will become the bridgeslave device for br0 bridge
+#  rhel_verion: 9    # If defined, it will be installed with RHEL instead of centos
+# Call this adhoc playbook with --limit to deploy host[s]/group
+#
+- hosts: "{{ init_hosts }}"
+  become: true
+  gather_facts: false
+
+  tasks:
+    
+    - name: == Hardware provisioning == Creating kickstart[s]
+      template: 
+        src: "../templates/kickstarts/centos-{{ centos_version }}-ks.cfg.j2" 
+        dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
+      delegate_to: "{{ deploy_host }}"
+      when: rhel_version is not defined
+      tags:
+        - ks
+
+    - name: == Hardware provisioning == Creating kickstart[s] (RHEL version)
+      template: 
+        src: "../templates/kickstarts/rhel-{{ rhel_version }}-ks.cfg.j2" 
+        dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
+      delegate_to: "{{ deploy_host }}"
+      when: rhel_version is defined
+      tags:
+        - ks
+
+    - name: == Hardware provisioning == Generating the tftp configuration boot file
+      template: 
+        src: ../templates/pxeboot.j2
+        dest: /var/lib/tftpboot/pxelinux.cfg/01-{{ macaddress | lower | replace(":","-") }}
+        mode: 0755
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - pxe
+
+    - name: == Hardware provisioning == Generating the tftp configuration boot file (EFI/Grub)
+      template: 
+        src: ../templates/pxe-grub.cfg.j2
+        dest: /var/lib/tftpboot/grub.cfg-01-{{ macaddress | lower | replace(":","-") }}
+        mode: 0755
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - pxe
+
+    - name: == Hardware provisioning == Ensuring node is powered off
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis power off
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+      ignore_errors: True
+      no_log: True
+
+    - name: == Hardware provisioning == Pausing ...
+      pause:
+        seconds: 8
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == configuring pxe boot
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis bootdev pxe
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == Pausing ...
+      pause:
+        seconds: 2
+      
+    - name: == Hardware provisioning == Ensuring node is powered on
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis power on
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == Pausing before forcing again booting from disk (bad Dell firmware/bios)
+      pause:
+        seconds: 240
+
+    - name: == Hardware provisioning == Ensuring we'll reboot from disk
+      command: ipmitool -I lanplus -U {{ ipmi_user }} -P {{ ipmi_pass }} -H {{ ipmi_ip }} chassis bootdev disk options=persistent
+      delegate_to: "{{ ipmitool_host }}"
+      tags:
+        - ipmi
+
+    - name: == Hardware provisioning == Waiting for host to be reachable
+      wait_for: 
+        host: "{{ ip }}" 
+        port: 22 
+        timeout: 2400
+      delegate_to: "{{ deploy_host }}"
+
+    - name: Removing template to avoid it being reinstalled by accident 
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
+        - "/var/lib/tftpboot/pxelinux.cfg/01-{{ macaddress | lower | replace(\":\",\"-\") }}"
+        - "/var/lib/tftpboot/grub.cfg-01-{{ macaddress | lower | replace(\":\",\"-\") }}"
+      delegate_to: "{{ deploy_host }}"
+      tags:
+        - cleanup
+      
+
