@@ -16,6 +16,13 @@
  {% set kvm_guest_eth1_network = 'bridge=' + kvm_guest_eth1_bridge %}
 {% endif %}
 
+# Let's ensure we undefine/delete if still running (qa/test scenario)
+virsh list|grep -q "{{ inventory_hostname }}"
+if [ "$?" -eq "0" ] ; then
+  virsh destroy {{ inventory_hostname }}
+  virsh undefine {{ inventory_hostname }}
+fi
+
 virt-install \
   --name  {{ inventory_hostname }} \
   --vcpus {{ kvm_guest_vcpus }} \
