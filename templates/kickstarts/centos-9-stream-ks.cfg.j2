@@ -89,7 +89,7 @@ chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
 cat > /etc/yum.repos.d/centos.repo << EOF
 [baseos]
 name=CentOS Stream $releasever - BaseOS
-baseurl=https://composes.stream.centos.org/production/latest-CentOS-Stream/compose/BaseOS/{{ arch }}/os/
+baseurl={{ mirror_baseurl | default('http://mirror.stream.centos.org/9-stream') }}/BaseOS/{{ arch }}/os/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 gpgcheck=1
 repo_gpgcheck=0
@@ -116,7 +116,7 @@ enabled=0
 
 [appstream]
 name=CentOS Stream $releasever - AppStream
-baseurl=https://composes.stream.centos.org/production/latest-CentOS-Stream/compose/AppStream/{{ arch }}/os/
+baseurl={{ mirror_baseurl | default('http://mirror.stream.centos.org/9-stream') }}/AppStream/{{ arch }}/os/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 gpgcheck=1
 repo_gpgcheck=0
@@ -144,7 +144,7 @@ enabled=0
 
 [crb]
 name=CentOS Stream $releasever - CRB
-baseurl=https://composes.stream.centos.org/production/latest-CentOS-Stream/compose/CRB/{{ arch }}/os/
+baseurl={{ mirror_baseurl | default('http://mirror.stream.centos.org/9-stream') }}/CRB/{{ arch }}/os/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 gpgcheck=1
 repo_gpgcheck=0

@@ -1,9 +1,8 @@
-#version=DEVEL
-# System authorization information
-auth --enableshadow --passalgo=sha512
 
 # Use network installation
-url --url="http://mirror.centos.org/centos/{{ centos_version }}/BaseOS/{{ arch }}/os/"
+url --url="{{ mirror_baseurl | default('http://mirror.centos.org/centos/8-stream') }}/BaseOS/{{ arch }}/os/"
+
+#repo --name=appstream --baseurl="{{ mirror_baseurl | default('http://mirror.centos.org/centos/8-stream') }}/AppStream/{{ arch }}/os/"
 
 text
 # Disabling Setup Agent on first boot
@@ -73,11 +72,45 @@ logvol /  --fstype="ext4" --size={{ lv_root_size }} --name=root --vgname=vg_{{ i
 logvol /home  --fstype="ext4" --size={{ lv_home_size }} --name=home --vgname=vg_{{ inventory_hostname_short }}
 logvol swap  --fstype="swap" --size=2048 --name=swap --vgname=vg_{{ inventory_hostname_short }}
 
-
 #Ensuring rebooting at the end
 reboot
 
 %post
+{% if centos_infra_env == "qa" %}
+echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
+mkdir /root/.ssh
+echo "{{ qa_jenkins_key | default('ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+kByMD9fmCXAkFUHau3EtHimd3UZ3chQKaDGnss+WO2dKMYljUiXf/qmI6tXP1DFcS7BchDAZkrh3O9YA+ZGzk59a+3fBYB31Mjogh83qATRJOB/aa8Q3vdijfUJH/9OFc7pzdP17+hlGiCnQuW1YxGUa2Q/dOmfZdgWWuwLTq4xTxpAFihzkY6jiDZ6ZPg75KgH1qurYQxyggnbwmC3SI4EEStNkG1I2+YRBZpGgQBp/DIFvPxoMMuwuAv5bnNQlAhKi8Turx+fzWRMXXFgUTGD//wjvZffN4LZ0wXqIaXv3cKUEJ9ToDxFTcBC1NeefYhYouSQMKFAp36EM+0/okdsw+kokUBc83uJClZ4WjmyGlHn0RfcBMU8TyZhy1HAwNd+t1XPwgvgasoAojNINtD+kVA+UqZt3FuBhUD5Y0jm/7yjozDWiyczjhTKimH7Bm/mWdI/xOgTbV59yreaXo2L5Ghh6TgCBQ/i4d+NOAIPPiwGGGQvKn+9CFBrWckE=') }}" >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
+
+# Disabling all repositories and pointing to QA
+sed -i 's/enabled=1/enabled=0/g' /etc/yum.repos.d/*.repo
+
+cat > /etc/yum.repos.d/CentOS-Stream-QA.repo << EOF
+[baseos-staged]
+name=CentOS Stream $releasever - BaseOS
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/8-stream') }}/BaseOS/{{ arch }}/os/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+
+[appstream-staged]
+name=CentOS Stream $releasever - AppStream
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/8-stream') }}/AppStream/{{ arch }}/os/
+gpgcheck=1
+enabled=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+
+[powertools-staged]
+name=CentOS Stream $releasever - PowerTools
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/8-stream') }}/PowerTools/{{ arch }}/os/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+
+EOF
+
+{% else %}
 # Ensuring that sshd is locked on reboot with key-based auth only
 sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config 
 
@@ -95,12 +128,13 @@ chown -R {{ user.login_name }}.{{ user.login_name}} /home/{{ user.login_name }}/
 echo "{{ user.login_name }} ALL=(ALL) NOPASSWD: ALL" >/etc/sudoers.d/{{ user.login_name }}
 {% endfor %}
 
+{% endif %}
+
 %end   
 
 %packages
 @^minimal-environment
 @standard
-wget
 chrony
 
 %end
