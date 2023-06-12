@@ -81,7 +81,9 @@
         - ks
 
     - name: Provisining the Virtual Guest[s]
-      command: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}"
+      command: 
+        cmd: "/var/lib/libvirt/virt-install-{{ inventory_hostname }}"
+      timeout: 1200  
       delegate_to: "{{ kvm_host }}"
 
     - name: Waiting for sshd to be available on the deployed node
