@@ -106,8 +106,10 @@ name=CentOS-$releasever - Base
 baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/os/{{ kvm_guest_arch }}/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-{% if kvm_guest_arch != "x86_64" %}
-       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-{{ kvm_guest_arch }}
+{% if kvm_guest_arch == "ppc64le" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64le
+{% eif kvm_guest_arch == "aarch64" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-aarch64
 {% endif %}
 
 #released updates 
@@ -116,9 +118,12 @@ name=CentOS-$releasever - Updates
 baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/updates/{{ kvm_guest_arch }}/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-{% if kvm_guest_arch != "x86_64" %}
-       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-{{ kvm_guest_arch }}
+{% if kvm_guest_arch == "ppc64le" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64le
+{% eif kvm_guest_arch == "aarch64" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-aarch64
 {% endif %}
+
 
 #additional packages that may be useful
 [extras]
@@ -126,9 +131,12 @@ name=CentOS-$releasever - Extras
 baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/extras/{{ kvm_guest_arch }}/
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-{% if kvm_guest_arch != "x86_64" %}
-       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-{{ kvm_guest_arch }}
+{% if kvm_guest_arch == "ppc64le" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64le
+{% eif kvm_guest_arch == "aarch64" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-aarch64
 {% endif %}
+
 
 #additional packages that extend functionality of existing packages
 [centosplus]
@@ -137,9 +145,12 @@ baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/cent
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-{% if kvm_guest_arch != "x86_64" %}
-       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-{{ kvm_guest_arch }}
+{% if kvm_guest_arch == "ppc64le" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64le
+{% eif kvm_guest_arch == "aarch64" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-aarch64
 {% endif %}
+
 
 
 EOF
