@@ -6,9 +6,10 @@ auth --enableshadow --passalgo=sha512
 
 # Use network installation
 {% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' or kvm_guest_arch == 'aarch64' %}
-url --url="http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/"
+url --url="{{ mirror_baseurl | default('http://mirror.centos.org/altarch/7') }}/os/{{ kvm_guest_arch }}/"
+"
 {% else %}
-url --url="http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/"
+url --url="{{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/os/{{ kvm_guest_arch }}/"
 {% endif %}
 # Run the Setup Agent on first boot
 firstboot --enable
@@ -66,11 +67,11 @@ logvol swap  --fstype="swap" --size=2048 --name=swap --vgname=vg_{{ inventory_ho
 
 # Enabling both os and updates repositories at install time to avoid updating after install
 {% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' or kvm_guest_arch == 'aarch64' %}
-repo --name="base" --baseurl=http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/ --cost=100
-repo --name="updates" --baseurl=http://mirror.centos.org/altarch/{{ kvm_guest_distro_release }}/updates/{{ kvm_guest_arch}}/ --cost=100
+repo --name="base" --baseurl={{ mirror_baseurl | default('http://mirror.centos.org/altarch/7') }}/os/{{ kvm_guest_arch }}/ --cost=100
+repo --name="updates" --baseurl={{ mirror_baseurl | default('http://mirror.centos.org/altarch/7') }}/updates/{{ kvm_guest_arch }}/ --cost=100
 {% else %}
-repo --name="base" --baseurl=http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/os/{{ kvm_guest_arch}}/ --cost=100
-repo --name="updates" --baseurl=http://mirror.centos.org/centos/{{ kvm_guest_distro_release }}/updates/{{ kvm_guest_arch}}/ --cost=100
+repo --name="base" --baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/os/{{ kvm_guest_arch }}/ --cost=100
+repo --name="updates" --baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/updates/{{ kvm_guest_arch }}/ --cost=100
 {% endif %}
 
 #Ensuring rebooting at the end
@@ -85,6 +86,52 @@ chrony
 %end
 
 %post
+
+{% if centos_infra_env == "qa" %}
+echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
+mkdir /root/.ssh
+echo "{{ qa_jenkins_key | default('ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+kByMD9fmCXAkFUHau3EtHimd3UZ3chQKaDGnss+WO2dKMYljUiXf/qmI6tXP1DFcS7BchDAZkrh3O9YA+ZGzk59a+3fBYB31Mjogh83qATRJOB/aa8Q3vdijfUJH/9OFc7pzdP17+hlGiCnQuW1YxGUa2Q/dOmfZdgWWuwLTq4xTxpAFihzkY6jiDZ6ZPg75KgH1qurYQxyggnbwmC3SI4EEStNkG1I2+YRBZpGgQBp/DIFvPxoMMuwuAv5bnNQlAhKi8Turx+fzWRMXXFgUTGD//wjvZffN4LZ0wXqIaXv3cKUEJ9ToDxFTcBC1NeefYhYouSQMKFAp36EM+0/okdsw+kokUBc83uJClZ4WjmyGlHn0RfcBMU8TyZhy1HAwNd+t1XPwgvgasoAojNINtD+kVA+UqZt3FuBhUD5Y0jm/7yjozDWiyczjhTKimH7Bm/mWdI/xOgTbV59yreaXo2L5Ghh6TgCBQ/i4d+NOAIPPiwGGGQvKn+9CFBrWckE=') }}" >> /root/.ssh/authorized_keys
+chmod 700 /root/.ssh
+chmod 600 /root/.ssh/* ; chcon -v -R -t ssh_home_t /root/.ssh**
+
+# Disabling all repositories and pointing to QA
+sed -i 's/enabled=1/enabled=0/g' /etc/yum.repos.d/*.repo
+
+cat > /etc/yum.repos.d/CentOS-Base.repo << EOF
+# CentOS-Base.repo
+# Modified for QA purposes and force qa (staged) mirror
+
+[base]
+name=CentOS-$releasever - Base
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/os/{{ kvm_guest_arch }}/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#released updates 
+[updates]
+name=CentOS-$releasever - Updates
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/updates/{{ kvm_guest_arch }}/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#additional packages that may be useful
+[extras]
+name=CentOS-$releasever - Extras
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/extras/{{ kvm_guest_arch }}/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+#additional packages that extend functionality of existing packages
+[centosplus]
+name=CentOS-$releasever - Plus
+baseurl={{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/centosplus/{{ kvm_guest_arch }}/
+gpgcheck=1
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+EOF
+
+{% else %}
 
 sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config 
 
@@ -104,6 +151,8 @@ chmod 600 /home/{{ user.login_name }}/.ssh/* ; chcon -v -R -t ssh_home_t /home/{
 chown -R {{ user.login_name }}.{{ user.login_name}} /home/{{ user.login_name }}/
 echo "{{ user.login_name }} ALL=(ALL) NOPASSWD: ALL" >/etc/sudoers.d/{{ user.login_name }}
 {% endfor %}
+
+{% endif %}
 
 %end
 
