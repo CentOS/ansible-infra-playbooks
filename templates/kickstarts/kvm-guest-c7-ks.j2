@@ -7,7 +7,6 @@ auth --enableshadow --passalgo=sha512
 # Use network installation
 {% if kvm_guest_arch == 'ppc64le' or kvm_guest_arch == 'ppc64' or kvm_guest_arch == 'power9' or kvm_guest_arch == 'aarch64' %}
 url --url="{{ mirror_baseurl | default('http://mirror.centos.org/altarch/7') }}/os/{{ kvm_guest_arch }}/"
-"
 {% else %}
 url --url="{{ mirror_baseurl | default('http://mirror.centos.org/centos/7') }}/os/{{ kvm_guest_arch }}/"
 {% endif %}
