@@ -108,6 +108,8 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 {% if kvm_guest_arch == "ppc64le" %}
        file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64le
+{% elif kvm_guest_arch == "ppc64" %}
+       file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-AltArch-7-ppc64
 {% elif kvm_guest_arch == "aarch64" %}
        file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7-aarch64
 {% endif %}
