@@ -13,6 +13,8 @@ spec:
     - ReadWriteMany
   mountOptions: 
     - nfsvers=4.1
+    - noresvport
+    - hard
   nfs:
     path: /{{ ocp_nfs_export }}/{{ pv_name }}
     server: {{ ocp_nfs_server }}
