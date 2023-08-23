@@ -5,5 +5,5 @@
     - name: Forcing a facts refresh to have those locally available in cache
       setup:
         gather_timeout: 30
-
+        timeout: 120
 
