@@ -86,6 +86,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-kojibot
     name: kojibot
     version: master 
+  - src: https://github.com/CentOS/ansible-role-koji-client
+    name: koji-client
+    version: master 
   - src: https://github.com/CentOS/ansible-role-kojid
     name: kojid
     version: master 

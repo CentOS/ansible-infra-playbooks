@@ -27,6 +27,7 @@
 - import_playbook: role-kanboard.yml
 - import_playbook: role-keepalived.yml
 - import_playbook: role-kojibot.yml
+- import_playbook: role-koji-client.yml
 - import_playbook: role-kojid.yml
 - import_playbook: role-kojihub.yml
 - import_playbook: role-krb5-client.yml
