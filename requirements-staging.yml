@@ -236,6 +236,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-tinyproxy
     name: tinyproxy
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-ucarp
+    name: ucarp
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-unbound
     name: unbound
     version: staging 
