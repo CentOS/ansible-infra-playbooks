@@ -42,6 +42,8 @@ virt-install \
   --initrd-inject=/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg \
 {% if kvm_guest_arch == 'power9' or kvm_guest_arch == 'ppc64le' %}
   --extra-args "console=hvc0 console=hvc1 net.ifnames=0 inst.ks=file:/{{ inventory_hostname }}.cfg" \
+{% elif kvm_guest_arch == 's390x' %}
+  --extra-args "console=ttysclp0 net.ifnames=0 inst.ks=file:/{{ inventory_hostname }}.cfg" \
 {% else %}
   --extra-args "console=ttyS0 net.ifnames=0 inst.ks=file:/{{ inventory_hostname }}.cfg" \
 {% endif %}
