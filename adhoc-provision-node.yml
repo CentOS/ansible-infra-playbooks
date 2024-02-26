@@ -18,6 +18,7 @@
 #  pxe_bootdev: eth0 # device used as bootdev and first interface configured
 #  bridge_nic: False # If set to True, pxe_bootdev will become the bridgeslave device for br0 bridge
 #  rhel_verion: 9    # If defined, it will be installed with RHEL instead of centos
+#  vnc_pass: blabla   # In case we don't want kickstart but vnc based install
 # Call this adhoc playbook with --limit to deploy host[s]/group
 #
 - hosts: "{{ init_hosts }}"

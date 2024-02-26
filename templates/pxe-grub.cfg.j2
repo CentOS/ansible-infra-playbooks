@@ -5,18 +5,24 @@
 {% set pxe_boot_dir = 'centos' %}
 {% set os_version = centos_version %}
 {% endif %}
-
+{% if arch == "aarch64" %}
+{% set kernel_boot = 'linux' %}
+{% set initrd_boot = 'initrd' %}
+{% else %}
+{% set kernel_boot = 'linuxefi' %}
+{% set initrd_boot = 'initrdefi' %}
+{% endif %}
 
 set timeout=3
 
-{% if arch == 'aarch64' %}
+{% if vnc_based_install is defined and vnc_based_install %}
 menuentry '{{ inventory_hostname }}-Ansible-deploy' {
-	linux boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
-	initrd boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
+	{{ kernel_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.vnc inst.vncpassword={{ vnc_pass | default('N98tV89w') }} inst.repo={{ rhel_deploy_mirror_url}}/{{ rhel_version }}/{{ arch }}/ inst.lang=en_GB inst.keymap=be-latin1
+	{{ initrd_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
 }
 {% else %}
 menuentry '{{ inventory_hostname }}-Ansible-deploy' {
-	linuxefi boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
-	initrdefi boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
+	{{ kernel_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
+	{{ initrd_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
 }
 {% endif %}
