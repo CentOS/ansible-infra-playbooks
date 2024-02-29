@@ -34,6 +34,7 @@
 - import_playbook: role-kvm-host.yml
 - import_playbook: role-lsyncd.yml
 - import_playbook: role-mailman.yml
+- import_playbook: role-mailman3.yml
 - import_playbook: role-mantisbt.yml
 - import_playbook: role-mbs.yml
 - import_playbook: role-mirmon.yml

@@ -107,6 +107,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-mailman
     name: mailman
     version: master 
+  - src: https://github.com/CentOS/ansible-role-mailman3
+    name: mailman3
+    version: master 
   - src: https://github.com/CentOS/ansible-role-mantisbt
     name: mantisbt
     version: master 
