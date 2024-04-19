@@ -56,7 +56,7 @@
       register: files_to_sign
 
     - name: Signing host pub keys with CA key
-      shell: "ssh-keygen -s {{ ssh_ca_host_key }} -I {{ inventory_hostname }} -h -Z {{ inventory_hostname }} ssh_host*_key.pub"
+      shell: "ssh-keygen -s {{ ssh_ca_host_key }} -I {{ inventory_hostname }} -h ssh_host*_key.pub"
       args:
         chdir: "{{ ssh_ca_keystore }}/{{ inventory_hostname }}/"
       when: files_to_sign is changed

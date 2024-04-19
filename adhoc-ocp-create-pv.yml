@@ -10,16 +10,17 @@
     - name: "ocp_env"
       prompt: | 
         Select OCP env:
-          - ci-rdu2
+          - stream-rdu2
           - ci-aws
           - ci-aws-stg
         
       private: False
   vars:
     ocp_groups:
-      ci-rdu2: ocp-ci-management
+      stream-rdu2: ocp-admin-nodes
       ci-aws-stg: ocp-stg-ci-management
       ci-aws: aws-ocp-ci-management
+
   tasks:
     - set_fact: 
         mgmt_hosts: "{{ ocp_groups[ocp_env] }}"
