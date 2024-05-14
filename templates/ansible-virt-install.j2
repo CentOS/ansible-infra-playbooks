@@ -53,6 +53,9 @@ virt-install \
   --location {{ mirror_baseurl | default('http://mirror.centos.org/centos/8-stream') }}/BaseOS/{{ kvm_guest_arch }}/os/ 
 {% elif kvm_guest_distro_release == '9-stream' %}
   --location {{ mirror_baseurl | default('http://mirror.stream.centos.org/9-stream') }}/BaseOS/{{ kvm_guest_arch}}/os/
+{% elif kvm_guest_distro_release == '10-stream' %}
+  --osinfo fedora38 \
+  --location {{ mirror_baseurl | default('http://mirror.stream.centos.org/10-stream') }}/BaseOS/{{ kvm_guest_arch}}/os/
 {% elif (kvm_guest_distro_release == 7 and kvm_guest_arch == 'ppc64le') or (kvm_guest_distro_release == 7 and kvm_guest_arch == 'ppc64') or (kvm_guest_distro_release == 7 and kvm_guest_arch == 'power9') or (kvm_guest_distro_release == '7' and kvm_guest_arch == 'aarch64') %}
   --location  {{ mirror_baseurl | default('http://mirror.centos.org/altarch/7') }}/os/{{ kvm_guest_arch }}/ 
 {% else %}
