@@ -93,7 +93,7 @@ cat > /etc/yum.repos.d/centos.repo << EOF
 [baseos]
 name=CentOS Stream $releasever - BaseOS
 baseurl={{ mirror_baseurl | default('http://mirror.stream.centos.org/10-stream') }}/BaseOS/{{ arch }}/os/
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
@@ -102,7 +102,7 @@ enabled=1
 [baseos-debuginfo]
 name=CentOS Stream $releasever - BaseOS - Debug
 metalink=https://mirrors.centos.org/metalink?repo=centos-baseos-debug-$stream&arch=$basearch&protocol=https,http
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
@@ -111,7 +111,7 @@ enabled=0
 [baseos-source]
 name=CentOS Stream $releasever - BaseOS - Source
 metalink=https://mirrors.centos.org/metalink?repo=centos-baseos-source-$stream&arch=source&protocol=https,http
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
@@ -120,7 +120,7 @@ enabled=0
 [appstream]
 name=CentOS Stream $releasever - AppStream
 baseurl={{ mirror_baseurl | default('http://mirror.stream.centos.org/10-stream') }}/AppStream/{{ arch }}/os/
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
@@ -148,7 +148,7 @@ enabled=0
 [crb]
 name=CentOS Stream $releasever - CRB
 baseurl={{ mirror_baseurl | default('http://mirror.stream.centos.org/10-stream') }}/CRB/{{ arch }}/os/
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
@@ -158,7 +158,7 @@ enabled=0
 [crb-debuginfo]
 name=CentOS Stream $releasever - CRB - Debug
 metalink=https://mirrors.centos.org/metalink?repo=centos-crb-debug-$stream&arch=$basearch&protocol=https,http
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
@@ -167,7 +167,7 @@ enabled=0
 [crb-source]
 name=CentOS Stream $releasever - CRB - Source
 metalink=https://mirrors.centos.org/metalink?repo=centos-crb-source-$stream&arch=source&protocol=https,http
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
 gpgcheck=1
 repo_gpgcheck=0
 metadata_expire=6h
