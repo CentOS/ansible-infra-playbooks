@@ -172,6 +172,20 @@ cat > /etc/yum.repos.d/centos-addons.repo << EOF
 # All disabled for QA tests
 EOF
 
+# Creating simple wrapper for TMT that Jenkins will call
+
+cat > /usr/local/bin/stream-tests << EOF
+mkdir /tmp/tests && cd /tmp/tests
+which git >/dev/null 2>&1 || dnf install -d0 -y git
+which pip  >/dev/null 2>&1 || dnf install -d0 -y python3-pip
+git clone https://gitlab.com/CentOS/Integration/compose-tests.git && cd compose-tests
+pip install tmt
+dnf install -d0 -y https://kojipkgs.fedoraproject.org//packages/beakerlib/1.29.3/5.fc40/noarch/beakerlib-1.29.3-5.fc40.noarch.rpm
+tmt -vv -c distro=centos-stream-10 run -a provision --how=local 
+
+EOF
+chmod 755 /usr/local/bin/stream-tests
+
 {% else %}
 
 sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config 
