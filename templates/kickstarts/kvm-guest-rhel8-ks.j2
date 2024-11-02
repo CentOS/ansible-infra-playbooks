@@ -6,6 +6,13 @@ auth --enableshadow --passalgo=sha512
 
 # Use network installation
 url --url="{{ rhel_deploy_mirror_url }}/{{ rhel_version }}/{{ kvm_guest_arch }}/"
+
+{% if rhel_internal_mirror_baseurl is defined %}
+# poiting to internal RHEL mirror with updates for baseos/appstream and so be up2date at deploy time
+repo --name="baseos-updates" --baseurl={{ rhel_internal_mirror_baseurl }}/RHEL/{{ rhel_version }}/baseos/{{ arch }}/os/
+repo --name="appstream-updates" --baseurl={{ rhel_internal_mirror_baseurl }}/RHEL/{{ rhel_version }}/appstream/{{ arch }}/os/
+{% endif %}
+
 # Run the Setup Agent on first boot
 firstboot --enable
 #ignoredisk --only-use=sda
