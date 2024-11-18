@@ -10,12 +10,12 @@
 {% set pxe_base_dir = 'boot' %}
 {% endif %}
 
-{% if rhel_version is defined %}
-{% set pxe_boot_dir = 'rhel' %}
-{% set os_version = rhel_version %}
-{% else %}
+{% if centos_version is defined %}
 {% set pxe_boot_dir = 'centos' %}
 {% set os_version = centos_version %}
+{% else %}
+{% set pxe_boot_dir = 'rhel' %}
+{% set os_version = rhel_version %}
 {% endif %}
 
 {% if pxe_boot_serial is defined and pxe_boot_serial %}

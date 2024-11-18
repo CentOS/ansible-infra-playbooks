@@ -36,7 +36,8 @@
         src: "../templates/kickstarts/centos-{{ centos_version }}-ks.cfg.j2" 
         dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
       delegate_to: "{{ deploy_host }}"
-      when: rhel_version is not defined
+      when: 
+        - centos_version is defined
       tags:
         - ks
 
@@ -45,7 +46,9 @@
         src: "../templates/kickstarts/rhel-{{ rhel_version }}-ks.cfg.j2" 
         dest: "/var/www/html/ks/{{ inventory_hostname }}-ks.cfg"
       delegate_to: "{{ deploy_host }}"
-      when: rhel_version is defined
+      when: 
+        - rhel_version is defined
+        - centos_version is not defined
       tags:
         - ks
 
