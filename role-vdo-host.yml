@@ -1,10 +1,6 @@
 ---
-- hosts: httpd-www-staging-nodes
+- hosts: hostgroup-role-vdo-host
   become: True
-  vars:
-    - httpd_tls: True
-    - httpd_www_hostname: www.stg.centos.org
-
   pre_tasks:
     - name: Checking if no-ansible file is there
       stat:
@@ -18,14 +14,7 @@
         msg: "/etc/no-ansible file exists so skipping ansible run on this node"
 
   roles:
-    - httpd
-
-  tasks:
-    - import_role:
-        name: httpd
-        tasks_from: vhost-www-staging
-      tags:
-        - script
+    - vdo-host
 
   post_tasks:
     - name: Touching ansible-run (monitored by Zabbix)

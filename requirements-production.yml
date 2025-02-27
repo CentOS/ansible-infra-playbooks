@@ -248,6 +248,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-vbox-host
     name: vbox-host
     version: master 
+  - src: https://github.com/CentOS/ansible-role-vdo-host
+    name: vdo-host
+    version: master 
   - src: https://github.com/CentOS/ansible-role-vsftpd
     name: vsftpd
     version: master 
