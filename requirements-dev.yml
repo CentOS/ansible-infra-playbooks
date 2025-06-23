@@ -155,6 +155,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-nfs-server
     name: nfs-server
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-nginx
+    name: nginx
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-ocp-admin-node
     name: ocp-admin-node
     version: staging 
@@ -253,6 +256,9 @@ roles:
     version: staging 
   - src: https://github.com/CentOS/ansible-role-vsftpd
     name: vsftpd
+    version: staging 
+  - src: https://github.com/CentOS/ansible-role-wg-host
+    name: wg-host
     version: staging 
   - src: https://github.com/CentOS/ansible-role-wp
     name: wp

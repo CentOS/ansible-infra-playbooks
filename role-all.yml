@@ -50,6 +50,7 @@
 - import_playbook: role-mqtt.yml
 - import_playbook: role-mysql.yml
 - import_playbook: role-nfs-server.yml
+- import_playbook: role-nginx.yml
 - import_playbook: role-ocp-admin-node.yml
 - import_playbook: role-odcs-backend.yml
 - import_playbook: role-odcs-frontend.yml
@@ -83,6 +84,7 @@
 - import_playbook: role-vbox-host.yml
 - import_playbook: role-vdo-host.yml
 - import_playbook: role-vsftpd.yml
+- import_playbook: role-wg-host.yml
 - import_playbook: role-wp.yml
 - import_playbook: role-zabbix-agent.yml
 - import_playbook: role-zabbix-proxy.yml

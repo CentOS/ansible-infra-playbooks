@@ -155,6 +155,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-nfs-server
     name: nfs-server
     version: master 
+  - src: https://github.com/CentOS/ansible-role-nginx
+    name: nginx
+    version: master 
   - src: https://github.com/CentOS/ansible-role-ocp-admin-node
     name: ocp-admin-node
     version: master 
@@ -253,6 +256,9 @@ roles:
     version: master 
   - src: https://github.com/CentOS/ansible-role-vsftpd
     name: vsftpd
+    version: master 
+  - src: https://github.com/CentOS/ansible-role-wg-host
+    name: wg-host
     version: master 
   - src: https://github.com/CentOS/ansible-role-wp
     name: wp
