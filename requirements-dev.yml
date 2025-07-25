@@ -101,6 +101,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-kvm-host
     name: kvm-host
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-lookaside
+    name: lookaside
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-lsyncd
     name: lsyncd
     version: staging 
