@@ -39,6 +39,12 @@ virt-install \
   --hvm --accelerate \
   --autostart --wait=-1 \
   --noautoconsole \
+{% if kvm_virt_install_options is defined %}
+  {{ kvm_virt_install_options }} \
+{% endif %}
+{% if kvm_guest_secureboot is defined and kvm_guest_secureboot %}
+  --boot uefi,loader.secure=yes \
+{% endif %}
   --initrd-inject=/var/lib/libvirt/local-kickstarts/{{ inventory_hostname }}.cfg \
 {% if kvm_guest_arch == 'power9' or kvm_guest_arch == 'ppc64le' %}
   --extra-args "console=hvc0 console=hvc1 net.ifnames=0 inst.ks=file:/{{ inventory_hostname }}.cfg" \

@@ -2,7 +2,7 @@
 # {{ ansible_managed }}
 
 # Use network installation
-url --url="{{ mirror_baseurl | default('http://mirror.stream.centos.org/9-stream') }}/BaseOS/{{ kvm_guest_arch }}/os/"
+url --url="{{ mirror_baseurl | default('http://mirror.stream.centos.org/10-stream') }}/BaseOS/{{ kvm_guest_arch }}/os/"
 # Run the Setup Agent on first boot
 firstboot --enable
 #ignoredisk --only-use=sda

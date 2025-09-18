@@ -46,10 +46,18 @@
       ignore_errors: yes
       delegate_to: "{{ kvm_host }}"
 
-    - name: Undefining UEFI VMs with nvram
+    - name: Undefining UEFI VMs with nvram (aarch64)
       shell: "virsh undefine --nvram {{ inventory_hostname }}"
       when: 
         - kvm_guest_arch == "aarch64"
+      ignore_errors: yes
+      delegate_to: "{{ kvm_host }}"  
+
+    - name: Undefining UEFI VMs with nvram (x86_64 and secureboot)
+      shell: "virsh undefine --nvram {{ inventory_hostname }}"
+      when: 
+        - kvm_guest_secureboot is defined
+        - kvm_guest_secureboot
       ignore_errors: yes
       delegate_to: "{{ kvm_host }}"  
 
