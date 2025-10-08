@@ -14,10 +14,21 @@ keyboard --vckeymap=be-latin1 --xlayouts='us'
 lang en_GB.UTF-8
 
 # Network information
-network  --hostname={{ inventory_hostname }}
+# Network information
+network --hostname={{ inventory_hostname }}
 {% if bridge_nic is defined and bridge_nic %}
-network  --bootproto=static --device={{ bridge_name | default('br0') }} --bridgeslaves={{ pxe_bootdev }} --bridgeopts=stp=no --gateway={{ gateway }} --ip={{ ip }} --nameserver={% for ns in dns %}{{ ns }}{%- if not loop.last -%},{% endif %}{% endfor %} --netmask={{ netmask }} --ipv6=auto --activate 
+# deploying with a single bridge on one device
+network --bootproto=static --device={{ bridge_name | default('br0') }} --bridgeslaves={{ pxe_bootdev }} --bridgeopts=stp=no --gateway={{ gateway }} --ip={{ ip }} --nameserver={% for ns in dns %}{{ ns }}{%- if not loop.last -%},{% endif %}{% endfor %} --netmask={{ netmask }} --ipv6=auto --activate 
+{% elif bonded_intefaces is defined and bridge_bond is not defined %}
+# Deploying with bonded devices in LACP mode and no bridge
+network --device=bond0 --bondslaves={% for nic in bonded_interfaces %}{{ nic }}{%- if not loop.last -%},{% endif %}{% endfor %} --bondopts="mode=802.3ad,miimon=100" --onboot=yes --gateway={{ gateway }} --ip={{ ip }} --nameserver={% for ns in dns %}{{ ns }}{%- if not loop.last -%},{% endif %}{% endfor %} --netmask={{ netmask }} --ipv6=auto --activate
+{% elif bridge_bond is defined and bridge_bond %}
+# Deploying with first a bonded/LACP interface and bridge on top
+network --device=bond0 --bondslaves={% for nic in bonded_interfaces %}{{ nic }}{%- if not loop.last -%},{% endif %}{% endfor %} --bondopts="mode=802.3ad,miimon=100" --onboot=yes --noipv4 --noipv6
+network --bootproto=static --device={{ bridge_name | default('br0') }} --bridgeslaves=bond0 --bridgeopts=stp=no --gateway={{ gateway }} --ip={{ ip }} --nameserver={% for ns in dns %}{{ ns }}{%- if not loop.last -%},{% endif %}{% endfor %} --netmask={{ netmask }} --ipv6=auto --activate 
+
 {% else %}
+# Simple case : only using one nic and no bridge/bond/lacp
 network  --bootproto=static --device={{ pxe_bootdev }} --gateway={{ gateway }} --ip={{ ip }} --nameserver={% for ns in dns %}{{ ns }}{%- if not loop.last -%},{% endif %}{% endfor %} --netmask={{ netmask }} --ipv6=auto --activate 
 {% endif %}
 
