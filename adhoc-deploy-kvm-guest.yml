@@ -5,6 +5,7 @@
 # kvm_host: The kvm host on which to deploy the guest (string)
 # kvm_guest_vcpus: number or cores to add to define the vm (string)
 # kvm_guest_memory: available RAM for the guest (string, in MB)
+# kvm_guest_disk_cache: (optional and default to 'none') : can be writethrough/writeback if defined
 # kvm_guest_disk_size: the qcow2 image size for the guest (string, in GB)
 # kvm_guest_luks_encrypted: if we want to encrypt disk (boolean : True|False)
 # kvm_guest_luks_passphrase: if we enabled it (see above) : the passphrase to crypt the disk

@@ -12,6 +12,14 @@
  {% set kvm_guest_network = 'network=' + kvm_guest_default_net %}
 {% endif %}
 
+# Checking if have some cache option defined for qcow2 otherwise just using cache=none
+{% if kvm_guest_disk_cache is defined %}
+ {% set cache_opt = kvm_guest_disk_cache %}
+{% else %}
+ {% set cache_opt = 'none' %}
+{% endif %}
+
+#
 {% if kvm_guest_eth1_bridge is defined %}
  {% set kvm_guest_eth1_network = 'bridge=' + kvm_guest_eth1_bridge %}
 {% endif %}
@@ -30,7 +38,7 @@ virt-install \
   --cpu host \
 {% endif %}
   --ram  {{ kvm_guest_memory }} \
-  --disk path={{ kvm_host_libvirt_images_path | default('/var/lib/libvirt/images') }}/{{ inventory_hostname}}.qcow2,size={{ kvm_guest_disk_size }},format=qcow2,device=disk,bus=virtio,cache=none \
+  --disk path={{ kvm_host_libvirt_images_path | default('/var/lib/libvirt/images') }}/{{ inventory_hostname}}.qcow2,size={{ kvm_guest_disk_size }},format=qcow2,device=disk,bus=virtio,cache={{ cache_opt }} \
   --nographics \
   --network {{ kvm_guest_network }},model=virtio \
 {% if kvm_guest_eth1_bridge is defined %}
