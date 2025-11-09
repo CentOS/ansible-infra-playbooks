@@ -1,3 +1,6 @@
+# This file is configured first with ansible and variables
+# You can then import into inventory and set other host variables (if not inheriting from group_vars)
+
 hostname: {{ inventory_hostname }}
 {% if ansible_bios_vendor == 'Amazon EC2' and pub_ip is defined %}
 ip: {{ pub_ip }}
@@ -15,7 +18,7 @@ gateway6: {{ ansible_default_ipv6.gateway }}
 {% endif %}
 macaddress: {{ ansible_default_ipv4.macaddress | default('')}}
 dns: 
-{% for ns in ansible_dns.nameservers %} 
+{%- for ns in ansible_dns.nameservers %} 
   - {{ ns }} 
 {%- endfor %}
 
@@ -24,8 +27,10 @@ product_name: {{ ansible_product_name }}
 serial_number: {{ ansible_product_serial }}
 
 {% if ansible_bios_vendor == 'Amazon EC2' %}
-aws_ec2_instance_id:
-aws_ec2_region:
+# This host is hosted in AWS so here are relevant informations
+aws_ec2_instance_id: {{ ec2_instance_id.content }}
+aws_ec2_region: {{ ec2_instance_region.content }}
+aws_ec2_securitygroup: {{ ec2_instance_sg.content }}
 {% else %}
 root_password: 
 

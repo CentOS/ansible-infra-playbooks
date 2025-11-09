@@ -11,11 +11,32 @@
       when: 
         - dnf_use_proxy is defined and not dnf_use_proxy
         - ansible_bios_vendor == 'Amazon EC2'
+        - internet_limited_access is not defined
     - set_fact:
         pub_ip: "{{ public_ip.content | replace('\n', '') }}"
       when: 
         - ansible_bios_vendor == 'Amazon EC2'
         - dnf_use_proxy is defined and not dnf_use_proxy
+        - internet_limited_access is not defined
+    - block:
+        - name: register ec2 instance id
+          uri:
+            url: http://169.254.169.254/latest/meta-data/instance-id
+            return_content: yes
+          register: ec2_instance_id
+        - name: register ec2 region id
+          uri:
+            url: http://169.254.169.254/latest/meta-data/placement/region
+            return_content: yes
+          register: ec2_instance_region
+        - name: register ec2 security group
+          uri:
+            url: http://169.254.169.254/latest/meta-data/security-groups
+            return_content: yes
+          register: ec2_instance_sg
+      when:   
+        - ansible_bios_vendor == 'Amazon EC2'
+  
 
     - name: Generate initial host_vars/{{ inventory_hostname }} in ../out
       template:
