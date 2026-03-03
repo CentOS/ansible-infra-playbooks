@@ -26,6 +26,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-certbot
     name: certbot
     version: staging 
+  - src: https://github.com/CentOS/ansible-role-compose-host
+    name: compose-host
+    version: staging 
   - src: https://github.com/CentOS/ansible-role-debuginfod
     name: debuginfod
     version: staging 
