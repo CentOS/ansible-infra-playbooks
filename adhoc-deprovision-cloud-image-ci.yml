@@ -1,0 +1,36 @@
+---
+# This Ad Hoc task will destroy a Generic Cloud Image on existing KVM host
+
+- hosts: "{{ node_name }}"
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Checking Virtual Guest exists
+      virt: 
+        name: "{{ inventory_hostname }}" 
+        state: running
+      ignore_errors: yes
+      no_log: True
+      delegate_to: "{{ kvm_host }}"
+      register: vm_exists
+
+    - block:
+        - name: Destroying Guest
+          virt:
+            name: "{{ inventory_hostname }}"
+            state: destroyed
+        - name: Undefining Guest
+          virt:
+            name: "{{ inventory_hostname }}"
+            command: undefine
+      delegate_to: "{{ kvm_host }}"
+      when: 
+        - vm_exists is succeeded
+
+    - name: Sending back useful information for duffy provisioner
+      set_fact:
+        duffy_out:
+          nodes:
+            - hostname: "{{ inventory_hostname }}"
+              ipaddr: "{{ ip }}"

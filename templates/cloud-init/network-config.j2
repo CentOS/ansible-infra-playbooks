@@ -1,0 +1,15 @@
+version: 1
+config:
+  - type: physical
+{% if centos_stream_release == '10' %}
+    name: enp0s1
+{% else %}
+    name: eth0
+{% endif %}
+    subnets:
+      - type: static
+        address: {{ ip }}
+        netmask: {{ netmask }}
+        gateway: {{ gateway }}
+        dns_nameservers:
+          - {{ nameserver }}

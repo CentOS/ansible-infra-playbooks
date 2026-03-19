@@ -1,0 +1,21 @@
+#!/bin/bash
+{% if kvm_guest_bridge == True %}
+ {% set kvm_guest_network = 'bridge=' + kvm_host_bridge %}
+{% else %}
+ {% set kvm_guest_network = 'network=' + kvm_guest_default_net %}
+{% endif %}
+
+virt-install \
+  --name  {{ inventory_hostname }} \
+  --vcpus {{ kvm_guest_vcpus }} \
+  --memory memory={{ kvm_guest_memory }},maxmemory={{ (kvm_guest_memory * 2) | int }} \
+  --disk path=/var/lib/libvirt/images/{{ inventory_hostname}}.qcow2,format=qcow2,device=disk,bus=virtio,cache=none \
+  --disk path=/var/lib/libvirt/images/cloud-configs/{{ inventory_hostname }}/{{ inventory_hostname}}-metadata.iso,device=cdrom \
+  --import \
+  --nographics \
+  --network {{ kvm_guest_network }} \
+  --os-type=linux \
+  --os-variant=rhel9.0 \
+  --noautoconsole
+
+

@@ -1,0 +1,28 @@
+#cloud-config
+
+# Hostname management
+preserve_hostname: False
+hostname: {{ inventory_hostname }}
+fqdn: {{ inventory_hostname }}
+
+# Configure where output will go
+output: 
+  all: ">> /var/log/cloud-init.log"
+
+# Install my public ssh key to the first user-defined user configured 
+# in cloud.cfg in the template (which is centos for CentOS cloud images)
+ssh_authorized_keys:
+  - {{ qa_ssh_pubkey }}
+  
+# For QA we want to allow root for t_functional
+disable_root: false
+users:
+  - name: root
+    chpasswd: {expire: False}
+    ssh_authorized_keys:
+      - {{ qa_ssh_pubkey }}
+chpasswd:
+  list: |
+    root:{{ cloud_init_root_pass }}
+  expire: False
+
