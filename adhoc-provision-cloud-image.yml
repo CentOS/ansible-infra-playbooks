@@ -28,6 +28,14 @@
       when: 
         - vm_exists is succeeded
 
+    - name: Undefining UEFI VMs with nvram (aarch64)
+      shell: "virsh undefine --nvram {{ inventory_hostname }}"
+      when: 
+        - arch == "aarch64"
+      ignore_errors: yes
+      delegate_to: "{{ kvm_host }}"  
+
+
     - name: == Cloud Image == Creating structure for cloud-init nocloud 
       file:
         path: "/var/lib/libvirt/images/cloud-configs/{{ inventory_hostname }}"

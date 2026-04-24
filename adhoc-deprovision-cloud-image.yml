@@ -15,6 +15,13 @@
       delegate_to: "{{ kvm_host }}"
       register: vm_exists
 
+    - name: Undefining UEFI VMs with nvram (aarch64)
+      shell: "virsh undefine --nvram {{ inventory_hostname }}"
+      when: 
+        - arch == "aarch64"
+      ignore_errors: yes
+      delegate_to: "{{ kvm_host }}"  
+
     - block:
         - name: Destroying Guest
           virt:
