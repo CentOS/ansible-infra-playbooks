@@ -1,0 +1,84 @@
+---
+# This Ad Hoc task will deploy a Generic Cloud Image on existing KVM host
+
+- hosts: "{{ node_name }}"
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Checking Virtual Guest exists
+      virt: 
+        name: "{{ inventory_hostname }}" 
+        state: running
+      ignore_errors: yes
+      no_log: True
+      delegate_to: "{{ kvm_host }}"
+      register: vm_exists
+
+    - block:
+        - name: Destroying Guest
+          virt:
+            name: "{{ inventory_hostname }}"
+            state: destroyed
+        - name: Undefining Guest
+          virt:
+            name: "{{ inventory_hostname }}"
+            command: undefine
+      delegate_to: "{{ kvm_host }}"
+      when: 
+        - vm_exists is succeeded
+
+    - name: == Cloud Image == Creating structure for cloud-init nocloud 
+      file:
+        path: "/var/lib/libvirt/images/cloud-configs/{{ inventory_hostname }}"
+        state: directory
+      delegate_to: "{{ kvm_host }}"
+
+    - name: == Cloud Image == distributing cloud-init config files
+      template:
+        src: "cloud-init/{{ item }}.j2"
+        dest: "/var/lib/libvirt/images/cloud-configs/{{ inventory_hostname }}/{{ item }}"
+      with_items:
+        - meta-data
+        - user-data
+        - network-config
+      delegate_to: "{{ kvm_host }}"
+
+    - name: == Cloud image == Generating cloud-init iso image
+      command: "genisoimage -output {{ inventory_hostname }}-metadata.iso -volid cidata -joliet -r meta-data user-data network-config"
+      args:
+        chdir: "/var/lib/libvirt/images/cloud-configs/{{ inventory_hostname }}/"
+      delegate_to: "{{ kvm_host }}"
+
+    - name: == Cloud Image == Preparing {{ inventory_hostname }}.qcow2
+      command:
+        chdir: /var/lib/libvirt/images
+        cmd: "qemu-img convert -f qcow2 -O qcow2 {{ cloud_image }} {{ inventory_hostname }}.qcow2"
+      tags:
+        - qcow2
+      delegate_to: "{{ kvm_host }}"
+        
+    - name: == Cloud Image == Creating virt-install import command
+      template: 
+        src: "ansible-virt-import-cloud.j2" 
+        dest: "/var/lib/libvirt/virt-import-{{ inventory_hostname }}" 
+        mode: 0750 
+        owner: root 
+        group: root
+      delegate_to: "{{ kvm_host }}"
+      tags:
+        - virt-import
+
+    - name: == Cloud Image == Provisining the Virtual Guest[s]
+      command: /var/lib/libvirt/virt-import-{{ inventory_hostname }}
+      delegate_to: "{{ kvm_host }}"
+
+
+    - name: Waiting for sshd to be available on the deployed node
+      wait_for: 
+        port: 22 
+        host: "{{ ip }}"
+        timeout: 1200 
+      delegate_to: "{{ kvm_host }}"
+
+
