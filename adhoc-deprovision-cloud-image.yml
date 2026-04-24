@@ -15,13 +15,6 @@
       delegate_to: "{{ kvm_host }}"
       register: vm_exists
 
-    - name: Undefining UEFI VMs with nvram (aarch64)
-      shell: "virsh undefine --nvram {{ inventory_hostname }}"
-      when: 
-        - arch == "aarch64"
-      ignore_errors: yes
-      delegate_to: "{{ kvm_host }}"  
-
     - block:
         - name: Destroying Guest
           virt:
@@ -34,6 +27,20 @@
       delegate_to: "{{ kvm_host }}"
       when: 
         - vm_exists is succeeded
+        - arch != "aarch64"
+
+    - block:
+        - name: Destroying Guest (aarch64 nvram edition)
+          virt:
+            name: "{{ inventory_hostname }}"
+            state: destroyed
+        - name: Undefining UEFI VMs with nvram (aarch64)
+          shell: "virsh undefine --nvram {{ inventory_hostname }}"
+          ignore_errors: yes
+      when: 
+        - vm_exists is succeeded
+        - arch == "aarch64"
+      delegate_to: "{{ kvm_host }}"  
 
     - name: == Cloud Image == Deleting cloud qcow2 files
       file:
