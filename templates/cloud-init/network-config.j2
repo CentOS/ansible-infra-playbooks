@@ -1,8 +1,10 @@
 version: 1
 config:
   - type: physical
-{% if centos_stream_release == '10' %}
+{% if centos_stream_release == '10' and arch == 'ppc64le' %}
     name: enp0s1
+{% elif centos_stream_release == '10' %}
+    name: enp1s0
 {% else %}
     name: eth0
 {% endif %}
