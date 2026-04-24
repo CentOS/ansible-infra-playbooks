@@ -1,0 +1,43 @@
+---
+# This Ad Hoc task will deploy a Generic Cloud Image on existing KVM host
+
+- hosts: "{{ node_name }}"
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Checking Virtual Guest exists
+      virt: 
+        name: "{{ inventory_hostname }}" 
+        state: running
+      ignore_errors: yes
+      no_log: True
+      delegate_to: "{{ kvm_host }}"
+      register: vm_exists
+
+    - block:
+        - name: Destroying Guest
+          virt:
+            name: "{{ inventory_hostname }}"
+            state: destroyed
+        - name: Undefining Guest
+          virt:
+            name: "{{ inventory_hostname }}"
+            command: undefine
+      delegate_to: "{{ kvm_host }}"
+      when: 
+        - vm_exists is succeeded
+
+    - name: == Cloud Image == Deleting cloud qcow2 files
+      file:
+        path: "/var/lib/libvirt/images/{{ item }}"
+        state: absent
+      with_items:
+        - "{{ inventory_hostname }}.qcow2"
+        - "{{ cloud_image }}"
+      tags:
+        - qcow2
+      delegate_to: "{{ kvm_host }}"
+        
+
+
