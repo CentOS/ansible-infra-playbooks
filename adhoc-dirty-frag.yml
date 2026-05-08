@@ -1,0 +1,30 @@
+---
+- hosts: all
+  become: True
+
+# https://github.com/V4bel/dirtyfrag/blob/master/README.md
+
+  tasks:
+    - name: Write dirtyfrag.conf module file
+      copy:
+        content: |
+          install esp4 /bin/false
+          install esp6 /bin/false
+          install rxrpc /bin/false
+        dest: /etc/modprobe.d/dirtyfrag.conf
+        owner: root
+        group: root
+        mode: '0644'
+     
+    - name: Unload affected dirtyfrag modules
+      modprobe:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - esp4
+        - esp6
+        - rxrpc
+
+    - name: Drop page caches
+      shell:
+        cmd: "echo 3 | tee /proc/sys/vm/drop_caches"
