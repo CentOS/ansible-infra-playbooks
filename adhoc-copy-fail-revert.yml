@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: True
+
+  tasks:
+    - name: Patching grub config
+      shell:
+        cmd: "grubby --update-kernel=ALL --remove-args='initcall_blacklist=algif_aead_init' && touch /usr/libexec/centos/cve-2026-31431.fixed"
+        creates: /usr/libexec/centos/cve-2026-31431.fixed
+        
