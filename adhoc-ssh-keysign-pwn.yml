@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: false
+  become: True
+
+# https://github.com/0xdeadbeefnetwork/ssh-keysign-pwn
+
+  tasks:
+    - name: Ensure bad file does not exist
+      file:
+        path: "/etc/sysctl.d/ptrace-restrict.conf\n"
+        state: absent
+
+    - name: Write ptrace sysctl file
+      copy:
+        content: |
+          kernel.yama.ptrace_scope=2
+        dest: /etc/sysctl.d/ptrace-restrict.conf
+        owner: root
+        group: root
+        mode: '0644'
+      register: ptrace_file
+      
+    - name: Drop page caches
+      shell:
+        cmd: "sysctl --system"
+      when: ptrace_file.changed # noqa: no-handler
