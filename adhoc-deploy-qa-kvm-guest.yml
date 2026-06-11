@@ -61,6 +61,11 @@
       ignore_errors: yes
       delegate_to: "{{ kvm_host }}"  
 
+    - name: Ensuring local .qcow2 from previous test is gone
+      file:
+        path: "/var/lib/libvirt/images/{{ inventory_hostname }}.qcow2"
+        state: absent
+
     - name: Creating kickstart to provision VM[s]
       template: 
         src: "../templates/kickstarts/kvm-guest-rhel{{ rhel_version }}-ks.j2" 
