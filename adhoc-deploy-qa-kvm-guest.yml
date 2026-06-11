@@ -65,6 +65,7 @@
       file:
         path: "/var/lib/libvirt/images/{{ inventory_hostname }}.qcow2"
         state: absent
+      delegate_to: "{{ kvm_host }}"  
 
     - name: Creating kickstart to provision VM[s]
       template: 
