@@ -20,3 +20,7 @@
       with_items: "{{ wp_plugins }}"  
       tags:
         - plugins
+
+    - name: Displaying message to visit website     
+      debug:
+        msg: "Don't forget to visit now https://{{ wp_httpd_hostname }}/wp-admin once to ensure db schema migration is done (if neededed)"
