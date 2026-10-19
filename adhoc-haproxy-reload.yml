@@ -1,0 +1,10 @@
+- hosts: hostgroup-role-haproxy
+  gather_facts: False
+  become: True
+  
+  tasks:
+    - name: Reloading haproxy service (dns propagation)
+      service:
+        name: haproxy
+        state: reloaded
+

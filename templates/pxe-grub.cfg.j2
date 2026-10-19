@@ -20,6 +20,11 @@ menuentry '{{ inventory_hostname }}-Ansible-deploy' {
 	{{ kernel_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.vnc inst.vncpassword={{ vnc_pass | default('N98tV89w') }} inst.repo={{ rhel_deploy_mirror_url}}/{{ rhel_version }}/{{ arch }}/ inst.lang=en_GB inst.keymap=be-latin1
 	{{ initrd_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
 }
+{% elif rdp_based_install is defined and rdp_based_install %}
+menuentry '{{ inventory_hostname }}-Ansible-deploy' {
+	{{ kernel_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.rdp inst.rdp.username=install inst.rdp.password={{ vnc_pass | default('N98tV89w') }} inst.repo={{ rhel_deploy_mirror_url}}/{{ rhel_version }}/{{ arch }}/ inst.lang=en_GB inst.keymap=be-latin1
+	{{ initrd_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/initrd.img
+}
 {% else %}
 menuentry '{{ inventory_hostname }}-Ansible-deploy' {
 	{{ kernel_boot }} boot/{{ pxe_boot_dir }}/{{ os_version }}/{{ arch }}/vmlinuz ip={{ pxe_bootdev }}:dhcp inst.ks={{ ks_url }}/{{ inventory_hostname }}-ks.cfg 
