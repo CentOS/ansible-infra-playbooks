@@ -65,6 +65,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-httpd-feeds
     name: httpd-feeds
     version: master 
+  - src: https://github.com/CentOS/ansible-role-infra-status
+    name: infra-status
+    version: master 
   - src: https://github.com/CentOS/ansible-role-ipa-client
     name: ipa-client
     version: master 
