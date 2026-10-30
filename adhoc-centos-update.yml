@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: True
+
+  tasks: 
+    - name: Calling centos-updates script
+      command:
+        cmd: /usr/libexec/centos/centos-updates
+

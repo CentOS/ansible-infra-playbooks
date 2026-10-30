@@ -1,0 +1,11 @@
+---
+- hosts: kvm-guests
+  become: True
+  gather_facts: False
+
+  tasks:
+    - name: Powering on Virtual Machines
+      virt:
+        name: "{{ inventory_hostname }}"
+        state: running
+      delegate_to: "{{ kvm_host }}"   
