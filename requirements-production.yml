@@ -167,6 +167,9 @@ roles:
   - src: https://github.com/CentOS/ansible-role-nginx
     name: nginx
     version: master 
+  - src: https://github.com/CentOS/ansible-role-oauth2-proxy
+    name: oauth2-proxy
+    version: master 
   - src: https://github.com/CentOS/ansible-role-ocp-admin-node
     name: ocp-admin-node
     version: master 
